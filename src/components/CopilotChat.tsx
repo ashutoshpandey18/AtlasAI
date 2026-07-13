@@ -55,15 +55,16 @@ export default function CopilotChat({ lat, lng, useCaseName, isOpen, onClose, ac
 
     // Add User query
     setMessages((prev) => [
-      ...prev, 
-      { 
+      ...prev,
+      {
         sender: 'user', 
-        senderName: 'Developer', 
+        senderName: 'You', 
         senderAvatar: userAvatar, 
         text: qText, 
         time: timeStr 
       }
     ]);
+
     setInput('');
     setLoading(true);
 

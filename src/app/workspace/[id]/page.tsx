@@ -43,78 +43,67 @@ export default function WorkspacePage() {
   const [loadedFromDb, setLoadedFromDb] = useState(false);
   const [hasSavedOnce, setHasSavedOnce] = useState(false);
 
-  function saveCampaignState(newWs: ProjectWorkspace) {
+  async function saveCampaignState(newWs: ProjectWorkspace) {
     try {
-      const saved = localStorage.getItem('atlas_campaigns');
-      let list: ProjectWorkspace[] = [];
-      if (saved) {
-        list = JSON.parse(saved);
+      const res = await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newWs),
+      });
+      if (res.ok) {
+        setHasSavedOnce(true);
       }
-      
-      const idx = list.findIndex((c) => c.id === newWs.id);
-      if (idx > -1) {
-        list[idx] = newWs;
-      } else {
-        list.push(newWs);
-      }
-      
-      localStorage.setItem('atlas_campaigns', JSON.stringify(list));
-      setHasSavedOnce(true);
     } catch (err) {
-      console.error('LocalStorage save failed:', err);
+      console.error('Failed to save campaign in database:', err);
     }
   }
 
   // 1. Initial Load: Load saved workspace OR parse search queries
   useEffect(() => {
-    function loadCampaign() {
+    async function loadCampaign() {
       try {
-        const saved = localStorage.getItem('atlas_campaigns');
-        if (saved) {
-          const list = JSON.parse(saved) as ProjectWorkspace[];
-          const matched = list.find((w) => w.id === id);
-          if (matched) {
-            const uc = USE_CASES.find((u) => u.id === matched.useCaseId) || null;
-            setUseCase(uc);
-            setRequirements(matched.requirements);
-            setLocations(matched.locations);
+        const res = await fetch(`/api/campaigns/${id}`);
+        if (res.ok) {
+          const matched = await res.json() as ProjectWorkspace;
+          const uc = USE_CASES.find((u) => u.id === matched.useCaseId) || null;
+          setUseCase(uc);
+          setRequirements(matched.requirements);
+          setLocations(matched.locations);
 
-            if (matched.locations.length > 0 && uc) {
-              setAnalyzing(true);
-              const initialProgress: Record<string, string> = {};
-              for (const loc of matched.locations) {
-                initialProgress[loc.id] = 'Connecting...';
-              }
-              setProgress(initialProgress);
-
-              Promise.all(
-                matched.locations.map(async (loc): Promise<LocationResult> => {
-                  if (!loc.geocoded || loc.lat === null || loc.lng === null) {
-                    return buildResults(loc, null, uc, matched.requirements, loc.error || 'Address geocoding error');
-                  }
-                  setProgress((p) => ({ ...p, [loc.id]: 'Calling Mireye APIs...' }));
-                  try {
-                    const data = await fetchFields(loc.lat, loc.lng, uc.fields);
-                    setProgress((p) => ({ ...p, [loc.id]: 'Complete' }));
-                    return buildResults(loc, data, uc, matched.requirements, null);
-                  } catch (err) {
-                    const msg = err instanceof Error ? err.message : 'API connection error';
-                    setProgress((p) => ({ ...p, [loc.id]: `Error: ${msg}` }));
-                    return buildResults(loc, null, uc, matched.requirements, msg);
-                  }
-                })
-              ).then((settled) => {
-                setResults(settled);
-                setAnalyzing(false);
-              });
+          if (matched.locations.length > 0 && uc) {
+            setAnalyzing(true);
+            const initialProgress: Record<string, string> = {};
+            for (const loc of matched.locations) {
+              initialProgress[loc.id] = 'Connecting...';
             }
-            setLoadedFromDb(true);
-            setHasSavedOnce(true);
-            return;
+            setProgress(initialProgress);
+
+            const settled = await Promise.all(
+              matched.locations.map(async (loc): Promise<LocationResult> => {
+                if (!loc.geocoded || loc.lat === null || loc.lng === null) {
+                  return buildResults(loc, null, uc, matched.requirements, loc.error || 'Address geocoding error');
+                }
+                setProgress((p) => ({ ...p, [loc.id]: 'Calling Mireye APIs...' }));
+                try {
+                  const data = await fetchFields(loc.lat, loc.lng, uc.fields);
+                  setProgress((p) => ({ ...p, [loc.id]: 'Complete' }));
+                  return buildResults(loc, data, uc, matched.requirements, null);
+                } catch (err) {
+                  const msg = err instanceof Error ? err.message : 'API connection error';
+                  setProgress((p) => ({ ...p, [loc.id]: `Error: ${msg}` }));
+                  return buildResults(loc, null, uc, matched.requirements, msg);
+                }
+              })
+            );
+            setResults(settled);
+            setAnalyzing(false);
           }
+          setLoadedFromDb(true);
+          setHasSavedOnce(true);
+          return;
         }
       } catch (err) {
-        console.error('Failed to load campaign from LocalStorage:', err);
+        console.error('Failed to load campaign from SQLite:', err);
       }
 
       // New campaign — check query parameters
@@ -151,6 +140,7 @@ export default function WorkspacePage() {
 
     loadCampaign();
   }, [id, searchParams]);
+
 
   // 1c. Open chat drawer if query parameter is set
   useEffect(() => {

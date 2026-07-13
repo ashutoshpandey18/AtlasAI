@@ -13,48 +13,15 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    function loadCampaigns() {
+    async function loadCampaigns() {
       try {
-        let saved = localStorage.getItem('atlas_campaigns');
-        if (!saved) {
-          const defaultSeed: ProjectWorkspace[] = [
-            {
-              id: 'campaign-demo-solar',
-              name: 'Solar Farm Campaign',
-              useCaseId: 'solar-farm',
-              requirements: { project_size: 'large', cultivated_ok: true },
-              locations: [
-                { id: 'loc-ohio', address: 'Pickaway County, OH', label: 'Pickaway County, OH', lat: 39.6012, lng: -82.9463, geocoding: false, geocoded: true, error: null }
-              ],
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: 'campaign-demo-warehouse',
-              name: 'Warehouse Campaign',
-              useCaseId: 'warehouse',
-              requirements: { rail_required: false, power_requirement: 'medium', flood_tolerance: false },
-              locations: [
-                { id: 'loc-memphis', address: 'Memphis, TN', label: 'Memphis, TN', lat: 35.1495, lng: -90.0490, geocoding: false, geocoded: true, error: null }
-              ],
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: 'campaign-demo-retail',
-              name: 'Retail Store Campaign',
-              useCaseId: 'retail-store',
-              requirements: { drive_thru: false, traffic_type: 'mixed' },
-              locations: [
-                { id: 'loc-florida', address: 'Central Florida Site', label: 'Central Florida Site', lat: 27.7568, lng: -81.4640, geocoding: false, geocoded: true, error: null }
-              ],
-              createdAt: new Date().toISOString()
-            }
-          ];
-          localStorage.setItem('atlas_campaigns', JSON.stringify(defaultSeed));
-          saved = JSON.stringify(defaultSeed);
+        const res = await fetch('/api/campaigns');
+        if (res.ok) {
+          const data = await res.json();
+          setWorkspaces(data);
         }
-        setWorkspaces(JSON.parse(saved));
       } catch (err) {
-        console.error('Failed to load campaigns from LocalStorage:', err);
+        console.error('Failed to load campaigns:', err);
       } finally {
         setLoading(false);
       }
@@ -67,20 +34,18 @@ export default function ProjectsPage() {
     router.push(`/workspace/${campaignId}?uc=solar-farm`);
   }
 
-  function handleDelete(id: string, e: React.MouseEvent) {
+  async function handleDelete(id: string, e: React.MouseEvent) {
     e.stopPropagation();
     try {
-      const saved = localStorage.getItem('atlas_campaigns');
-      if (saved) {
-        const list = JSON.parse(saved) as ProjectWorkspace[];
-        const filtered = list.filter((w) => w.id !== id);
-        localStorage.setItem('atlas_campaigns', JSON.stringify(filtered));
-        setWorkspaces(filtered);
+      const res = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setWorkspaces((prev) => prev.filter((w) => w.id !== id));
       }
     } catch (err) {
       console.error('Failed to delete campaign:', err);
     }
   }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--bg)] text-[var(--text-primary)] font-sans relative overflow-hidden">

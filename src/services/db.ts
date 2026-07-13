@@ -1,18 +1,58 @@
-import fs from 'fs';
-import path from 'path';
+import { createClient } from '@libsql/client';
 import type { ProjectWorkspace } from '@/types/atlas';
 
-const FILE_PATH = path.resolve(process.cwd(), 'campaigns.json');
+const url = process.env.TURSO_DATABASE_URL || '';
+const authToken = process.env.TURSO_AUTH_TOKEN || '';
 
-// Global in-memory fallback for serverless environments (like Vercel)
-const globalForCampaigns = global as unknown as {
-  _inMemoryCampaigns?: ProjectWorkspace[];
-  _hasLoadedFromFile?: boolean;
-};
+const client = createClient({
+  url,
+  authToken,
+});
 
-if (!globalForCampaigns._inMemoryCampaigns) {
-  globalForCampaigns._inMemoryCampaigns = [];
-  globalForCampaigns._hasLoadedFromFile = false;
+let initPromise: Promise<void> | null = null;
+
+async function initDb() {
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        // Create table if it doesn't exist
+        await client.execute(`
+          CREATE TABLE IF NOT EXISTS campaigns (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            useCaseId TEXT NOT NULL,
+            requirements TEXT NOT NULL,
+            locations TEXT NOT NULL,
+            createdAt TEXT NOT NULL
+          )
+        `);
+
+        // Check if we need to seed the table
+        const result = await client.execute('SELECT count(*) as count FROM campaigns');
+        const count = Number(result.rows[0]?.count || 0);
+        if (count === 0) {
+          const defaultSeed = getDefaultSeed();
+          for (const c of defaultSeed) {
+            await client.execute({
+              sql: 'INSERT INTO campaigns (id, name, useCaseId, requirements, locations, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+              args: [
+                c.id,
+                c.name,
+                c.useCaseId,
+                JSON.stringify(c.requirements),
+                JSON.stringify(c.locations),
+                c.createdAt
+              ]
+            });
+          }
+          console.log('[Turso] Database seeded successfully.');
+        }
+      } catch (err) {
+        console.error('[Turso] Failed to initialize database:', err);
+      }
+    })();
+  }
+  return initPromise;
 }
 
 function getDefaultSeed(): ProjectWorkspace[] {
@@ -50,69 +90,64 @@ function getDefaultSeed(): ProjectWorkspace[] {
   ];
 }
 
-function readData(): ProjectWorkspace[] {
-  // If we already loaded data and are running in serverless fallback mode, use memory
-  if (globalForCampaigns._hasLoadedFromFile && globalForCampaigns._inMemoryCampaigns!.length > 0) {
-    return globalForCampaigns._inMemoryCampaigns!;
-  }
-
-  try {
-    let campaignsList: ProjectWorkspace[] = [];
-    if (fs.existsSync(FILE_PATH)) {
-      const raw = fs.readFileSync(FILE_PATH, 'utf-8');
-      campaignsList = JSON.parse(raw);
-    } else {
-      campaignsList = getDefaultSeed();
-    }
-    
-    globalForCampaigns._inMemoryCampaigns = campaignsList;
-    globalForCampaigns._hasLoadedFromFile = true;
-    return campaignsList;
-  } catch (error) {
-    console.warn('Read campaigns.json failed (likely serverless environment). Using in-memory fallback.', error);
-    if (!globalForCampaigns._hasLoadedFromFile) {
-      globalForCampaigns._inMemoryCampaigns = getDefaultSeed();
-      globalForCampaigns._hasLoadedFromFile = true;
-    }
-    return globalForCampaigns._inMemoryCampaigns!;
-  }
-}
-
-function writeData(data: ProjectWorkspace[]): void {
-  // Always update in-memory array first
-  globalForCampaigns._inMemoryCampaigns = data;
-
-  try {
-    // Attempt to write to file system (works on localhost)
-    fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (error) {
-    // Catch EROFS (Read-only file system) on Vercel silently, allowing in-memory fallback to work
-    console.warn('Write campaigns.json failed (serverless environment). Saved in-memory instead.', error);
-  }
-}
-
 export async function getCampaigns(): Promise<ProjectWorkspace[]> {
-  return readData();
+  await initDb();
+  const res = await client.execute('SELECT * FROM campaigns ORDER BY createdAt DESC');
+  return res.rows.map((row) => ({
+    id: String(row.id),
+    name: String(row.name),
+    useCaseId: String(row.useCaseId) as any,
+    requirements: JSON.parse(String(row.requirements)),
+    locations: JSON.parse(String(row.locations)),
+    createdAt: String(row.createdAt),
+  }));
 }
 
 export async function getCampaignById(id: string): Promise<ProjectWorkspace | null> {
-  const data = readData();
-  return data.find((c) => c.id === id) || null;
+  await initDb();
+  const res = await client.execute({
+    sql: 'SELECT * FROM campaigns WHERE id = ?',
+    args: [id]
+  });
+  if (res.rows.length === 0) return null;
+  const row = res.rows[0];
+  return {
+    id: String(row.id),
+    name: String(row.name),
+    useCaseId: String(row.useCaseId) as any,
+    requirements: JSON.parse(String(row.requirements)),
+    locations: JSON.parse(String(row.locations)),
+    createdAt: String(row.createdAt),
+  };
 }
 
+
 export async function saveCampaign(workspace: ProjectWorkspace): Promise<void> {
-  const data = readData();
-  const idx = data.findIndex((c) => c.id === workspace.id);
-  if (idx > -1) {
-    data[idx] = workspace;
-  } else {
-    data.push(workspace);
-  }
-  writeData(data);
+  await initDb();
+  await client.execute({
+    sql: `INSERT INTO campaigns (id, name, useCaseId, requirements, locations, createdAt)
+          VALUES (?, ?, ?, ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            name = excluded.name,
+            useCaseId = excluded.useCaseId,
+            requirements = excluded.requirements,
+            locations = excluded.locations,
+            createdAt = excluded.createdAt`,
+    args: [
+      workspace.id,
+      workspace.name,
+      workspace.useCaseId,
+      JSON.stringify(workspace.requirements),
+      JSON.stringify(workspace.locations),
+      workspace.createdAt
+    ]
+  });
 }
 
 export async function deleteCampaign(id: string): Promise<void> {
-  const data = readData();
-  const filtered = data.filter((c) => c.id !== id);
-  writeData(filtered);
+  await initDb();
+  await client.execute({
+    sql: 'DELETE FROM campaigns WHERE id = ?',
+    args: [id]
+  });
 }

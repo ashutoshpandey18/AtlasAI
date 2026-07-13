@@ -236,17 +236,25 @@ export default function LandingPage() {
             <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_rgba(74,117,89,0.8)] animate-pulse" />
             ATLAS.AI
           </Link>
-          <div className="flex items-center gap-4.5">
+          <div className="flex items-center gap-6">
             <Link 
               href="/projects" 
-              className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[var(--accent)] hover:text-[var(--text-primary)] bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 border border-[var(--accent)]/20 hover:border-[var(--accent)]/40 px-3.5 py-1.5 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-1.5 text-[13px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
             >
-              <FolderKanban className="w-3.5 h-3.5" />
+              <FolderKanban className="w-4 h-4 text-[var(--accent)]" />
               Saved Campaigns
+            </Link>
+            <Link
+              href="/workspace/demo-campaign?uc=solar-farm&chat=open&locs=Franklin%20County%2C%20OH%3BPickaway%20County%2C%20OH"
+              className="inline-flex items-center gap-1.5 text-[12.5px] font-bold bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-primary)] border border-white/[0.08] hover:border-[var(--accent)]/40 px-4.5 py-2 rounded-full transition-all shadow-sm hover:shadow-[0_0_15px_rgba(74,117,89,0.15)]"
+            >
+              <Layers className="w-3.5 h-3.5 text-[var(--accent)]" />
+              Active Workspace
             </Link>
           </div>
         </div>
       </nav>
+
 
 
       <main className="relative z-10 flex-1 w-full">

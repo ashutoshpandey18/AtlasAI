@@ -65,5 +65,37 @@
       }
     ],
     "createdAt": "2026-07-13T12:10:00.000Z"
+  },
+  {
+    "id": "campaign-1783958309819",
+    "name": "Solar Farm Campaign",
+    "useCaseId": "solar-farm",
+    "requirements": {
+      "project_size": "medium",
+      "cultivated_ok": true
+    },
+    "locations": [
+      {
+        "id": "loc-1783958328286-0.7891054028230851",
+        "address": "Coloardo (Approximate Resolved)",
+        "lat": 39.93971278992342,
+        "lng": -83.00382130393511,
+        "label": "A",
+        "geocoding": false,
+        "geocoded": true,
+        "error": null
+      },
+      {
+        "id": "loc-1783958336969-0.40690825716780854",
+        "address": "Denver, Colorado, United States",
+        "lat": 39.7392364,
+        "lng": -104.984862,
+        "label": "B",
+        "geocoding": false,
+        "geocoded": true,
+        "error": null
+      }
+    ],
+    "createdAt": "2026-07-13T15:59:14.314Z"
   }
 ]

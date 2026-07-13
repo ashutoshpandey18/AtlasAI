@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Search, Sparkles, Activity, ShieldCheck, Sliders, Layers, CheckCircle } from 'lucide-react';
+import { Search, Sparkles, Activity, ShieldCheck, Sliders, Layers, CheckCircle, FolderKanban } from 'lucide-react';
+
 import PhoneSimulator from '@/components/PhoneSimulator';
 import ReportBuilderModal from '@/components/ReportBuilderModal';
 
@@ -231,23 +232,22 @@ export default function LandingPage() {
 
       <nav className={`border-b border-[var(--border)] bg-[var(--bg)]/85 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'py-3' : 'py-4.5'}`}>
         <div className="max-w-[1100px] mx-auto px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 font-black text-[14px] tracking-[0.1em] text-[var(--text-primary)] uppercase">
-            <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse" />
+          <Link href="/" className="flex items-center gap-2.5 font-black text-[14px] tracking-[0.15em] text-[var(--text-primary)] uppercase">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_rgba(74,117,89,0.8)] animate-pulse" />
             ATLAS.AI
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/projects" className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium transition-colors">
-              Saved Campaigns
-            </Link>
-            <Link
-              href="/projects"
-              className="text-[12.5px] bg-[var(--text-primary)] text-[var(--bg)] hover:opacity-90 font-bold px-4 py-1.5 rounded-full transition-all"
+          <div className="flex items-center gap-4.5">
+            <Link 
+              href="/projects" 
+              className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[var(--accent)] hover:text-[var(--text-primary)] bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 border border-[var(--accent)]/20 hover:border-[var(--accent)]/40 px-3.5 py-1.5 rounded-full transition-all shadow-sm"
             >
-              Workspace
+              <FolderKanban className="w-3.5 h-3.5" />
+              Saved Campaigns
             </Link>
           </div>
         </div>
       </nav>
+
 
       <main className="relative z-10 flex-1 w-full">
         <section id="product" className="max-w-[1100px] mx-auto px-6 pt-24 pb-20 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-16 items-center">

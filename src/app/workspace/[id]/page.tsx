@@ -10,7 +10,8 @@ import { geocodeAddress } from '@/services/geocoder';
 import { askGemini } from '@/services/gemini';
 import InteractiveMap from '@/components/InteractiveMap';
 import CopilotChat from '@/components/CopilotChat';
-import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield, FolderKanban } from 'lucide-react';
+
 import Link from 'next/link';
 
 export default function WorkspacePage() {
@@ -498,19 +499,24 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
       {/* Navbar */}
       <header className="border-b border-[var(--border)] bg-[var(--bg)] sticky top-0 z-40 relative z-20">
         <div className="max-w-[1100px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 font-black text-[14px] tracking-[0.1em] text-[var(--text-primary)] uppercase">
-            <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse" />
+          <Link href="/" className="flex items-center gap-2.5 font-black text-[14px] tracking-[0.15em] text-[var(--text-primary)] uppercase">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_rgba(74,117,89,0.8)] animate-pulse" />
             ATLAS.AI
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/projects" className="text-[13px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+          <div className="flex items-center gap-4.5">
+            <Link 
+              href="/projects" 
+              className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[var(--accent)] hover:text-[var(--text-primary)] bg-[var(--accent)]/10 hover:bg-[var(--accent)]/20 border border-[var(--accent)]/20 hover:border-[var(--accent)]/40 px-3.5 py-1.5 rounded-full transition-all shadow-sm"
+            >
+              <FolderKanban className="w-3.5 h-3.5" />
               Saved Campaigns
             </Link>
-            <span className="text-[10px] font-bold text-[var(--text-muted)] border border-[var(--border)] px-3 py-1 rounded-full bg-[var(--surface)] uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] border border-[var(--border)] px-3 py-1.5 rounded-full bg-[var(--surface)] uppercase tracking-wider">
               Campaign Workspace
             </span>
           </div>
         </div>
+
       </header>
 
       {/* Main Campaign workspace */}

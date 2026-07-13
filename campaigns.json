@@ -1,0 +1,69 @@
+[
+  {
+    "id": "campaign-demo-solar",
+    "name": "Solar Farm Campaign",
+    "useCaseId": "solar-farm",
+    "requirements": {
+      "project_size": "large",
+      "cultivated_ok": true
+    },
+    "locations": [
+      {
+        "id": "loc-ohio",
+        "address": "Pickaway County, OH",
+        "label": "Pickaway County, OH",
+        "lat": 39.6012,
+        "lng": -82.9463,
+        "geocoding": false,
+        "geocoded": true,
+        "error": null
+      }
+    ],
+    "createdAt": "2026-07-13T12:00:00.000Z"
+  },
+  {
+    "id": "campaign-demo-warehouse",
+    "name": "Warehouse Campaign",
+    "useCaseId": "warehouse",
+    "requirements": {
+      "rail_required": false,
+      "power_requirement": "medium",
+      "flood_tolerance": false
+    },
+    "locations": [
+      {
+        "id": "loc-memphis",
+        "address": "Memphis, TN",
+        "label": "Memphis, TN",
+        "lat": 35.1495,
+        "lng": -90.049,
+        "geocoding": false,
+        "geocoded": true,
+        "error": null
+      }
+    ],
+    "createdAt": "2026-07-13T12:05:00.000Z"
+  },
+  {
+    "id": "campaign-demo-retail",
+    "name": "Retail Store Campaign",
+    "useCaseId": "retail-store",
+    "requirements": {
+      "drive_thru": false,
+      "traffic_type": "mixed"
+    },
+    "locations": [
+      {
+        "id": "loc-florida",
+        "address": "Central Florida Site",
+        "label": "Central Florida Site",
+        "lat": 27.7568,
+        "lng": -81.464,
+        "geocoding": false,
+        "geocoded": true,
+        "error": null
+      }
+    ],
+    "createdAt": "2026-07-13T12:10:00.000Z"
+  }
+]

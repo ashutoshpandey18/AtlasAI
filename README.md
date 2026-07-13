@@ -1,91 +1,61 @@
-# 🛰️ ATLAS.AI — Geospatial Siting & Feasibility Intelligence Platform
+# Atlas AI - Land Feasibility & Site Selection Platform
 
-> **Submission for the "Build something real on Mireye" Assignment.**
-> Atlas AI is an end-to-end multi-site selection and land feasibility campaign planner powered by the **Mireye Coordinate API**.
-
----
-
-## 💡 The Real-World Use Case
-In utility-scale construction (data centers, wind/solar farms, battery factories, large retail), site selection is a costly bottleneck. GIS teams spend weeks downloading raster layers from disconnected federal databases (FEMA, USGS, USFWS, PAD-US) to answer basic questions: *Is the site in a floodplain? Does it intersect a conservation easement? How far is the nearest transmission grid link?*
-
-**ATLAS.AI** reduces this phase from **weeks to 4 seconds**. 
-By entering candidate addresses, developers can run parallel geocoding and scoring pipelines to compare locations under custom, use-case-specific constraints (e.g., Solar Farm, Data Center, Retail Store).
+Atlas AI is a tool that helps businesses find the best locations to build projects like solar farms, battery factories, or retail stores. It is powered by the Mireye Coordinate API.
 
 ---
 
-## 🛠️ Architecture & Mireye Integration (End-to-End)
+## What Problem Does It Solve?
 
-Atlas AI is fully integrated with the live Mireye API endpoints using the `NEXT_PUBLIC_MIREYE_API_TOKEN` environment variable.
+When a company wants to build a new facility, they need to check many details about the land:
+* Is the land flat or steep?
+* Does it flood?
+* Are there wetlands or protected forests?
+* Are there power lines or roads nearby?
 
-```mermaid
-graph TD
-  User([GIS User / Developer]) -->|1. Enter Candidates| WebUI[Next.js Frontend]
-  WebUI -->|2. Parallel Geocode| Geo[Mapbox Geocoding Service]
-  Geo -->|3. Coordinates| ScoreEngine[Siting Suitability Engine]
-  
-  ScoreEngine -->|4. fetch/v1| MireyeAPI[Mireye REST API]
-  MireyeAPI -->|Return 170+ Fields across 7 layers| ScoreEngine
-  
-  ScoreEngine -->|5. Grounded Coordinate Facts| Gemini[Gemini LLM RAG]
-  Gemini -->|6. Synthesize Executive Report| WebUI
-  
-  WebUI -->|7. Q&A Prompt| Copilot[Atlas Siting Copilot]
-  Copilot -->|8. ask/v1| MireyeAsk[Mireye Ask Service]
-  MireyeAsk -->|9. Citable Answer| Copilot --> WebUI
-```
+Normally, land analysts spend weeks going to different government websites (like FEMA and USGS) to download maps and check these details by hand. 
 
-### 1. Structured Siting Index via Mireye `/v1/fetch`
-When candidate coordinates are loaded, Atlas queries the `/v1/fetch` endpoint for precise spatial parameters across Mireye's core layers:
-* **FEMA Flood Zones** (`within_floodplain_polygon`)
-* **USGS Elevation & Aspect** (`slope_degrees`, `aspect_degrees`, `elevation`)
-* **PAD-US Protected Areas** (`intersects_protected_area`, `intersects_conservation_easement`)
-* **National Wetlands Inventory** (`intersects_wetland`)
-* **Overture Transportation & Utilities** (`nearest_major_road_distance_m`, `nearest_transmission_line_distance_m`, `max_transmission_line_voltage_kv_within_radius`)
-
-The parameters are passed into the **Siting Suitability Engine** (`src/services/scoring.ts`) to produce a weighted suitability score (0-100) and risk tier tailored to the campaign's use case.
-
-### 2. Conversational Siting Copilot via Mireye `/v1/ask`
-A floating desktop **Siting Copilot Chat Drawer** is built on top of the `/v1/ask` endpoint. Users can ask natural language questions (e.g., *"How far is the nearest transmission grid line?"* or *"Are there wetland permits required?"*). 
-The query is sent directly to Mireye's coordinate-grounded LLM, generating citable, professional answers referring to source agencies (FEMA, USGS, EPA) with low latency.
+**Atlas AI does this automatically in 4 seconds.** You type in the addresses you want to compare, and the app checks all of these details at once.
 
 ---
 
-## 📈 What We Found: Core Insights & Mireye Strengths
+## How It Works (Step-by-Step)
 
-1. **High Data Integrity & Provenance Tagging**:
-   * Every field returned by `/v1/fetch` contains a `source` and `source_url`. This is a game-changer for B2B applications. Siting decisions require high auditability; presenting a score alongside direct links to government records builds immediate user trust.
-2. **Unified Registry API**:
-   * Instead of managing heavy GIS polygon overlays (Shapefiles/GeoJSONs) locally or running expensive PostGIS servers, Mireye collapses 170+ layers into a simple, single-digit millisecond REST payload.
-3. **Conversational Grounding**:
-   * The `/v1/ask` endpoint is highly accurate at extracting coordinate anomalies without hallucinating, as it grounds the prompt response on the local grid cell values.
+1. **Find the Coordinates**: You enter up to 5 addresses. The app automatically finds their latitude and longitude.
+2. **Fetch Land Details**: The app asks Mireye's database for details about those coordinates (like terrain slope, flood zone, and distance to roads/power lines).
+3. **Calculate the Score**: The app grades each location from 0 to 100 based on what you are building. For example, a solar farm needs flat land and high solar exposure (aspect), while a retail store needs to be close to a main road.
+4. **Write the Report**: The app uses AI to write a summary report for you. Every detail in the report includes a direct link to the official government source for proof.
+5. **Smart Site-Shifting**: If a site is close to a wetland or protected area, the app recommends shifting the coordinates (e.g., "Move 200m North") to bypass the problem and raise your score.
+6. **Chat with Siting Copilot**: You can chat with an AI assistant to ask questions about the site (like *"How close is the highway?"*), and it will reply using live coordinate data.
+
 
 ---
 
-## 🚀 Quickstart & Setup
 
-### 1. Clone & Install Dependencies
+## What We Learned & Feedback for Mireye
+
+We had a great experience building with Mireye. Here are a few things that could make it even better:
+1. **Batch Fetching**: Siting is about comparing locations. Having an API endpoint that can fetch data for multiple coordinates at once would make comparisons much faster.
+2. **Data Freshness**: It would be very helpful to see a \"Last Updated\" timestamp for the land data, so we know how new the records are.
+3. **Obstruction Check**: Proximity (distance) is good, but knowing if there is a barrier (like a river or private property) between the site and the road would prevent building problems.
+
+---
+
+## How to Run the Project
+
+### 1. Install Dependencies
 ```bash
-# Clone the repository
-cd Atlas
 npm install
 ```
 
-### 2. Configure Environment variables
-Create a `.env.local` file in the root directory:
+### 2. Add Your Keys
+Create a `.env.local` file in the root folder and add your keys:
 ```env
-NEXT_PUBLIC_MIREYE_API_TOKEN=your_mireye_api_token
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
+MIREYE_API_TOKEN=your_mireye_api_token
+GROQ_API_KEY=your_groq_api_key
 ```
 
-### 3. Run Local Server
+### 3. Start the App
 ```bash
 npm run dev
 ```
 Open [http://localhost:3001](http://localhost:3001) in your browser.
-
----
-
-## 🌟 Key Features Built
-* **Parallel Site Comparison Matrix**: Real-time side-by-side analysis of up to 5 locations.
-* **Interactive Sandbox Simulator**: Preloaded campaign datasets showing instant geocoding and RAG reports.
-* **Auto-shifting Siting Optimization**: Recommends coordinate perturbation offsets (e.g., "Shift 200m North") to bypass local wetlands and protected easement boundaries, boosting site feasibility scores.

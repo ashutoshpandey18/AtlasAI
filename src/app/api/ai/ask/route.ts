@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server';
 
 const MODEL_NAME = 'llama-3.3-70b-versatile';
 
+const globalForCache = global as unknown as {
+  _aiAskCache?: Map<string, any>;
+};
+
+if (!globalForCache._aiAskCache) {
+  globalForCache._aiAskCache = new Map();
+}
+const cache = globalForCache._aiAskCache;
+
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
@@ -9,6 +18,11 @@ export async function POST(req: Request) {
 
     if (!apiKey) {
       return NextResponse.json({ error: 'Groq API key is not configured on the server.' }, { status: 500 });
+    }
+
+    const cacheKey = prompt.trim().toLowerCase();
+    if (cache.has(cacheKey)) {
+      return NextResponse.json(cache.get(cacheKey));
     }
 
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -34,7 +48,12 @@ export async function POST(req: Request) {
     const resultText = data?.choices?.[0]?.message?.content;
     const answer = resultText ? resultText.trim() : '';
     
-    return NextResponse.json({ answer });
+    const responsePayload = { answer };
+    
+    // Save to cache
+    cache.set(cacheKey, responsePayload);
+
+    return NextResponse.json(responsePayload);
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }

@@ -1,42 +1,140 @@
-# Atlas AI - Land Feasibility & Site Selection Platform
+# Atlas AI
 
-Atlas AI is a tool that helps businesses find the best locations to build projects like solar farms, battery factories, or retail stores. It is powered by the Mireye Coordinate API.
+Atlas AI is an AI Copilot for Location Intelligence built on top of the Mireye API.
 
----
+Instead of exposing hundreds of geospatial attributes, Atlas AI transforms trusted location intelligence into clear, explainable business decisions.
 
-## What Problem Does It Solve?
+It helps organizations evaluate candidate locations for projects such as:
 
-When a company wants to build a new facility, they need to check many details about the land:
-* Is the land flat or steep?
-* Does it flood?
-* Are there wetlands or protected forests?
-* Are there power lines or roads nearby?
-
-Normally, land analysts spend weeks going to different government websites (like FEMA and USGS) to download maps and check these details by hand. 
-
-**Atlas AI does this automatically in 4 seconds.** You type in the addresses you want to compare, and the app checks all of these details at once.
+- Battery factories
+- Warehouses
+- Solar farms
+- Hospitals
+- Retail expansion
+- Manufacturing facilities
 
 ---
 
-## How It Works (Step-by-Step)
+## Why Atlas AI?
 
-1. **Find the Coordinates**: You enter up to 5 addresses. The app automatically finds their latitude and longitude.
-2. **Fetch Land Details**: The app asks Mireye's database for details about those coordinates (like terrain slope, flood zone, and distance to roads/power lines).
-3. **Calculate the Score**: The app grades each location from 0 to 100 based on what you are building. For example, a solar farm needs flat land and high solar exposure (aspect), while a retail store needs to be close to a main road.
-4. **Write the Report**: The app uses AI to write a summary report for you. Every detail in the report includes a direct link to the official government source for proof.
-5. **Smart Site-Shifting**: If a site is close to a wetland or protected area, the app recommends shifting the coordinates (e.g., "Move 200m North") to bypass the problem and raise your score.
-6. **Chat with Siting Copilot**: You can chat with an AI assistant to ask questions about the site (like *"How close is the highway?"*), and it will reply using live coordinate data.
+Traditional GIS tools are built for analysts.
 
+Atlas AI is built for decision makers.
+
+Users shouldn't need to interpret hundreds of geospatial attributes. They should receive clear recommendations, understand the trade-offs, and confidently decide where to build.
+
+This is the core product philosophy behind every decision we made.
 
 ---
 
+## Architecture
 
-## What We Learned & Feedback for Mireye
+```
+User
+  ↓
+Atlas AI (Campaign Workspace)
+  ↓
+Mireye API (Location Intelligence)
+  ↓
+Business Logic (Suitability Scoring)
+  ↓
+LLM (Groq / Llama)
+  ↓
+Recommendation + Report
+```
 
-We had a great experience building with Mireye. Here are a few things that could make it even better:
-1. **Batch Fetching**: Siting is about comparing locations. Having an API endpoint that can fetch data for multiple coordinates at once would make comparisons much faster.
-2. **Data Freshness**: It would be very helpful to see a \"Last Updated\" timestamp for the land data, so we know how new the records are.
-3. **Obstruction Check**: Proximity (distance) is good, but knowing if there is a barrier (like a river or private property) between the site and the road would prevent building problems.
+- **Mireye** provides trusted, provenance-backed location intelligence.
+- **Atlas AI** evaluates that data against project-specific requirements.
+- **The LLM** explains the results in plain language any decision maker can act on.
+
+---
+
+## Why Mireye?
+
+Google Maps helps users navigate.
+
+Large language models help users communicate.
+
+Mireye provides structured, provenance-backed geospatial intelligence.
+
+Atlas AI builds the decision layer on top of that intelligence.
+
+---
+
+## How It Works
+
+```
+User describes what they want to build
+  ↓
+Atlas AI collects project requirements
+  ↓
+Mireye returns structured location intelligence
+  ↓
+Atlas AI evaluates candidate locations
+  ↓
+Business rules calculate a suitability score (0–100)
+  ↓
+LLM generates plain-language explanations
+  ↓
+Executive-ready report with provenance
+```
+
+Key capabilities:
+
+- **Multi-location comparison** — evaluate up to 5 candidate sites side by side.
+- **Siting Copilot** — ask natural language questions about any site and receive fact-grounded answers.
+- **Smart Site-Shifting** — if a site scores low due to a constraint (e.g., a conservation easement), the engine suggests coordinate shifts to bypass it and re-scores automatically.
+- **Provenance surfaced** — every insight is traceable to its source so decision makers can trust and defend the recommendation.
+
+---
+
+## Product Decisions
+
+Several design decisions intentionally shaped Atlas AI.
+
+- Decision-first interface instead of GIS layers.
+- Explainable recommendations instead of opaque scores.
+- Multi-location comparison instead of isolated analysis.
+- AI assists interpretation but never invents location facts.
+- Provenance surfaced wherever available to increase trust.
+
+---
+
+## Demo Experience
+
+The landing page contains a guided simulation that demonstrates the Atlas AI Siting Copilot workflow for first-time visitors.
+
+Launching the workspace switches the application into live mode, where every analysis is powered by real Mireye API responses.
+
+---
+
+## Mireye API Integration
+
+We integrated two core endpoints from the **Mireye Coordinate API**:
+
+### `/v1/fetch` — Siting Suitability Engine
+- **What it does**: Returns structured location intelligence for any coordinate in a single call.
+- **Why it matters**: Powers our scoring engine. The returned data is evaluated against project-specific criteria to calculate a 0–100 suitability index.
+
+### `/v1/ask` — Siting Copilot Chat
+- **What it does**: Answers natural language questions about a location using Mireye-powered location intelligence.
+- **Why it matters**: Powers the interactive AI assistant. Instead of reading raw maps, users ask questions in plain English and get instant, grounded answers.
+
+---
+
+## What We Learned
+
+Building Atlas AI reinforced one important idea:
+
+Location intelligence becomes significantly more valuable when it is translated into decisions rather than presented as raw geospatial data.
+
+That insight shaped every product decision we made throughout the project.
+
+### Feedback for Mireye
+
+1. **Batch Fetching**: Siting is fundamentally about comparing locations. An endpoint that fetches data for multiple coordinates in a single call would make multi-site comparisons significantly faster.
+2. **Data Freshness**: A "Last Updated" timestamp on returned data would help teams understand whether they are working with current records.
+3. **Obstruction Context**: Proximity is useful, but knowing whether a physical barrier (like a river or private land) exists between a site and a nearby asset would prevent real-world planning errors.
 
 ---
 
@@ -48,14 +146,16 @@ npm install
 ```
 
 ### 2. Add Your Keys
-Create a `.env.local` file in the root folder and add your keys:
+Create a `.env.local` file in the root folder and add:
 ```env
 MIREYE_API_TOKEN=your_mireye_api_token
 GROQ_API_KEY=your_groq_api_key
+TURSO_DATABASE_URL=your_turso_db_url
+TURSO_AUTH_TOKEN=your_turso_auth_token
 ```
 
 ### 3. Start the App
 ```bash
 npm run dev
 ```
-Open [http://localhost:3001](http://localhost:3001) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.

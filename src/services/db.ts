@@ -15,7 +15,7 @@ async function initDb() {
   if (!initPromise) {
     initPromise = (async () => {
       try {
-        // Create table if it doesn't exist
+        // Create tables if they don't exist
         await client.execute(`
           CREATE TABLE IF NOT EXISTS campaigns (
             id TEXT PRIMARY KEY,
@@ -23,6 +23,14 @@ async function initDb() {
             useCaseId TEXT NOT NULL,
             requirements TEXT NOT NULL,
             locations TEXT NOT NULL,
+            createdAt TEXT NOT NULL
+          )
+        `);
+
+        await client.execute(`
+          CREATE TABLE IF NOT EXISTS api_cache (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
             createdAt TEXT NOT NULL
           )
         `);
@@ -151,3 +159,35 @@ export async function deleteCampaign(id: string): Promise<void> {
     args: [id]
   });
 }
+
+export async function getCache(key: string): Promise<any | null> {
+  await initDb();
+  try {
+    const res = await client.execute({
+      sql: 'SELECT value FROM api_cache WHERE key = ?',
+      args: [key],
+    });
+    if (res.rows.length === 0) return null;
+    return JSON.parse(String(res.rows[0].value));
+  } catch (err) {
+    console.error('Failed to read from Turso cache:', err);
+    return null;
+  }
+}
+
+export async function setCache(key: string, value: any): Promise<void> {
+  await initDb();
+  try {
+    await client.execute({
+      sql: `INSERT INTO api_cache (key, value, createdAt)
+            VALUES (?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET
+              value = excluded.value,
+              createdAt = excluded.createdAt`,
+      args: [key, JSON.stringify(value), new Date().toISOString()],
+    });
+  } catch (err) {
+    console.error('Failed to write to Turso cache:', err);
+  }
+}
+

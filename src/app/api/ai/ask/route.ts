@@ -1,30 +1,24 @@
 import { NextResponse } from 'next/server';
+import { getCache, setCache } from '@/services/db';
 
 const MODEL_NAME = 'llama-3.3-70b-versatile';
-
-const globalForCache = global as unknown as {
-  _aiAskCache?: Map<string, any>;
-};
-
-if (!globalForCache._aiAskCache) {
-  globalForCache._aiAskCache = new Map();
-}
-const cache = globalForCache._aiAskCache;
 
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
     const apiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
 
-
-
     if (!apiKey) {
       return NextResponse.json({ error: 'Groq API key is not configured on the server.' }, { status: 500 });
     }
 
-    const cacheKey = prompt.trim().toLowerCase();
-    if (cache.has(cacheKey)) {
-      return NextResponse.json(cache.get(cacheKey));
+    const cacheKey = `ai-ask:${prompt.trim().toLowerCase()}`;
+
+    // Read from Turso persistent edge cache
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
+      console.log(`[Turso Cache Hit] AI Ask: ${cacheKey}`);
+      return NextResponse.json(cachedData);
     }
 
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -52,8 +46,8 @@ export async function POST(req: Request) {
     
     const responsePayload = { answer };
     
-    // Save to cache
-    cache.set(cacheKey, responsePayload);
+    // Save to Turso persistent edge cache
+    await setCache(cacheKey, responsePayload);
 
     return NextResponse.json(responsePayload);
   } catch (error: any) {

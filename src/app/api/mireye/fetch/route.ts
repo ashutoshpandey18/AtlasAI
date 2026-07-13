@@ -1,21 +1,10 @@
 import { NextResponse } from 'next/server';
-
-// Global cache variable to persist across hot reloads in development
-const globalForCache = global as unknown as {
-  _mireyeFetchCache?: Map<string, any>;
-};
-
-if (!globalForCache._mireyeFetchCache) {
-  globalForCache._mireyeFetchCache = new Map();
-}
-const cache = globalForCache._mireyeFetchCache;
+import { getCache, setCache } from '@/services/db';
 
 export async function POST(req: Request) {
   try {
     const { lat, lng, fields } = await req.json();
     const token = process.env.MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN;
-
-
 
     if (!token) {
       return NextResponse.json({ error: 'Mireye API token is not configured on the server.' }, { status: 500 });
@@ -25,10 +14,13 @@ export async function POST(req: Request) {
     const roundedLat = typeof lat === 'number' ? lat.toFixed(4) : String(lat);
     const roundedLng = typeof lng === 'number' ? lng.toFixed(4) : String(lng);
     const sortedFields = Array.isArray(fields) ? [...fields].sort().join(',') : '';
-    const cacheKey = `${roundedLat},${roundedLng},${sortedFields}`;
+    const cacheKey = `mireye-fetch:${roundedLat},${roundedLng},${sortedFields}`;
 
-    if (cache.has(cacheKey)) {
-      return NextResponse.json(cache.get(cacheKey));
+    // Read from Turso persistent edge cache
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
+      console.log(`[Turso Cache Hit] Mireye Fetch: ${cacheKey}`);
+      return NextResponse.json(cachedData);
     }
 
     const res = await fetch('https://api.mireye.com/v1/fetch', {
@@ -51,8 +43,8 @@ export async function POST(req: Request) {
 
     const data = await res.json();
     
-    // Save to server-side cache
-    cache.set(cacheKey, data);
+    // Save to Turso persistent edge cache
+    await setCache(cacheKey, data);
 
     return NextResponse.json(data);
   } catch (error: any) {

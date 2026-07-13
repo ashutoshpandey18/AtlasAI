@@ -182,10 +182,12 @@ export default function ProjectsPage() {
                     {ws.locations && ws.locations.length > 0 ? (
                       <div className="flex flex-wrap gap-1.5 mt-3 relative z-10">
                         {ws.locations.slice(0, 2).map((loc, lIdx) => (
-                          <span key={loc.id || lIdx} className="text-[10px] font-semibold text-[var(--text-secondary)] bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-md truncate max-w-[130px] inline-block">
-                            📍 {loc.address.split(',')[0]}
+                          <span key={loc.id || lIdx} className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--text-secondary)] bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-md truncate max-w-[130px]">
+                            <MapPin className="w-2.5 h-2.5 text-[var(--accent)]" />
+                            {loc.address.split(',')[0]}
                           </span>
                         ))}
+
                         {ws.locations.length > 2 && (
                           <span className="text-[10px] font-black text-[var(--accent)] bg-[var(--accent)]/10 border border-[var(--accent)]/20 px-2 py-0.5 rounded-md">
                             +{ws.locations.length - 2} more

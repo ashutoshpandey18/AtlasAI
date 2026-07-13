@@ -41,6 +41,7 @@ export default function WorkspacePage() {
   
   // Database load state to prevent autocomplete race condition
   const [loadedFromDb, setLoadedFromDb] = useState(false);
+  const [hasSavedOnce, setHasSavedOnce] = useState(false);
 
   // 1. Initial Load: Load saved workspace OR parse search queries
   useEffect(() => {
@@ -83,6 +84,7 @@ export default function WorkspacePage() {
             setAnalyzing(false);
           }
           setLoadedFromDb(true);
+          setHasSavedOnce(true);
           return;
         }
       } catch (err) {
@@ -118,6 +120,7 @@ export default function WorkspacePage() {
         }
         setRequirements(defaults);
       }
+      setLoadedFromDb(true);
     }
 
     loadCampaign();
@@ -129,6 +132,39 @@ export default function WorkspacePage() {
       setChatOpen(true);
     }
   }, [searchParams]);
+
+  // 1d. Autosave campaign workspace to DB whenever locations or requirements change
+  useEffect(() => {
+    if (!loadedFromDb || !useCase || !id) return;
+    if (locations.length === 0 && !hasSavedOnce) return;
+
+    const timer = setTimeout(async () => {
+      const wsName = `${useCase.name} Campaign`;
+      const newWs: ProjectWorkspace = {
+        id,
+        name: wsName,
+        useCaseId: useCase.id,
+        requirements,
+        locations,
+        createdAt: new Date().toISOString(),
+      };
+
+      try {
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newWs),
+        });
+        if (res.ok) {
+          setHasSavedOnce(true);
+        }
+      } catch (err) {
+        console.error('Autosave failed:', err);
+      }
+    }, 800); // 800ms debounce
+
+    return () => clearTimeout(timer);
+  }, [locations, requirements, useCase?.id, id, loadedFromDb, hasSavedOnce]);
 
   // 1b. Autocomplete geocoding & analysis if locs are passed in the query parameters
   useEffect(() => {

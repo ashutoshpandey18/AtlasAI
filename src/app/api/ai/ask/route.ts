@@ -14,7 +14,8 @@ const cache = globalForCache._aiAskCache;
 export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
+
 
 
     if (!apiKey) {

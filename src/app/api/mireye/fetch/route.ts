@@ -13,7 +13,8 @@ const cache = globalForCache._mireyeFetchCache;
 export async function POST(req: Request) {
   try {
     const { lat, lng, fields } = await req.json();
-    const token = process.env.MIREYE_API_TOKEN;
+    const token = process.env.MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN;
+
 
 
     if (!token) {

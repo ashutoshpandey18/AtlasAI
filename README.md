@@ -34,7 +34,7 @@ It helps organizations evaluate candidate locations for projects such as:
 **Analysis**
 - Compare up to 5 candidate sites in a single campaign
 - Each location receives a 0–100 suitability score based on project-specific criteria
-- Site-Shifting engine suggests coordinate adjustments when a constraint lowers a score, then re-scores automatically
+- Site-Shifting engine suggests optimized coordinate adjustments and estimates potential suitability score boosts when a constraint lowers a score
 
 **Copilot**
 - Ask natural language questions about any site
@@ -129,7 +129,7 @@ Key capabilities:
 
 - **Multi-location comparison** — evaluate up to 5 candidate sites side by side.
 - **Siting Copilot** — ask natural language questions about any site and receive fact-grounded answers.
-- **Smart Site-Shifting** — if a site scores low due to a constraint (e.g., a conservation easement), the engine suggests coordinate shifts to bypass it and re-scores automatically.
+- **Smart Site-Shifting** — if a site scores low due to a constraint (e.g., a flood zone or steep terrain), the engine calculates and suggests nearby geographical shifts (e.g., "Move 350m North-West") with estimated suitability improvements.
 - **Provenance surfaced** — sources are cited in the campaign's Citations section so decision makers can trace and defend the recommendation.
 
 ---

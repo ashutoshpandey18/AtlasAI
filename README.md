@@ -147,11 +147,18 @@ Several design decisions intentionally shaped Atlas AI.
 
 ---
 
-## Demo Experience
+The landing page features two guided simulations to showcase Atlas AI's capabilities instantly before launching a live campaign:
 
-The landing page contains a guided simulation that demonstrates the Atlas AI Siting Copilot workflow for first-time visitors.
+### 1. Phone Chat Simulator (AI Copilot Preview)
+* **What it does**: Demonstrates how a project team can ask plain-English questions about terrain, road access, and site-shifting to bypass conservation easements.
+* **Why it uses demo data**: It provides an immediate visual walk-through of the Siting Copilot conversational interface without requiring coordinate inputs first.
 
-Launching the workspace switches the application into live mode, where every analysis is powered by real Mireye API responses.
+### 2. AI Feasibility Report Builder (Executive Report Preview)
+* **What it does**: Simulates generating an executive feasibility report where users can select a project type (e.g., Battery Factory) and customize parameter weights (Terrain, Grid, Flood).
+* **Why it uses demo data**: It showcases the custom-weighted scoring logic and the format of the final executive report instantly.
+
+Launching the **Active Workspace** switches the application into live mode, where every site analysis and Copilot query is dynamically powered by real-time geocoding and live Mireye API responses.
+
 
 ---
 

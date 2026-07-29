@@ -20,7 +20,7 @@ export default function InteractiveMap({ results }: Props) {
 
   return (
     <div className="space-y-6 mt-6">
-      
+
       {/* HUD Header explanation */}
       <div className="bg-[var(--bg-soft)] border border-[var(--border)] p-4 rounded-xl flex items-center gap-3">
         <Compass className="w-5 h-5 text-[var(--accent)] flex-shrink-0 animate-pulse" />
@@ -33,13 +33,10 @@ export default function InteractiveMap({ results }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 font-sans">
         {valid.map((r) => {
           const isSelected = r.location.id === selectedId;
-          
+
           // Get values
-          const slope = (r.data?.fields['aspect_degrees']?.value !== undefined
-            ? r.data.fields['slope_degrees']?.value as number
-            : r.data?.fields['slope_degrees']?.value as number) || 0;
-            
-          const elevation = (r.data?.fields['elevation']?.value as number) || 0;
+          const slope = (r.data?.fields['slope_degrees']?.value as number) ?? 0;
+          const elevation = (r.data?.fields['elevation']?.value as number) ?? 0;
           const inFlood = r.data?.fields['within_floodplain_polygon']?.value === true;
           const gridDist = (r.data?.fields['nearest_transmission_line_distance_m']?.value as number) || 0;
           const gridKm = (gridDist / 1000).toFixed(1);
@@ -48,27 +45,24 @@ export default function InteractiveMap({ results }: Props) {
             <div
               key={r.location.id}
               onClick={() => setSelectedId(r.location.id)}
-              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between h-[310px] ${
-                isSelected
+              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between h-[310px] ${isSelected
                   ? 'border-[var(--accent)] bg-[var(--surface)] shadow-md ring-1 ring-[var(--accent)]/30'
                   : 'border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-focus)]'
-              }`}
+                }`}
             >
               {/* Card Header */}
               <div>
                 <div className="flex items-center justify-between">
-                  <span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${
-                    isSelected ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-[var(--bg-soft)] text-[var(--text-secondary)]'
-                  }`}>
+                  <span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ${isSelected ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-[var(--bg-soft)] text-[var(--text-secondary)]'
+                    }`}>
                     Site {r.location.label}
                   </span>
-                  
+
                   {/* Big Suitability Score Ring */}
                   <div className="flex items-center gap-1.5">
                     <span className="text-[11.5px] text-[var(--text-secondary)] font-medium">Score:</span>
-                    <span className={`text-[15px] font-extrabold px-2 py-0.5 rounded ${
-                      r.totalScore >= 85 ? 'bg-green-100 text-[var(--accent)]' : 'bg-amber-100 text-[#9B763A]'
-                    }`}>
+                    <span className={`text-[15px] font-extrabold px-2 py-0.5 rounded ${r.totalScore >= 85 ? 'bg-green-100 text-[var(--accent)]' : 'bg-amber-100 text-[#9B763A]'
+                      }`}>
                       {r.totalScore}/100
                     </span>
                   </div>
@@ -84,7 +78,7 @@ export default function InteractiveMap({ results }: Props) {
 
               {/* Graphical Profile illustration inside card */}
               <div className="h-[100px] border border-[var(--border)] rounded-xl my-4 bg-[var(--bg)]/40 relative flex items-center justify-center overflow-hidden">
-                
+
                 {/* SVG Visual Profile */}
                 <svg width="100%" height="100%" viewBox="0 0 200 80" className="absolute inset-0">
                   {/* Gradients */}

@@ -10,7 +10,9 @@ import { geocodeAddress } from '@/services/geocoder';
 import { askGemini } from '@/services/gemini';
 import InteractiveMap from '@/components/InteractiveMap';
 import CopilotChat from '@/components/CopilotChat';
-import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield, FolderKanban } from 'lucide-react';
+import ParcelAssemblyCard from '@/components/ParcelAssemblyCard';
+import GisIntelligencePanel from '@/components/GisIntelligencePanel';
+import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield, FolderKanban, AlertTriangle } from 'lucide-react';
 
 import Link from 'next/link';
 
@@ -779,6 +781,12 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                     )}
                   </div>
 
+                  {/* GIS Intelligence Panel — Centroid + Grid Capacity */}
+                  <GisIntelligencePanel
+                    result={winner}
+                    projectMw={typeof requirements.power_mw === 'string' ? parseInt(requirements.power_mw) || 100 : 100}
+                  />
+
                   {/* SVG Vector Map */}
                   <div className="space-y-3">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] block">
@@ -922,11 +930,20 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                     </div>
                   )}
 
+                  {/* Parcel Assembly Estimator Card */}
+                  {winner.assemblyResult && (
+                    <ParcelAssemblyCard
+                      assembly={winner.assemblyResult}
+                      siteLabel={winner.location.label}
+                      address={winner.location.address}
+                    />
+                  )}
+
                   {/* Side-by-side Matrix Comparison grid */}
                   {sorted.length > 1 && (
                     <div>
                       <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-3">
-                        Multi-site Comparison Grid
+                        Multi-site Comparison Grid & GIS Layer Audit
                       </span>
                       <div className="border border-[var(--border)] rounded-[24px] overflow-hidden shadow-sm">
                         <table className="w-full border-collapse text-[12.5px] text-left">
@@ -951,13 +968,20 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                             </tr>
                             {winner.fieldScores.map((fs) => (
                               <tr key={fs.fieldName} className="border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--bg-soft)]/20 transition-colors">
-                                <td className="px-4 py-3 text-[var(--text-secondary)] font-medium">{fs.displayName}</td>
+                                <td className="px-4 py-3 text-[var(--text-secondary)] font-medium">
+                                  {fs.displayName}
+                                  {fs.routingPremiumPct && fs.routingPremiumPct > 100 && (
+                                    <span className="ml-2 inline-flex items-center gap-1 text-[9px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded">
+                                      ⚠ {(fs.routingPremiumPct / 100).toFixed(1)}× Routing Multiplier
+                                    </span>
+                                  )}
+                                </td>
                                 {sorted.map((r) => {
                                   const cellFs = r.fieldScores.find((s) => s.fieldName === fs.fieldName);
                                   const cellScore = cellFs?.score ?? 0;
                                   return (
                                     <td key={r.location.id} className="px-4 py-3 font-bold text-[var(--text-primary)]">
-                                      {cellScore}
+                                      <span className={getScoreColor(cellScore)}>{cellScore}</span>
                                     </td>
                                   );
                                 })}
@@ -969,34 +993,62 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                     </div>
                   )}
 
-                  {/* Provenance citations */}
+                  {/* Provenance citations & Jurisdiction Risk Audit */}
                   <div className="border-t border-[var(--border)] pt-7 mt-3">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-1.5">
-                      Campaign Citations & Provenance
+                      Campaign Citations & Jurisdiction Risk Audit
                     </span>
                     <p className="text-[12px] text-[var(--text-secondary)] font-medium mb-5">
-                      All data layers fetched via Mireye and citation-mapped to verified federal primary endpoints.
+                      All data layers fetched via Mireye and citation-mapped to verified federal primary endpoints with automated GIS seam and vintage risk auditing.
                     </p>
                     <div className="grid grid-cols-1 gap-3.5 bg-[var(--surface)] border border-[var(--border)] rounded-[24px] p-5.5 shadow-sm">
                       {winner.fieldScores.map((fs) => {
                         if (!fs.source) return null;
                         return (
-                          <div key={fs.fieldName} className="flex justify-between items-center text-[12px] flex-wrap gap-2.5">
-                            <span className="text-[var(--text-primary)] font-bold flex items-center gap-1.5">
-                              <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
-                              {fs.displayName} Source ({fs.source})
-                            </span>
-                            {fs.sourceUrl ? (
-                              <a
-                                href={fs.sourceUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline font-semibold max-w-[280px] truncate"
-                              >
-                                {fs.sourceUrl}
-                              </a>
-                            ) : (
-                              <span className="text-[var(--text-muted)] font-medium">Source URL not resolved</span>
+                          <div key={fs.fieldName} className="flex flex-col gap-1 text-[12px] border-b border-[var(--border)] last:border-b-0 pb-3 last:pb-0">
+                            <div className="flex justify-between items-center flex-wrap gap-2.5">
+                              <span className="text-[var(--text-primary)] font-bold flex items-center gap-1.5">
+                                <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
+                                {fs.displayName} Source ({fs.source})
+                              </span>
+                              {fs.sourceUrl ? (
+                                <a
+                                  href={fs.sourceUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-500 hover:underline font-semibold max-w-[280px] truncate"
+                                >
+                                  {fs.sourceUrl}
+                                </a>
+                              ) : (
+                                <span className="text-[var(--text-muted)] font-medium">Source URL not resolved</span>
+                              )}
+                            </div>
+
+                            {/* Jurisdiction Risk Banner */}
+                            {fs.jurisdictionRisk && (
+                              <div className="mt-1 flex items-start gap-2 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl">
+                                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="font-bold uppercase tracking-wider text-[9.5px] block text-amber-900">
+                                    Jurisdiction Risk Notice ({fs.jurisdictionRisk.rtoRegion} Region)
+                                  </span>
+                                  {fs.jurisdictionRisk.note}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Routing Barrier Warning Banner */}
+                            {fs.routingBarriers && fs.routingBarriers.length > 0 && (
+                              <div className="mt-1 flex items-start gap-2 text-[11px] font-semibold text-blue-800 bg-blue-50 border border-blue-200 p-2.5 rounded-xl">
+                                <ShieldAlert className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="font-bold uppercase tracking-wider text-[9.5px] block text-blue-900">
+                                    Routing Barrier Adjustment ({fs.routingPremiumPct}% Corridor Multiplier)
+                                  </span>
+                                  Physical straight-line distance adjusted for routing barriers: {fs.routingBarriers.join(', ')}.
+                                </div>
+                              </div>
                             )}
                           </div>
                         );

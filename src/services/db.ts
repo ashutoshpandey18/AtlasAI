@@ -145,9 +145,9 @@ export async function saveCampaign(workspace: ProjectWorkspace): Promise<void> {
       workspace.id,
       workspace.name,
       workspace.useCaseId,
-      JSON.stringify(workspace.requirements),
-      JSON.stringify(workspace.locations),
-      workspace.createdAt
+      JSON.stringify(workspace.requirements ?? {}),
+      JSON.stringify(workspace.locations ?? []),
+      workspace.createdAt ?? new Date().toISOString()
     ]
   });
 }

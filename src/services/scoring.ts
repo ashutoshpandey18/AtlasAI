@@ -1,6 +1,7 @@
 import type { MireyeFetchResponse, MireyeFieldValue } from '../types/mireye';
-import type { FieldScore, LocationEntry, LocationResult, AlternativeSite } from '../types/atlas';
+import type { FieldScore, LocationEntry, LocationResult, AlternativeSite, AssemblyResult } from '../types/atlas';
 import type { UseCase } from '../types/atlas';
+import { evaluateJurisdictionRisk } from './jurisdictionRisk';
 
 function val<T>(fields: Record<string, MireyeFieldValue>, key: string): T | null {
   const v = fields[key]?.value;
@@ -13,6 +14,126 @@ function meta(fields: Record<string, MireyeFieldValue>, key: string) {
     sourceUrl: fields[key]?.source_url ?? '',
     confidence: fields[key]?.confidence ?? 'low',
     unit: fields[key]?.unit ?? null,
+  };
+}
+
+// ── Routing Cost Premium Helper ──────────────────────────────────────────────
+
+function computeRoutingPremium(
+  meters: number | null,
+  fields: Record<string, MireyeFieldValue>
+): { multiplier: number; routingPremiumPct: number; barriers: string[]; adjustedMeters: number | null } {
+  if (meters === null) {
+    return { multiplier: 1.0, routingPremiumPct: 100, barriers: [], adjustedMeters: null };
+  }
+
+  let barrierMultiplier = 0;
+  const barriers: string[] = [];
+
+  if (val<boolean>(fields, 'within_floodplain_polygon') === true) {
+    barrierMultiplier += 0.35;
+    barriers.push('FEMA Floodplain');
+  }
+  if (val<boolean>(fields, 'intersects_wetland') === true) {
+    barrierMultiplier += 0.45;
+    barriers.push('USFWS Wetland Complex');
+  }
+  if (val<boolean>(fields, 'intersects_protected_area') === true) {
+    barrierMultiplier += 0.70;
+    barriers.push('PAD-US Protected Area');
+  }
+  if (val<boolean>(fields, 'intersects_conservation_easement') === true) {
+    barrierMultiplier += 0.50;
+    barriers.push('Conservation Easement');
+  }
+
+  const slope = val<number>(fields, 'slope_degrees');
+  if (slope !== null && slope > 7) {
+    barrierMultiplier += 0.25;
+    barriers.push(`Steep Slope (${slope.toFixed(1)}°)`);
+  }
+
+  const multiplier = Number((1.0 + barrierMultiplier).toFixed(2));
+  const routingPremiumPct = Math.round(multiplier * 100);
+  const adjustedMeters = Math.round(meters * multiplier);
+
+  return { multiplier, routingPremiumPct, barriers, adjustedMeters };
+}
+
+// ── Parcel Assembly Estimator ────────────────────────────────────────────────
+
+function calculateParcelAssembly(
+  useCaseId: string,
+  fields: Record<string, MireyeFieldValue>
+): AssemblyResult | undefined {
+  const largeScaleUseCases: Record<string, number> = {
+    'solar-farm': 500,
+    'battery-factory': 300,
+    'wind-farm': 1200,
+    'warehouse': 120,
+    'manufacturing': 150,
+  };
+
+  const targetAcres = largeScaleUseCases[useCaseId];
+  if (!targetAcres) return undefined;
+
+  let penalty = 0;
+  const keyBarriers: string[] = [];
+
+  if (val<boolean>(fields, 'within_floodplain_polygon') === true) {
+    penalty += 25;
+    keyBarriers.push('FEMA Floodplain Encroachment');
+  }
+  if (val<boolean>(fields, 'intersects_wetland') === true) {
+    penalty += 20;
+    keyBarriers.push('USFWS Wetland Disqualification');
+  }
+  if (val<boolean>(fields, 'intersects_protected_area') === true) {
+    penalty += 35;
+    keyBarriers.push('PAD-US Protected Area Boundary');
+  }
+  if (val<boolean>(fields, 'intersects_conservation_easement') === true) {
+    penalty += 30;
+    keyBarriers.push('Conservation Easement Encumbrance');
+  }
+
+  const slope = val<number>(fields, 'slope_degrees');
+  if (slope !== null && slope > 7) {
+    penalty += 15;
+    keyBarriers.push(`Non-uniform Grading Slope (${slope.toFixed(1)}°)`);
+  }
+
+  const canopy = val<number>(fields, 'tree_canopy_pct');
+  if (canopy !== null && canopy > 35) {
+    penalty += 10;
+    keyBarriers.push(`Dense Forest Canopy (${canopy.toFixed(0)}%)`);
+  }
+
+  const feasibilityScore = Math.max(12, 100 - penalty);
+  const assemblableAcres = Math.round(targetAcres * (feasibilityScore / 100));
+
+  const minOwners = Math.max(2, Math.round(targetAcres / 45));
+  const maxOwners = Math.max(5, Math.round(targetAcres / 20));
+
+  let dominantConstraint = 'No Major Topological Barriers Detected';
+  if (keyBarriers.length > 0) {
+    dominantConstraint = keyBarriers[0];
+  }
+
+  let contiguityRating: AssemblyResult['contiguityRating'] = 'High';
+  if (feasibilityScore < 40) contiguityRating = 'Severely Fragmented';
+  else if (feasibilityScore < 60) contiguityRating = 'Low';
+  else if (feasibilityScore < 80) contiguityRating = 'Moderate';
+
+  return {
+    feasibilityScore,
+    estimatedOwnersMin: minOwners,
+    estimatedOwnersMax: maxOwners,
+    targetAcres,
+    assemblableAcres,
+    dominantConstraint,
+    contiguityRating,
+    keyBarriers,
   };
 }
 
@@ -211,7 +332,13 @@ export function scoreLocation(
   useCase: UseCase,
   data: MireyeFetchResponse,
   requirements: Record<string, string | boolean>
-): { fieldScores: FieldScore[]; totalScore: number; riskLevel: 'low' | 'medium' | 'high' | 'critical'; alternatives: AlternativeSite[] } {
+): {
+  fieldScores: FieldScore[];
+  totalScore: number;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  alternatives: AlternativeSite[];
+  assemblyResult?: AssemblyResult;
+} {
   const f = data.fields;
   const failures = new Set(data.partial_failures.map((p) => p.field));
   const weights = useCase.scoringWeights;
@@ -227,19 +354,41 @@ export function scoreLocation(
     const m = meta(f, fieldName);
     const rawValue = val<string | number | boolean>(f, fieldName);
     const failed = failures.has(fieldName);
+
+    let finalScore = scored.score;
+    let interpretation = scored.interpretation;
+    let routingPremiumPct: number | undefined = undefined;
+    let routingBarriers: string[] | undefined = undefined;
+
+    // Check for distance routing barriers
+    if (typeof rawValue === 'number' && fieldName.includes('distance')) {
+      const routing = computeRoutingPremium(rawValue, f);
+      if (routing.multiplier > 1.0) {
+        routingPremiumPct = routing.routingPremiumPct;
+        routingBarriers = routing.barriers;
+        finalScore = Math.max(5, Math.round(scored.score / routing.multiplier));
+        interpretation += ` — Routed barrier multiplier ${routing.multiplier}× (${routing.barriers.join(', ')})`;
+      }
+    }
+
+    const jurisdictionRisk = evaluateJurisdictionRisk(data.lat, data.lng, fieldName, f);
+
     fieldScores.push({
       fieldName,
       displayName,
-      score: scored.score,
+      score: finalScore,
       rawValue,
       unit: m.unit,
       interpretation: failed
-        ? `Data unavailable from ${m.source || 'source'} — ${scored.interpretation}`
-        : scored.interpretation,
+        ? `Data unavailable from ${m.source || 'source'} — ${interpretation}`
+        : interpretation,
       source: m.source,
       sourceUrl: m.sourceUrl,
       confidence: failed ? 'low' : m.confidence,
       weight,
+      routingPremiumPct,
+      routingBarriers,
+      jurisdictionRisk,
     });
   }
 
@@ -326,12 +475,13 @@ export function scoreLocation(
 
   const riskLevel: LocationResult['riskLevel'] =
     totalScore >= 75 ? 'low' :
-    totalScore >= 55 ? 'medium' :
-    totalScore >= 35 ? 'high' : 'critical';
+      totalScore >= 55 ? 'medium' :
+        totalScore >= 35 ? 'high' : 'critical';
 
   const alternatives = generateAlternatives(data.lat, data.lng, fieldScores);
+  const assemblyResult = calculateParcelAssembly(useCase.id, f);
 
-  return { fieldScores, totalScore, riskLevel, alternatives };
+  return { fieldScores, totalScore, riskLevel, alternatives, assemblyResult };
 }
 
 export function buildResults(
@@ -344,6 +494,6 @@ export function buildResults(
   if (!data || error) {
     return { location, data: null, totalScore: 0, fieldScores: [], riskLevel: 'critical', error: error ?? 'No data', alternatives: [] };
   }
-  const { fieldScores, totalScore, riskLevel, alternatives } = scoreLocation(useCase, data, requirements);
-  return { location, data, totalScore, fieldScores, riskLevel, error: null, alternatives };
+  const { fieldScores, totalScore, riskLevel, alternatives, assemblyResult } = scoreLocation(useCase, data, requirements);
+  return { location, data, totalScore, fieldScores, riskLevel, error: null, alternatives, assemblyResult };
 }

@@ -36,6 +36,15 @@ It helps organizations evaluate candidate locations for projects such as:
 - Each location receives a 0–100 suitability score based on project-specific criteria
 - Site-Shifting engine suggests optimized coordinate adjustments and estimates potential suitability score boosts when a constraint lowers a score
 
+**GIS & Pre-Flight Intelligence**
+- Centroid Misalignment Detector audits geocode confidence and detects road-centerline snaps before scoring to prevent field poisoning
+- Grid Capacity Engine calculates barrier path multipliers (1.4×–1.9× for floodplains, wetlands, protected areas), FERC-calibrated interconnection capex ($USD), and RTO queue risks
+- Jurisdiction & Seam Detector flags cross-RTO boundary seam risks (PJM/MISO, WECC/SPP, ERCOT) and FEMA flood panel vintage staleness
+
+**RTO Regulatory RAG**
+- Embedded knowledge base of tariff rules, study costs, and queue timelines across all 7 US RTO/ISO regions
+- Semantic vector retrieval powered by Gemini embeddings (`gemini-embedding-001`) and Groq (`llama-3.3-70b`) augmented generation
+
 **Copilot**
 - Ask natural language questions about any site
 - The Copilot responds with answers grounded in live Mireye location intelligence
@@ -89,21 +98,24 @@ User
   ↓
 Atlas AI (Campaign Workspace)
   ↓
+Pre-Flight Audit & Pre-Screening
+(Centroid Validator & Seam Risk Detector)
+  ↓
 Mireye API
 (Trusted Location Intelligence)
   ↓
-Business Rules
-(Project Evaluation)
+Business Rules & Grid Capacity Engine
+(Interconnection Capex & Barrier Multipliers)
   ↓
-LLM — Groq
-(Explanation Layer)
+Regulatory RAG & LLM — Groq / Gemini
+(RTO Tariff Briefing & Explanation Layer)
   ↓
 Recommendation
 ```
 
 - **Mireye** provides trusted, provenance-backed location intelligence.
-- **Business Rules** evaluate that data against project-specific requirements deterministically.
-- **The LLM** explains the results in plain language any decision maker can act on.
+- **Pre-Flight & Grid Engines** audit geocode precision, compute corridor barrier penalties, and estimate capex.
+- **Regulatory RAG & LLM** retrieve RTO tariff rules and explain results in plain language any decision maker can act on.
 
 ---
 
@@ -116,11 +128,11 @@ Atlas AI collects project requirements
   ↓
 Mireye returns structured location intelligence
   ↓
-Atlas AI evaluates candidate locations
+Centroid audit & grid capacity engine evaluate candidate locations
   ↓
-Business rules calculate a suitability score (0–100)
+Business rules calculate a suitability score (0–100) & capex
   ↓
-LLM generates plain-language explanations
+RAG & LLM generate plain-language explanations and regulatory briefing
   ↓
 Executive-ready report with provenance
 ```
@@ -130,6 +142,7 @@ Key capabilities:
 - **Multi-location comparison** — evaluate up to 5 candidate sites side by side.
 - **Siting Copilot** — ask natural language questions about any site and receive fact-grounded answers.
 - **Smart Site-Shifting** — if a site scores low due to a constraint (e.g., a flood zone or steep terrain), the engine calculates and suggests nearby geographical shifts (e.g., "Move 350m North-West") with estimated suitability improvements.
+- **GIS Intelligence Panel** — surfaces centroid validation confidence, corridor barrier cost multipliers, estimated interconnection capex, and RTO queue risks directly in the workspace.
 - **Provenance surfaced** — sources are cited in the campaign's Citations section so decision makers can trace and defend the recommendation.
 
 ---
@@ -139,6 +152,8 @@ Key capabilities:
 Several design decisions intentionally shaped Atlas AI.
 
 - Decision-first interface instead of GIS layers.
+- Pre-flight data auditing to prevent geocode poisoning.
+- Corridor barrier modeling over simple straight-line distance.
 - Explainable recommendations instead of opaque scores.
 - Multi-location comparison instead of isolated analysis.
 - AI assists interpretation but never invents location facts.
@@ -157,14 +172,14 @@ The landing page features two guided simulations to showcase Atlas AI's capabili
 * **What it does**: Simulates generating an executive feasibility report where users can select a project type (e.g., Battery Factory) and customize parameter weights (Terrain, Grid, Flood).
 * **Why it uses demo data**: It showcases the custom-weighted scoring logic and the format of the final executive report instantly.
 
-Launching the **Active Workspace** switches the application into live mode, where every site analysis and Copilot query is dynamically powered by real-time geocoding and live Mireye API responses.
+Launching the **Active Workspace** switches the application into live mode, where every site analysis and Copilot query is dynamically powered by real-time geocoding, live Mireye API responses, and RTO regulatory intelligence retrieval.
 
 
 ---
 
 ## Mireye API Integration
 
-We integrated two core endpoints from the **Mireye Coordinate API**:
+We integrated core endpoints from the **Mireye Coordinate API**:
 
 ### `/v1/fetch` — Decision Intelligence Engine
 - **What it does**: Returns structured location intelligence for any coordinate in a single call.
@@ -173,6 +188,10 @@ We integrated two core endpoints from the **Mireye Coordinate API**:
 ### `/v1/ask` — Siting Copilot Chat
 - **What it does**: Answers natural language questions about a location using Mireye-powered location intelligence.
 - **Why it matters**: Powers the interactive AI assistant. Instead of reading raw maps, users ask questions in plain English and get instant, grounded answers.
+
+### `/v1/geocode` — Coordinate Resolution
+- **What it does**: Resolves street addresses to latitude and longitude coordinates.
+- **Why it matters**: Powers the location input bar in campaigns, audited by Atlas's pre-flight centroid validator.
 
 ---
 
@@ -186,9 +205,9 @@ That insight shaped every product decision we made throughout the project.
 
 ### Feedback for Mireye
 
-1. **Batch Fetching**: Siting is fundamentally about comparing locations. An endpoint that fetches data for multiple coordinates in a single call would make multi-site comparisons significantly faster.
-2. **Data Freshness**: A "Last Updated" timestamp on returned data would help teams understand whether they are working with current records.
-3. **Obstruction Context**: Proximity is useful, but knowing whether a physical barrier (like a river or private land) exists between a site and a nearby asset would prevent real-world planning errors.
+1. **`geocode_match_type` Metadata**: Returning precision metadata (`rooftop` vs `parcel_centroid` vs `city_centroid`) alongside `confidence_score` in `/v1/geocode` to prevent ambiguous city-name inputs from silently poisoning downstream spatial calculations.
+2. **Polygon-Level Queries (`/v1/fetch/polygon`)**: Accepting GeoJSON polygons to compute area statistics (`% area in flood`, `max_slope`, `buildable_acres`) across parcel boundaries rather than sampling a single centroid point.
+3. **Corridor Path Barriers**: Factoring environmental barriers (PAD-US protected areas, wetlands) directly into transmission line distance queries rather than returning Euclidean air-distance.
 
 ---
 
@@ -204,6 +223,7 @@ Create a `.env.local` file in the root folder and add:
 ```env
 MIREYE_API_TOKEN=your_mireye_api_token
 GROQ_API_KEY=your_groq_api_key
+GEMINI_API_KEY=your_gemini_api_key
 TURSO_DATABASE_URL=your_turso_db_url
 TURSO_AUTH_TOKEN=your_turso_auth_token
 ```
@@ -214,7 +234,23 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 4. Run Test Suite
+```bash
+npm run test:run
+```
+
 ---
+
+## Clearing the Floor: What Makes Atlas AI Different?
+
+While traditional projects focus on single-use site selection (e.g., just data centers), Atlas AI was designed to be a flexible platform solving three unsolved industry challenges:
+
+* **Multi-Industry Adaptability**: Instead of hardcoding one facility type, Atlas AI dynamically reweights its scoring algorithms across eight diverse industries (Battery Factories, Solar, Wind, EV Charging, Retail, etc.) using custom business rules.
+* **Proactive Site-Shifting**: Traditional GIS tools only tell you when a site is unsuitable. Atlas AI's engine analyzes local terrain and flood boundaries to calculate and suggest optimized coordinate shifts (e.g., "Move 350m NW") to bypass constraints.
+* **C-Suite Explainability**: Analysts love layers, but decision-makers need answers. Atlas AI translates raw spatial attributes into a plain-English executive summary with direct provenance links, eliminating the need to decode complex heatmaps.
+
+---
+
 
 ## Vision
 

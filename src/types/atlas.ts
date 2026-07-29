@@ -39,6 +39,14 @@ export interface LocationEntry {
   error: string | null;
 }
 
+export interface JurisdictionRisk {
+  rtoRegion: string;
+  lineRtoRegion?: string;
+  crossRtoBoundary: boolean;
+  dfirmVintage?: string;
+  note: string;
+}
+
 export interface FieldScore {
   fieldName: string;
   displayName: string;
@@ -50,6 +58,9 @@ export interface FieldScore {
   sourceUrl: string;
   confidence: string;
   weight: number;
+  routingPremiumPct?: number;
+  routingBarriers?: string[];
+  jurisdictionRisk?: JurisdictionRisk;
 }
 
 export interface AlternativeSite {
@@ -62,6 +73,17 @@ export interface AlternativeSite {
   estimatedScoreBoost: number;
 }
 
+export interface AssemblyResult {
+  feasibilityScore: number;
+  estimatedOwnersMin: number;
+  estimatedOwnersMax: number;
+  targetAcres: number;
+  assemblableAcres: number;
+  dominantConstraint: string;
+  contiguityRating: 'High' | 'Moderate' | 'Low' | 'Severely Fragmented';
+  keyBarriers: string[];
+}
+
 export interface LocationResult {
   location: LocationEntry;
   data: MireyeFetchResponse | null;
@@ -70,6 +92,7 @@ export interface LocationResult {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   error: string | null;
   alternatives: AlternativeSite[];
+  assemblyResult?: AssemblyResult;
 }
 
 export interface ProjectWorkspace {

@@ -7,6 +7,7 @@ import { validateCentroid } from '@/services/centroidValidator';
 import { analyzeGridCapacity } from '@/services/gridCapacityEngine';
 import RegulatoryIntelligenceCard from './RegulatoryIntelligenceCard';
 import CorridorVisualizer from './CorridorVisualizer';
+import BuildableAreaCard from './BuildableAreaCard';
 
 interface Props {
   result: LocationResult;
@@ -262,6 +263,13 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
           </div>
         </div>
       </div>
+
+      {/* Physical Agent Buildable Area Mask Harness */}
+      <BuildableAreaCard
+        data={data}
+        targetRequiredAcres={projectMw <= 50 ? 50 : 100}
+        totalParcelAcres={100}
+      />
 
       {/* Interactive Corridor Cable Path Visualizer */}
       <CorridorVisualizer

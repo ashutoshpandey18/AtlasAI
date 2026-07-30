@@ -40,11 +40,98 @@ export default function CopilotChat({ lat, lng, useCaseName, isOpen, onClose, ac
         sender: 'ai',
         senderName: 'Siting Copilot',
         senderAvatar: botAvatar,
-        text: `Hello, I'm your Atlas Siting Copilot. I can query Mireye to answer site-specific environmental questions about this location (${lat.toFixed(4)}, ${lng.toFixed(4)}) for a ${useCaseName} installation. Try asking "Are there active wetlands nearby?" or "How close is the nearest highway?"`,
+        text: `Hello, I'm your Atlas Siting Copilot. I have full access to this site's analysis — scores, buildable area, grid capacity, hazards, and more. Ask me anything in plain language. Try "Is this site safe to build on?", "Why did it score this low?", or "What are the biggest problems here?"`,
         time: timeStr
       }
     ]);
   }, [lat, lng, useCaseName]);
+
+  /** Build a rich, structured context digest covering all analysis layers */
+  function buildSiteContext(): string {
+    if (!activeLocationData) {
+      return `Coordinates: (${lat.toFixed(4)}, ${lng.toFixed(4)})\nNo analysis data loaded yet.`;
+    }
+
+    const loc = activeLocationData;
+    const lines: string[] = [];
+
+    // ── 1. Site identity ────────────────────────────────────────────────────
+    lines.push(`=== SITE IDENTITY ===`);
+    lines.push(`Address: "${loc.location.address}"`);
+    lines.push(`Coordinates: (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+    lines.push(`Use Case: ${useCaseName}`);
+    lines.push('');
+
+    // ── 2. Overall verdict ──────────────────────────────────────────────────
+    lines.push(`=== OVERALL VERDICT ===`);
+    lines.push(`Siting Suitability Score: ${loc.totalScore}/100`);
+    lines.push(`Risk Level: ${loc.riskLevel.toUpperCase()}`);
+    const verdictMap: Record<string, string> = {
+      low: 'Site is in good condition — low environmental and infrastructure risk.',
+      medium: 'Site has moderate constraints — some issues need investigation.',
+      high: 'Site has significant problems — major constraints flagged.',
+      critical: 'Site is critically constrained — not recommended for development.',
+    };
+    lines.push(`Plain-English Summary: ${verdictMap[loc.riskLevel] ?? 'Unknown risk.'}`);
+    lines.push('');
+
+    // ── 3. Field-level facts ────────────────────────────────────────────────
+    lines.push(`=== FIELD-BY-FIELD ANALYSIS (from Mireye federal data) ===`);
+    if (loc.fieldScores && loc.fieldScores.length > 0) {
+      for (const f of loc.fieldScores) {
+        const val = f.rawValue !== null ? `${f.rawValue}${f.unit ? ' ' + f.unit : ''}` : 'Not available';
+        lines.push(`• ${f.displayName}: ${val}`);
+        lines.push(`  → What this means: ${f.interpretation}`);
+        lines.push(`  → Score impact: ${f.score}/100 (weight: ${Math.round(f.weight * 100)}%)`);
+        lines.push(`  → Data source: ${f.source}`);
+        if (f.routingBarriers && f.routingBarriers.length > 0) {
+          lines.push(`  → Routing barriers: ${f.routingBarriers.join(', ')}`);
+        }
+        if (f.jurisdictionRisk) {
+          lines.push(`  → Jurisdiction note: ${f.jurisdictionRisk.note}`);
+        }
+      }
+    } else {
+      lines.push('No field data available.');
+    }
+    lines.push('');
+
+    // ── 4. Assembly result ──────────────────────────────────────────────────
+    if (loc.assemblyResult) {
+      const a = loc.assemblyResult;
+      lines.push(`=== PARCEL ASSEMBLY ANALYSIS ===`);
+      lines.push(`Feasibility Score: ${a.feasibilityScore}/100`);
+      lines.push(`Target Acreage Needed: ${a.targetAcres} acres`);
+      lines.push(`Assemblable Acreage Estimated: ${a.assemblableAcres} acres`);
+      lines.push(`Estimated Landowners to Negotiate: ${a.estimatedOwnersMin}–${a.estimatedOwnersMax}`);
+      lines.push(`Contiguity Rating: ${a.contiguityRating}`);
+      lines.push(`Dominant Constraint: ${a.dominantConstraint}`);
+      if (a.keyBarriers.length > 0) {
+        lines.push(`Key Barriers: ${a.keyBarriers.join(', ')}`);
+      }
+      lines.push('');
+    }
+
+    // ── 5. Alternative sites ────────────────────────────────────────────────
+    if (loc.alternatives && loc.alternatives.length > 0) {
+      lines.push(`=== ALTERNATIVE SITES IDENTIFIED ===`);
+      for (const alt of loc.alternatives) {
+        lines.push(`• ${alt.label} — ${alt.direction}, ${Math.round(alt.distanceMeters / 1000 * 10) / 10} km away`);
+        lines.push(`  Reason: ${alt.reason} (estimated score boost: +${alt.estimatedScoreBoost} pts)`);
+      }
+      lines.push('');
+    }
+
+    lines.push(`=== COPILOT INSTRUCTIONS ===`);
+    lines.push(`Use all the above data to answer the user's question in clear, plain English.`);
+    lines.push(`Avoid jargon. Explain what numbers mean in real-world terms.`);
+    lines.push(`If asked "why did it score X?", refer to specific field scores and weights.`);
+    lines.push(`If asked "is it safe?", refer to flood, wetland, slope, and conservation data.`);
+    lines.push(`Always cite the data source (FEMA, USGS, EIA, etc.) when stating a fact.`);
+    lines.push(`Respond in 2–4 sentences max unless a detailed breakdown is requested.`);
+
+    return lines.join('\n');
+  }
 
   async function handleSend() {
     const qText = input.trim();
@@ -69,35 +156,30 @@ export default function CopilotChat({ lat, lng, useCaseName, isOpen, onClose, ac
     setLoading(true);
 
     try {
-      // Build facts block from activeLocationData for grounded completions
-      let factsContext = `Coordinates: (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-      if (activeLocationData && activeLocationData.fieldScores) {
-        const factsList = activeLocationData.fieldScores.map(f => {
-          const valStr = f.rawValue !== null ? `${f.rawValue}${f.unit ? ' ' + f.unit : ''}` : 'N/A';
-          return `- ${f.displayName}: ${valStr} (${f.interpretation}) [Source: ${f.source}]`;
-        }).join('\n');
-        
-        factsContext = `
-Active Candidate Address: "${activeLocationData.location.address}"
-Mireye Geospatial Registry Structured Facts:
-${factsList}
-Siting Suitability Index: ${activeLocationData.totalScore}/100 (Risk Level: ${activeLocationData.riskLevel.toUpperCase()})
-`;
-      }
+      // Build full site analysis context for grounded, human-friendly completions
+      const siteContext = buildSiteContext();
 
       const response = await askGemini(
-        `You are Atlas Siting Copilot, an intelligent geospatial assistant.
-Use the following structured coordinate facts to answer the user's question.
+        `You are Atlas Siting Copilot — a friendly, expert geospatial analyst embedded inside Atlas AI.
+You have been given a complete analysis of the site the user is currently reviewing.
+Your job is to explain this analysis in plain, human-friendly language — as if talking to someone who has no GIS or engineering background.
 
-Facts:
-${factsContext}
+SITE ANALYSIS DATA:
+${siteContext}
 
-User Question: "${qText}"
+USER QUESTION: "${qText}"
 
-Answer in 2-3 concise, professional sentences. Refer directly to the citable data sources (e.g. FEMA, USGS, EIA) from the facts when answering. If you cannot answer based on the facts, explain that you have grounded coordinate data but need more specifics.`,
+RESPONSE RULES:
+- Answer directly and simply. No bullet lists unless the user asks for a breakdown.
+- Translate technical terms into everyday language (e.g. "floodplain" → "area that floods regularly").
+- If a score is low, explain WHY in human terms (e.g. "it scored low because the land is too steep and sits in a flood zone").
+- If the site is good, say so confidently and explain what makes it suitable.
+- Cite the data source naturally (e.g. "According to FEMA flood maps..." or "USGS terrain data shows...").
+- Keep responses to 2–4 sentences unless a full breakdown is requested.
+- Never make up data that isn't in the analysis above.`,
         () => askQuestion(lat, lng, qText)
       );
-      const answer = response || `Mireye answered that this site (${lat.toFixed(4)}, ${lng.toFixed(4)}) has suitable conditions, but did not return detailed text for this prompt.`;
+      const answer = response || `Based on the site analysis, this location at (${lat.toFixed(4)}, ${lng.toFixed(4)}) has a suitability score of ${activeLocationData?.totalScore ?? 'N/A'}/100. Ask me a specific question about any aspect of the analysis.`;
       
       const replyTime = new Date();
       const replyTimeStr = `${String(replyTime.getHours()).padStart(2, '0')}:${String(replyTime.getMinutes()).padStart(2, '0')}`;

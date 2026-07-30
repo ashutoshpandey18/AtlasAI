@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Layers, CheckCircle2, AlertTriangle, XCircle, ShieldAlert, ArrowRight, Info } from 'lucide-react';
+import { Layers, CheckCircle2, AlertTriangle, XCircle, ShieldAlert, Sparkles, ArrowRight } from 'lucide-react';
 import type { MireyeFetchResponse } from '@/types/mireye';
 import { analyzeBuildableArea, type AgentActionVerdict } from '@/services/buildableAreaHarness';
 
@@ -25,24 +25,24 @@ export default function BuildableAreaCard({
     { bg: string; border: string; text: string; dot: string; icon: any }
   > = {
     READY_FOR_SITE_CONTROL: {
-      bg: 'bg-emerald-500/10',
-      border: 'border-emerald-500/30',
-      text: 'text-emerald-600 dark:text-emerald-400',
+      bg: 'bg-emerald-50 dark:bg-emerald-950/30',
+      border: 'border-emerald-200 dark:border-emerald-800/40',
+      text: 'text-emerald-700 dark:text-emerald-400',
       dot: 'bg-emerald-500',
       icon: CheckCircle2,
     },
     NEEDS_PARCEL_ASSEMBLY: {
-      bg: 'bg-amber-500/10',
-      border: 'border-amber-500/30',
-      text: 'text-amber-600 dark:text-amber-400',
+      bg: 'bg-amber-50 dark:bg-amber-950/30',
+      border: 'border-amber-200 dark:border-amber-800/40',
+      text: 'text-amber-800 dark:text-amber-400',
       dot: 'bg-amber-500',
       icon: AlertTriangle,
     },
     REJECT_CONSTRAINED: {
-      bg: 'bg-red-500/10',
-      border: 'border-red-500/30',
-      text: 'text-red-600 dark:text-red-400',
-      dot: 'bg-red-500',
+      bg: 'bg-orange-50 dark:bg-orange-950/30',
+      border: 'border-orange-200 dark:border-orange-800/40',
+      text: 'text-orange-800 dark:text-orange-400',
+      dot: 'bg-orange-500',
       icon: XCircle,
     },
   };
@@ -51,86 +51,90 @@ export default function BuildableAreaCard({
   const VerdictIcon = style.icon;
 
   return (
-    <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm space-y-4">
+    <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_4px_20px_-4px_rgba(22,20,15,0.06)] space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/20 flex items-center justify-center">
-            <Layers className="w-3.5 h-3.5 text-[var(--accent)]" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shadow-sm">
+            <Layers className="w-4 h-4 text-amber-600" />
           </div>
           <div>
-            <h4 className="text-[12px] font-extrabold text-[var(--text-primary)]">
-              Buildable Area Mask Harness
-            </h4>
-            <p className="text-[10px] text-[var(--text-muted)] font-medium">
-              Net Parcel Footprint Deductions & Agent Action Verdict
+            <div className="flex items-center gap-2">
+              <h4 className="text-[12px] font-black text-[var(--text-primary)] uppercase tracking-wider">
+                Buildable Footprint Harness
+              </h4>
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#F3EFE6] border border-[#E5DFD3] text-amber-800">
+                PARCEL MASK
+              </span>
+            </div>
+            <p className="text-[10.5px] text-[var(--text-muted)] font-medium">
+              Net Usable Acreage & AI Agent Site Control Verdict
             </p>
           </div>
         </div>
-        <span
-          className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border ${style.bg} ${style.border} ${style.text}`}
-        >
+
+        {/* Verdict Badge */}
+        <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full border ${style.bg} ${style.border} ${style.text}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
           {report.verdictLabel}
         </span>
       </div>
 
-      {/* Progress Bar & Footprint Summary */}
-      <div className="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-4 space-y-3">
-        <div className="flex justify-between items-end">
+      {/* Realistic Metric Card — Warm Skin / Cream Background */}
+      <div className="bg-[#FAF8F3] border border-[#EAE4D9] rounded-2xl p-4 space-y-3 shadow-inner">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="text-[10px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-0.5">
+            <div className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273] mb-1">
               Net Buildable Acreage
             </div>
-            <div className="text-[20px] font-black text-[var(--text-primary)] leading-none">
-              {report.netBuildableAcres}{' '}
-              <span className="text-[11px] font-normal text-[var(--text-muted)]">
-                / {report.totalParcelAcres} Acres ({report.buildableEfficiencyPct}% Efficient)
+            <div className="flex items-baseline gap-2">
+              <span className="text-[26px] font-black text-[var(--text-primary)] leading-none">
+                {report.netBuildableAcres}
+              </span>
+              <span className="text-[12px] font-bold text-[#6E6659]">Acres</span>
+              <span className="text-[10px] font-bold text-amber-800 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full ml-1">
+                {report.buildableEfficiencyPct}% Usable
               </span>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-[9px] uppercase font-bold text-[var(--text-muted)]">Target Required</div>
-            <div className="text-[13px] font-extrabold text-[var(--accent)]">
+
+          <div className="sm:text-right border-t sm:border-t-0 border-[#E5DFD3] pt-2 sm:pt-0">
+            <div className="text-[9.5px] uppercase font-bold text-[#8C8273] mb-0.5">Target Requirement</div>
+            <div className="text-[14px] font-black text-orange-600">
               {report.targetRequiredAcres} Acres
             </div>
           </div>
         </div>
 
-        {/* Visual Acreage Bar */}
-        <div className="h-2.5 bg-[var(--bg-soft)] rounded-full overflow-hidden flex border border-[var(--border)]">
+        {/* Realistic Warm Yellow/Orange Progress Meter */}
+        <div className="h-3 bg-[#EAE4D9] rounded-full overflow-hidden flex border border-[#DCD5C7] p-0.5 shadow-inner">
           <div
-            className="h-full bg-emerald-500 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 transition-all duration-700 shadow-sm"
             style={{ width: `${report.buildableEfficiencyPct}%` }}
-            title={`Net Buildable: ${report.netBuildableAcres} Acres`}
           />
-          {report.totalDeductionsAcres > 0 && (
-            <div
-              className="h-full bg-red-500/80 transition-all duration-500"
-              style={{ width: `${100 - report.buildableEfficiencyPct}%` }}
-              title={`Constraint Deductions: -${report.totalDeductionsAcres} Acres`}
-            />
-          )}
         </div>
       </div>
 
-      {/* Constraint Deductions Chips */}
+      {/* Active Constraint Deductions */}
       {report.deductions.length > 0 && (
-        <div className="space-y-1.5">
-          <div className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-muted)]">
-            Active Constraint Deductions
+        <div className="space-y-2">
+          <div className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273]">
+            Active Constraint Deductions ({report.deductions.length})
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {report.deductions.map((d) => (
               <div
                 key={d.code}
-                className="flex items-center justify-between bg-red-500/5 border border-red-500/20 rounded-xl px-3 py-2"
+                className="flex items-center justify-between bg-white border border-[#E5DFD3] rounded-xl px-3.5 py-2.5 shadow-sm"
               >
-                <span className="text-[10.5px] font-bold text-red-600 dark:text-red-400">
-                  {d.label}
-                </span>
-                <span className="text-[9.5px] font-extrabold text-red-600 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
-                  -{d.deductionAcres} Acres (-{d.deductionPct}%)
+                <div className="flex items-center gap-2 min-w-0">
+                  <ShieldAlert className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                  <span className="text-[11px] font-bold text-[var(--text-primary)] truncate">
+                    {d.label}
+                  </span>
+                </div>
+                <span className="text-[10px] font-black text-orange-700 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded-full flex-shrink-0">
+                  -{d.deductionAcres} Ac (-{d.deductionPct}%)
                 </span>
               </div>
             ))}
@@ -141,7 +145,7 @@ export default function BuildableAreaCard({
       {/* Verdict Rationale Banner */}
       <div className={`flex items-start gap-2.5 rounded-xl border p-3.5 ${style.bg} ${style.border}`}>
         <VerdictIcon className={`w-4 h-4 ${style.text} flex-shrink-0 mt-0.5`} />
-        <div className="text-[11px] font-medium leading-relaxed text-[var(--text-primary)]">
+        <div className="text-[11px] font-semibold leading-relaxed text-[var(--text-primary)]">
           {report.verdictReason}
         </div>
       </div>

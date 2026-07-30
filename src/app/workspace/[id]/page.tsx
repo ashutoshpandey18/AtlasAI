@@ -12,7 +12,7 @@ import InteractiveMap from '@/components/InteractiveMap';
 import CopilotChat from '@/components/CopilotChat';
 import ParcelAssemblyCard from '@/components/ParcelAssemblyCard';
 import GisIntelligencePanel from '@/components/GisIntelligencePanel';
-import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield, FolderKanban, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, ShieldAlert, CheckCircle2, ChevronRight, FileText, MessageSquare, Sparkles, Calendar, Shield, FolderKanban, AlertTriangle, ExternalLink } from 'lucide-react';
 
 import Link from 'next/link';
 
@@ -999,65 +999,96 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                   )}
 
                   {/* Provenance citations & Jurisdiction Risk Audit */}
-                  <div className="border-t border-[var(--border)] pt-7 mt-3">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-1.5">
-                      Campaign Citations & Jurisdiction Risk Audit
-                    </span>
-                    <p className="text-[12px] text-[var(--text-secondary)] font-medium mb-5">
-                      All data layers fetched via Mireye and citation-mapped to verified federal primary endpoints with automated GIS seam and vintage risk auditing.
+                  <div className="border-t border-[var(--border)] pt-8 mt-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                      <div>
+                        <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#5A6B5C] block">
+                          Federal Data Provenance & Risk Matrix
+                        </span>
+                        <h3 className="text-[14px] font-black text-[#1A261C] tracking-tight">
+                          Citation-Mapped Endpoints & GIS Seam Audit
+                        </h3>
+                      </div>
+                      <span className="text-[10px] font-extrabold text-[#38513B] bg-[#38513B]/10 border border-[#38513B]/20 px-3 py-1 rounded-full self-start sm:self-auto">
+                        VERIFIED Mireye ENDPOINTS
+                      </span>
+                    </div>
+
+                    <p className="text-[11.5px] text-[#5A6B5C] font-medium mb-5 leading-relaxed">
+                      All geospatial data layers fetched via Mireye and citation-mapped to verified federal primary endpoints with automated GIS seam and vintage risk auditing.
                     </p>
-                    <div className="grid grid-cols-1 gap-3.5 bg-[var(--surface)] border border-[var(--border)] rounded-[24px] p-5.5 shadow-sm">
-                      {winner.fieldScores.map((fs) => {
-                        if (!fs.source) return null;
-                        return (
-                          <div key={fs.fieldName} className="flex flex-col gap-1 text-[12px] border-b border-[var(--border)] last:border-b-0 pb-3 last:pb-0">
-                            <div className="flex justify-between items-center flex-wrap gap-2.5">
-                              <span className="text-[var(--text-primary)] font-bold flex items-center gap-1.5">
-                                <Shield className="w-3.5 h-3.5 text-[var(--accent)]" />
-                                {fs.displayName} Source ({fs.source})
-                              </span>
-                              {fs.sourceUrl ? (
-                                <a
-                                  href={fs.sourceUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-500 hover:underline font-semibold max-w-[280px] truncate"
-                                >
-                                  {fs.sourceUrl}
-                                </a>
-                              ) : (
-                                <span className="text-[var(--text-muted)] font-medium">Source URL not resolved</span>
+
+                    {/* 2-Column Federal Matrix Grid */}
+                    <div className="bg-[#F4F6F2] border border-[#DCE4D8] rounded-[28px] p-5 shadow-[0_4px_20px_-4px_rgba(22,20,15,0.04)]">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {winner.fieldScores.map((fs) => {
+                          if (!fs.source) return null;
+                          return (
+                            <div
+                              key={fs.fieldName}
+                              className="bg-white border border-[#DCE4D8] border-t-2 border-t-[#38513B] rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3 transition-all hover:shadow-md hover:border-[#38513B]"
+                            >
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-lg bg-[#38513B]/10 border border-[#38513B]/20 flex items-center justify-center">
+                                      <Shield className="w-3.5 h-3.5 text-[#38513B]" />
+                                    </div>
+                                    <span className="text-[12px] font-black text-[#1A261C] tracking-tight">
+                                      {fs.displayName}
+                                    </span>
+                                  </div>
+                                  <span className="text-[9.5px] font-extrabold text-[#38513B] bg-[#38513B]/10 border border-[#38513B]/20 px-2 py-0.5 rounded-full">
+                                    {fs.source}
+                                  </span>
+                                </div>
+
+                                {fs.sourceUrl ? (
+                                  <a
+                                    href={fs.sourceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-[#38513B] hover:text-[#2D4F38] transition-colors truncate max-w-full"
+                                  >
+                                    <ExternalLink className="w-3 h-3 text-[#38513B] shrink-0" />
+                                    <span className="truncate">{fs.sourceUrl}</span>
+                                  </a>
+                                ) : (
+                                  <span className="text-[10px] font-bold text-[#8C9B8E]">
+                                    Primary Federal Registry
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Jurisdiction Risk Banner */}
+                              {fs.jurisdictionRisk && (
+                                <div className="flex items-start gap-2 text-[10.5px] font-semibold text-[#7C3A1D] bg-[#FDF6F0] border border-[#F3E2D3] p-2.5 rounded-xl">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-[#8C3B1A] shrink-0 mt-0.5" />
+                                  <div>
+                                    <span className="font-extrabold uppercase tracking-wider text-[9px] block text-[#8C3B1A] mb-0.5">
+                                      Jurisdiction Notice ({fs.jurisdictionRisk.rtoRegion} Region)
+                                    </span>
+                                    {fs.jurisdictionRisk.note}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Routing Barrier Warning Banner */}
+                              {fs.routingBarriers && fs.routingBarriers.length > 0 && (
+                                <div className="flex items-start gap-2 text-[10.5px] font-semibold text-[#1E3A66] bg-[#F0F4FA] border border-[#D0DCF0] p-2.5 rounded-xl">
+                                  <ShieldAlert className="w-3.5 h-3.5 text-[#2B4C7E] shrink-0 mt-0.5" />
+                                  <div>
+                                    <span className="font-extrabold uppercase tracking-wider text-[9px] block text-[#1E3A66] mb-0.5">
+                                      Routing Adjustment ({fs.routingPremiumPct}% Multiplier)
+                                    </span>
+                                    Barriers: {fs.routingBarriers.join(', ')}.
+                                  </div>
+                                </div>
                               )}
                             </div>
-
-                            {/* Jurisdiction Risk Banner */}
-                            {fs.jurisdictionRisk && (
-                              <div className="mt-1 flex items-start gap-2 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 p-2.5 rounded-xl">
-                                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                                <div>
-                                  <span className="font-bold uppercase tracking-wider text-[9.5px] block text-amber-900">
-                                    Jurisdiction Risk Notice ({fs.jurisdictionRisk.rtoRegion} Region)
-                                  </span>
-                                  {fs.jurisdictionRisk.note}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Routing Barrier Warning Banner */}
-                            {fs.routingBarriers && fs.routingBarriers.length > 0 && (
-                              <div className="mt-1 flex items-start gap-2 text-[11px] font-semibold text-blue-800 bg-blue-50 border border-blue-200 p-2.5 rounded-xl">
-                                <ShieldAlert className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                                <div>
-                                  <span className="font-bold uppercase tracking-wider text-[9.5px] block text-blue-900">
-                                    Routing Barrier Adjustment ({fs.routingPremiumPct}% Corridor Multiplier)
-                                  </span>
-                                  Physical straight-line distance adjusted for routing barriers: {fs.routingBarriers.join(', ')}.
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 

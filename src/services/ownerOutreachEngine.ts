@@ -1,9 +1,4 @@
-/**
- * Autonomous Land Acquisition LOI & Owner Outreach Engine
- *
- * Transforms spatial intelligence and parcel ownership data into formal, legally-structured
- * Letters of Intent (LOI) and Option-to-Lease contracts for solar, storage, and data center developments.
- */
+// Generates Letter of Intent terms and offer text for parcel acquisition outreach.
 
 import type { MireyeFetchResponse } from '../types/mireye';
 

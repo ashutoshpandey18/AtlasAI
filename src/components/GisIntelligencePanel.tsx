@@ -36,7 +36,7 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
   const { location, data } = result;
   const [activeTab, setActiveTab] = useState<IntelligenceTab>('overview');
 
-  // ── Run calculations ───────────────────────────────────────────────────────
+  // Calculations
   const centroidVal = useMemo(() => {
     if (!data || location.lat === null) return null;
     return validateCentroid(location.address, data);
@@ -54,7 +54,7 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
 
   if (!data || !centroidVal || !gridCapacity || !buildableReport) return null;
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  // Helpers
   const riskColor = {
     clean:    { bg: 'bg-emerald-50',  border: 'border-emerald-200', text: 'text-emerald-700',  dot: 'bg-emerald-500' },
     low:      { bg: 'bg-emerald-50',  border: 'border-emerald-200', text: 'text-emerald-700',  dot: 'bg-emerald-500' },
@@ -194,7 +194,7 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
         </button>
       </div>
 
-      {/* ── TAB CONTENT VIEWS ────────────────────────────────────────────────── */}
+      {/* Tab content */}
 
       {/* VIEW 1: OVERVIEW TAB */}
       {activeTab === 'overview' && (

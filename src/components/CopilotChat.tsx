@@ -159,27 +159,33 @@ export default function CopilotChat({ lat, lng, useCaseName, isOpen, onClose, ac
       // Build full site analysis context for grounded, human-friendly completions
       const siteContext = buildSiteContext();
 
-      const response = await askGemini(
-        `You are Atlas Siting Copilot — a friendly, expert geospatial analyst embedded inside Atlas AI.
-You have been given a complete analysis of the site the user is currently reviewing.
-Your job is to explain this analysis in plain, human-friendly language — as if talking to someone who has no GIS or engineering background.
+      // System prompt carries the site data; user message carries only the question
+      // This gives the LLM proper role separation and enough tokens to actually answer
+      const systemPrompt = `You are Atlas Siting Copilot — a friendly expert in infrastructure siting, energy, and geospatial analysis, embedded inside Atlas AI.
+You have two knowledge sources: (1) the complete site analysis data below, and (2) your expert domain knowledge about grid, permitting, environmental, and real estate concepts.
 
 SITE ANALYSIS DATA:
 ${siteContext}
 
-USER QUESTION: "${qText}"
-
 RESPONSE RULES:
-- Answer directly and simply. No bullet lists unless the user asks for a breakdown.
-- Translate technical terms into everyday language (e.g. "floodplain" → "area that floods regularly").
-- If a score is low, explain WHY in human terms (e.g. "it scored low because the land is too steep and sits in a flood zone").
-- If the site is good, say so confidently and explain what makes it suitable.
-- Cite the data source naturally (e.g. "According to FEMA flood maps..." or "USGS terrain data shows...").
-- Keep responses to 2–4 sentences unless a full breakdown is requested.
-- Never make up data that isn't in the analysis above.`,
-        () => askQuestion(lat, lng, qText)
+- Answer directly in plain, friendly language. No jargon.
+- For "what is X?" or "what does this mean?" questions: use your domain expertise to explain the term, then connect it to the site's specific data if relevant.
+- For "why did it score X?" questions: point to specific fields and their weights from the data above.
+- For "is it safe / is it good?": refer to flood, slope, wetland, and conservation fields.
+- SERC, PJM, MISO, CAISO, ERCOT, NYISO, ISO-NE are US electricity grid regions (ISOs/RTOs). SERC = Southeastern US grid, PJM = Mid-Atlantic/Midwest, MISO = Midwest/South, CAISO = California, ERCOT = Texas.
+- FEMA flood zones: Zone AE = high risk (1% annual flood chance), Zone X = low risk, Zone AO = shallow flooding.
+- "Tariff framework" means the rules and pricing structure utilities follow when connecting new power projects to the grid.
+- "Interconnect" means physically connecting a power plant or energy project to the transmission grid.
+- "Corridor-aware distance" means the real-world path to the grid accounting for barriers like protected land or wetlands — not just a straight line.
+- Keep responses to 2-4 sentences unless a detailed breakdown is explicitly requested.
+- Never invent specific numbers or scores that are not in the analysis data.`;
+
+      const response = await askGemini(
+        systemPrompt,
+        () => askQuestion(lat, lng, qText),
+        { systemPrompt, userQuestion: qText }
       );
-      const answer = response || `Based on the site analysis, this location at (${lat.toFixed(4)}, ${lng.toFixed(4)}) has a suitability score of ${activeLocationData?.totalScore ?? 'N/A'}/100. Ask me a specific question about any aspect of the analysis.`;
+      const answer = response || `Based on the site analysis, this location scores ${activeLocationData?.totalScore ?? 'N/A'}/100 with a ${activeLocationData?.riskLevel ?? 'unknown'} risk level. Ask me anything specific about the scores, hazards, or infrastructure data.`;
       
       const replyTime = new Date();
       const replyTimeStr = `${String(replyTime.getHours()).padStart(2, '0')}:${String(replyTime.getMinutes()).padStart(2, '0')}`;

@@ -5,14 +5,15 @@ const MODEL_NAME = 'llama-3.3-70b-versatile';
 
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { prompt, systemPrompt, userQuestion } = await req.json();
     const apiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: 'Groq API key is not configured on the server.' }, { status: 500 });
     }
 
-    const cacheKey = `ai-ask:${prompt.trim().toLowerCase()}`;
+    // Use just the user question as cache key so context updates don't return stale cached responses
+    const cacheKey = `ai-ask:${(userQuestion ?? prompt).trim().toLowerCase()}`;
 
     // Read from Turso persistent edge cache
     const cachedData = await getCache(cacheKey);
@@ -29,9 +30,14 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         model: MODEL_NAME,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.2,
-        max_tokens: 250,
+        messages: systemPrompt
+          ? [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userQuestion ?? prompt },
+            ]
+          : [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 600,
       }),
     });
 

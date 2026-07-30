@@ -1,14 +1,9 @@
-/**
- * Grid Interconnection & Capacity Evaluation Engine
- *
- * Evaluates transmission line proximity, corridor barrier penalties (floodplain, wetland, protected area),
- * voltage capacity headroom, estimated interconnection capex, and regional RTO queue risks.
- */
+// Evaluates transmission proximity, corridor barriers, voltage headroom, and RTO queue risk.
 
 import type { MireyeFetchResponse, MireyeFieldValue } from '../types/mireye';
 import { getRtoRegion } from './jurisdictionRisk';
 
-// ── Constants: FERC-derived baseline cost per mile for overhead single-circuit ─
+// FERC 2023 average: $/mile for 345 kV single-circuit overhead construction
 
 /** $/mile baseline for 345 kV single-circuit overhead construction (FERC 2023 avg) */
 const BASE_COST_PER_MILE_USD = 1_850_000;
@@ -16,7 +11,7 @@ const BASE_COST_PER_MILE_USD = 1_850_000;
 /** Miles per meter conversion */
 const METERS_TO_MILES = 0.000621371;
 
-// ── Barrier cost multipliers (applied to the corridor between site + line) ───
+// Barrier cost multipliers — applied to the spur corridor between site and nearest line
 
 const BARRIER_MULTIPLIERS: Record<string, number> = {
   within_floodplain_polygon: 1.40,
@@ -28,7 +23,7 @@ const BARRIER_MULTIPLIERS: Record<string, number> = {
 const SLOPE_PENALTY_PER_DEGREE_ABOVE_THRESHOLD = 0.04;
 const SLOPE_THRESHOLD_DEGREES = 5;
 
-// ── Voltage-to-capacity heuristics (MW ceiling per kV class) ─────────────────
+// MW ceiling heuristics by voltage class
 
 const VOLTAGE_CAPACITY_CEILING_MW: Array<[kv: number, maxMw: number]> = [
   [500, 2000],
@@ -39,7 +34,7 @@ const VOLTAGE_CAPACITY_CEILING_MW: Array<[kv: number, maxMw: number]> = [
   [69, 75],
 ];
 
-// ── RTO queue depth estimate (months, LBNL Queued Up 2024) ───────────────────
+// Estimated queue wait in months per ISO/RTO region (source: LBNL Queued Up 2024)
 
 const RTO_QUEUE_DEPTH_MONTHS: Record<string, number> = {
   MISO: 54,
@@ -52,7 +47,7 @@ const RTO_QUEUE_DEPTH_MONTHS: Record<string, number> = {
   SERC: 38,
 };
 
-// ── Type Definitions ──────────────────────────────────────────────────────────
+// Types
 
 export interface BarrierDetail {
   field: string;
@@ -104,7 +99,7 @@ export interface SiteGridRanking {
   barriers: string[];
 }
 
-// ── Helper Utilities ──────────────────────────────────────────────────────────
+// Utilities
 
 function val<T>(fields: Record<string, MireyeFieldValue>, key: string): T | null {
   const v = fields[key]?.value;
@@ -123,8 +118,6 @@ function getQueueRisk(months: number): InterconnectionQueueRisk['queueRisk'] {
   if (months <= 60) return 'High';
   return 'Severe';
 }
-
-// ── Core Engine ───────────────────────────────────────────────────────────────
 
 /**
  * Analyze grid interconnection capacity and cost for a given site.
@@ -306,8 +299,6 @@ export function analyzeGridCapacity(
     summary,
   };
 }
-
-// ── Multi-Site Agent Screener ─────────────────────────────────────────────────
 
 /**
  * Rank multiple site candidates by grid feasibility.

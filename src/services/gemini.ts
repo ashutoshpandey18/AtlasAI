@@ -1,8 +1,12 @@
 import { askGroq } from './groq';
 
-export async function askGemini(prompt: string, fallbackFn?: () => Promise<string>): Promise<string> {
+export async function askGemini(
+  prompt: string,
+  fallbackFn?: () => Promise<string>,
+  options?: { systemPrompt?: string; userQuestion?: string }
+): Promise<string> {
   try {
-    const groqAns = await askGroq(prompt);
+    const groqAns = await askGroq(prompt, options);
     if (groqAns) {
       return groqAns;
     }

@@ -1,11 +1,18 @@
-export async function askGroq(prompt: string): Promise<string> {
+export async function askGroq(
+  prompt: string,
+  options?: { systemPrompt?: string; userQuestion?: string }
+): Promise<string> {
   try {
     const res = await fetch('/api/ai/ask', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({
+        prompt,
+        systemPrompt: options?.systemPrompt,
+        userQuestion: options?.userQuestion,
+      }),
     });
 
     if (!res.ok) {

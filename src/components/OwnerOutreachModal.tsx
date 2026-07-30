@@ -57,10 +57,10 @@ export default function OwnerOutreachModal({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-[14px] font-black text-[var(--text-primary)]">
-                  Autonomous Land Acquisition LOI Draft
+                  Draft Land Acquisition LOI
                 </h3>
                 <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 border border-amber-200 text-amber-800">
-                  ACTION HARNESS
+                  LOI
                 </span>
               </div>
               <p className="text-[11px] text-[var(--text-muted)] font-medium">

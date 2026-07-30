@@ -1,10 +1,4 @@
-/**
- * Buildable Area Harness & Constraint Deductions Engine
- *
- * Computes net buildable parcel acreage and buildable efficiency percentage by deducting
- * environmental, slope, and flood hazards from total property footprints. Emits structured
- * agent action verdicts (READY_FOR_SITE_CONTROL, NEEDS_PARCEL_ASSEMBLY, REJECT_CONSTRAINED).
- */
+// Computes net buildable acreage by deducting environmental, slope, and flood constraints.
 
 import type { MireyeFetchResponse, MireyeFieldValue } from '../types/mireye';
 

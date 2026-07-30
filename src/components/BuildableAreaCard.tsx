@@ -64,7 +64,7 @@ export default function BuildableAreaCard({
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-[12px] font-black text-[var(--text-primary)] uppercase tracking-wider">
-                Buildable Footprint Harness
+                Buildable Area Analysis
               </h4>
               <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#F3EFE6] border border-[#E5DFD3] text-amber-800">
                 PARCEL MASK

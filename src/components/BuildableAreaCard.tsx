@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
-import { Layers, CheckCircle2, AlertTriangle, XCircle, ShieldAlert, Sparkles, ArrowRight } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Layers, CheckCircle2, AlertTriangle, XCircle, ShieldAlert, Sparkles, ArrowRight, FileText } from 'lucide-react';
 import type { MireyeFetchResponse } from '@/types/mireye';
 import { analyzeBuildableArea, type AgentActionVerdict } from '@/services/buildableAreaHarness';
+import OwnerOutreachModal from './OwnerOutreachModal';
 
 interface Props {
   data: MireyeFetchResponse;
@@ -16,6 +17,8 @@ export default function BuildableAreaCard({
   targetRequiredAcres = 50,
   totalParcelAcres = 100,
 }: Props) {
+  const [loiModalOpen, setLoiModalOpen] = useState(false);
+
   const report = useMemo(() => {
     return analyzeBuildableArea(data, targetRequiredAcres, totalParcelAcres);
   }, [data, targetRequiredAcres, totalParcelAcres]);
@@ -143,12 +146,31 @@ export default function BuildableAreaCard({
       )}
 
       {/* Verdict Rationale Banner */}
-      <div className={`flex items-start gap-2.5 rounded-xl border p-3.5 ${style.bg} ${style.border}`}>
-        <VerdictIcon className={`w-4 h-4 ${style.text} flex-shrink-0 mt-0.5`} />
-        <div className="text-[11px] font-semibold leading-relaxed text-[var(--text-primary)]">
-          {report.verdictReason}
+      <div className={`flex items-center justify-between gap-3 rounded-xl border p-3.5 ${style.bg} ${style.border}`}>
+        <div className="flex items-start gap-2.5">
+          <VerdictIcon className={`w-4 h-4 ${style.text} flex-shrink-0 mt-0.5`} />
+          <div className="text-[11px] font-semibold leading-relaxed text-[var(--text-primary)]">
+            {report.verdictReason}
+          </div>
         </div>
+        <button
+          onClick={() => setLoiModalOpen(true)}
+          className="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white text-[10.5px] font-extrabold px-3 py-1.5 rounded-xl transition-all shadow-sm shrink-0"
+        >
+          <FileText className="w-3.5 h-3.5" />
+          Draft LOI
+        </button>
       </div>
+
+      {/* LOI Draft Modal */}
+      <OwnerOutreachModal
+        isOpen={loiModalOpen}
+        onClose={() => setLoiModalOpen(false)}
+        address={`${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`}
+        data={data}
+        useCaseName="Solar / Data Center"
+        targetAcres={report.netBuildableAcres}
+      />
     </div>
   );
 }

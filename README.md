@@ -38,6 +38,7 @@ It helps organizations evaluate candidate locations for projects such as:
 
 **GIS & Pre-Flight Intelligence**
 - Centroid Misalignment Detector audits geocode confidence and detects road-centerline snaps before scoring to prevent field poisoning
+- Live Federal Map Layer & Reverse-Geocoding Inspector renders dynamic map tile layer switching (Vector OpenStreetMap, Satellite Imagery, USGS 3DEP Topography) and triggers live Nominatim reverse-geocoding to resolve exact Street, County, State, and ZIP boundaries in real time
 - Physical Agent Buildable Area Mask Harness calculates net buildable parcel acreage, constraint deduction footprints (flood, wetland 100ft buffer, steep slope > 8°), and emits actionable AI agent verdicts (`READY_FOR_SITE_CONTROL`, `NEEDS_PARCEL_ASSEMBLY`, `REJECT_CONSTRAINED`)
 - Autonomous Land Acquisition LOI & Owner Outreach Engine transforms spatial data and parcel lookup into formal, downloadable Letters of Intent (LOI) to option-to-lease land with calculated annual lease payments ($/acre/yr) and option terms
 - Live Regional Energy Market LMP Price Tracker fetches live Locational Marginal Prices ($/MWh) across ERCOT, PJM, MISO, CAISO, SPP, NYISO, and ISO-NE to project annual solar generation revenues and data center power costs

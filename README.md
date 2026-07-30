@@ -40,6 +40,7 @@ It helps organizations evaluate candidate locations for projects such as:
 - Centroid Misalignment Detector audits geocode confidence and detects road-centerline snaps before scoring to prevent field poisoning
 - Physical Agent Buildable Area Mask Harness calculates net buildable parcel acreage, constraint deduction footprints (flood, wetland 100ft buffer, steep slope > 8°), and emits actionable AI agent verdicts (`READY_FOR_SITE_CONTROL`, `NEEDS_PARCEL_ASSEMBLY`, `REJECT_CONSTRAINED`)
 - Autonomous Land Acquisition LOI & Owner Outreach Engine transforms spatial data and parcel lookup into formal, downloadable Letters of Intent (LOI) to option-to-lease land with calculated annual lease payments ($/acre/yr) and option terms
+- Live Regional Energy Market LMP Price Tracker fetches live Locational Marginal Prices ($/MWh) across ERCOT, PJM, MISO, CAISO, SPP, NYISO, and ISO-NE to project annual solar generation revenues and data center power costs
 - Grid Capacity Engine calculates barrier path multipliers (1.4×–1.9× for floodplains, wetlands, protected areas), FERC-calibrated interconnection capex ($USD), and RTO queue risks
 - Interactive Corridor Cable Path Visualizer renders an animated SVG transmission path from site origin through environmental barrier nodes to the grid substation with step-by-step cost impact callouts
 - Jurisdiction & Seam Detector flags cross-RTO boundary seam risks (PJM/MISO, WECC/SPP, ERCOT) and FEMA flood panel vintage staleness

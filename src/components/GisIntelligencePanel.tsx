@@ -22,6 +22,7 @@ import { analyzeBuildableArea } from '@/services/buildableAreaHarness';
 import RegulatoryIntelligenceCard from './RegulatoryIntelligenceCard';
 import CorridorVisualizer from './CorridorVisualizer';
 import BuildableAreaCard from './BuildableAreaCard';
+import LiveLmpTrackerCard from './LiveLmpTrackerCard';
 
 interface Props {
   result: LocationResult;
@@ -338,7 +339,11 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
 
       {/* VIEW 4: GRID TAB */}
       {activeTab === 'grid' && (
-        <div className="animate-fadeIn">
+        <div className="animate-fadeIn space-y-4">
+          <LiveLmpTrackerCard
+            rtoRegion={gridCapacity.queueRisk.rtoRegion}
+            projectMw={projectMw}
+          />
           <CorridorVisualizer
             gridCapacity={gridCapacity}
             siteLabel={location.label || location.address || 'Candidate Site'}

@@ -23,6 +23,7 @@ import RegulatoryIntelligenceCard from './RegulatoryIntelligenceCard';
 import CorridorVisualizer from './CorridorVisualizer';
 import BuildableAreaCard from './BuildableAreaCard';
 import LiveLmpTrackerCard from './LiveLmpTrackerCard';
+import PermittingCard from './PermittingCard';
 
 interface Props {
   result: LocationResult;
@@ -354,7 +355,11 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
 
       {/* VIEW 5: REGULATORY RAG TAB */}
       {activeTab === 'regulatory' && (
-        <div className="animate-fadeIn">
+        <div className="animate-fadeIn space-y-4">
+          <PermittingCard
+            data={data}
+            useCaseName={result.fieldScores.length > 0 ? 'Infrastructure' : 'Solar Farm'}
+          />
           <RegulatoryIntelligenceCard
             lat={location.lat!}
             lng={location.lng!}

@@ -39,6 +39,7 @@ It helps organizations evaluate candidate locations for projects such as:
 **GIS & Pre-Flight Intelligence**
 - Centroid Misalignment Detector audits geocode confidence and detects road-centerline snaps before scoring to prevent field poisoning
 - Grid Capacity Engine calculates barrier path multipliers (1.4×–1.9× for floodplains, wetlands, protected areas), FERC-calibrated interconnection capex ($USD), and RTO queue risks
+- Interactive Corridor Cable Path Visualizer renders an animated SVG transmission path from site origin through environmental barrier nodes to the grid substation with step-by-step cost impact callouts
 - Jurisdiction & Seam Detector flags cross-RTO boundary seam risks (PJM/MISO, WECC/SPP, ERCOT) and FEMA flood panel vintage staleness
 
 **RTO Regulatory RAG**

@@ -6,6 +6,7 @@ import type { LocationResult } from '@/types/atlas';
 import { validateCentroid } from '@/services/centroidValidator';
 import { analyzeGridCapacity } from '@/services/gridCapacityEngine';
 import RegulatoryIntelligenceCard from './RegulatoryIntelligenceCard';
+import CorridorVisualizer from './CorridorVisualizer';
 
 interface Props {
   result: LocationResult;
@@ -261,6 +262,13 @@ export default function GisIntelligencePanel({ result, projectMw = 100 }: Props)
           </div>
         </div>
       </div>
+
+      {/* Interactive Corridor Cable Path Visualizer */}
+      <CorridorVisualizer
+        gridCapacity={gridCapacity}
+        siteLabel={location.label || location.address || 'Candidate Site'}
+        projectMw={projectMw}
+      />
 
       {/* RAG Regulatory Intelligence */}
       <RegulatoryIntelligenceCard

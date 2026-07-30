@@ -527,22 +527,23 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
       <div className="flex-1 max-w-[1100px] mx-auto px-6 w-full relative z-10">
         {useCase ? (
           <div className="grid grid-cols-1 md:grid-cols-[340px_1fr] gap-8 py-10 min-h-[calc(100vh-64px)] items-stretch">
-            
-            {/* Left sidebar - parameters container */}
-            <div className="flex flex-col gap-6 md:sticky md:top-24 h-fit bg-[var(--surface)] border border-[var(--border)] rounded-[28px] p-6 shadow-sm">
-              <Link href="/projects" className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                       {/* Left sidebar - parameters container */}
+            <div className="flex flex-col gap-5 md:sticky md:top-24 h-fit bg-[var(--surface)] border border-[var(--border)] rounded-[26px] p-5 shadow-[0_4px_20px_-4px_rgba(22,20,15,0.06)]">
+              {/* Back to campaigns */}
+              <Link href="/projects" className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Return to campaigns
               </Link>
 
-              <div>
-                <span className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-2">
+              {/* Campaign Target */}
+              <div className="bg-[#FAF8F3] border border-[#E5DFD3] rounded-2xl p-4 space-y-2">
+                <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273] block">
                   Campaign Target
                 </span>
                 <select
                   value={useCase.id}
                   onChange={(e) => handleUseCaseChange(e.target.value)}
-                  className="w-full bg-[var(--bg)] border border-[var(--border)] focus:border-[var(--accent)]/50 rounded-xl px-3.5 py-2.5 text-[13px] font-bold text-[var(--text-primary)] outline-none shadow-sm cursor-pointer"
+                  className="w-full bg-white border border-[#E5DFD3] focus:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-[13px] font-extrabold text-[var(--text-primary)] outline-none shadow-sm cursor-pointer"
                 >
                   {USE_CASES.map((uc) => (
                     <option key={uc.id} value={uc.id}>
@@ -550,31 +551,31 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                     </option>
                   ))}
                 </select>
-                <p className="text-[11.5px] text-[var(--text-secondary)] mt-2.5 leading-relaxed font-medium">
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium pt-1">
                   {useCase.description}
                 </p>
               </div>
 
               {/* Criteria controls */}
-              <div className="border-t border-[var(--border)] pt-5">
-                <span className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-3">
+              <div className="border-t border-[var(--border)] pt-4 space-y-3">
+                <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273] block">
                   Siting parameters
                 </span>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   {useCase.questions.map((q) => {
                     const currentVal = requirements[q.id] ?? q.defaultValue;
 
                     if (q.type === 'boolean') {
                       const isChecked = currentVal === true || currentVal === 'true';
                       return (
-                        <label key={q.id} className="flex items-center gap-2.5 text-[12.5px] text-[var(--text-primary)] font-semibold cursor-pointer select-none">
+                        <label key={q.id} className="flex items-center gap-2.5 text-[12px] text-[var(--text-primary)] font-bold cursor-pointer select-none bg-[#FAF8F3] border border-[#E5DFD3] p-3 rounded-xl">
                           <input
                             type="checkbox"
                             checked={isChecked}
                             onChange={(e) => {
                               setRequirements((prev) => ({ ...prev, [q.id]: e.target.checked }));
                             }}
-                            className="w-4.5 h-4.5 rounded border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] focus:ring-0 accent-[var(--accent)] cursor-pointer"
+                            className="w-4 h-4 rounded border-[#E5DFD3] text-amber-600 focus:ring-0 accent-amber-600 cursor-pointer"
                           />
                           <span>{q.question}</span>
                         </label>
@@ -582,14 +583,14 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
                     }
 
                     return (
-                      <div key={q.id}>
-                        <div className="text-[11.5px] text-[var(--text-secondary)] font-semibold mb-2">{q.question}</div>
+                      <div key={q.id} className="bg-[#FAF8F3] border border-[#E5DFD3] p-3 rounded-xl space-y-1.5">
+                        <div className="text-[11px] text-[#8C8273] font-bold">{q.question}</div>
                         <select
                           value={String(currentVal)}
                           onChange={(e) => {
                             setRequirements((prev) => ({ ...prev, [q.id]: e.target.value }));
                           }}
-                          className="w-full bg-[var(--bg)] border border-[var(--border)] focus:border-[var(--accent)]/50 rounded-xl px-3 py-2 text-[12px] font-bold text-[var(--text-primary)] outline-none"
+                          className="w-full bg-white border border-[#E5DFD3] focus:border-amber-500/50 rounded-xl px-3 py-2 text-[12px] font-bold text-[var(--text-primary)] outline-none shadow-sm"
                         >
                           {q.options?.map((opt) => (
                             <option key={opt.value} value={opt.value} className="bg-[var(--surface)] text-[var(--text-primary)]">
@@ -604,51 +605,55 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to the
               </div>
 
               {/* Candidate addresses manager */}
-              <div className="border-t border-[var(--border)] pt-5">
-                <span className="text-[9px] uppercase font-bold tracking-wider text-[var(--text-muted)] block mb-3">
-                  Candidate locations
-                </span>
+              <div className="border-t border-[var(--border)] pt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273]">
+                    Candidate locations
+                  </span>
+                  <span className="text-[10px] font-bold text-[var(--text-muted)]">
+                    {locations.length}/5 max
+                  </span>
+                </div>
                 
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Enter city or US address"
+                    placeholder="City or US address..."
                     value={inputVal}
                     onChange={(e) => setInputVal(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddLocation()}
                     disabled={!canAdd}
-                    className="flex-1 bg-[var(--bg)] border border-[var(--border)] focus:border-[var(--accent)]/50 rounded-xl px-3.5 py-2 text-[12px] text-[var(--text-primary)] outline-none placeholder-[#888680] font-medium"
+                    className="flex-1 bg-white border border-[#E5DFD3] focus:border-amber-500/50 rounded-xl px-3.5 py-2 text-[12px] text-[var(--text-primary)] outline-none placeholder-[#968F82] font-medium shadow-sm"
                   />
                   <button
                     onClick={handleAddLocation}
                     disabled={!inputVal.trim() || !canAdd}
-                    className="bg-[var(--accent)] text-[#FAFAF7] hover:opacity-95 text-[12px] font-bold px-4 py-2 rounded-xl transition-all cursor-pointer disabled:opacity-40"
+                    className="bg-[var(--text-primary)] text-white hover:opacity-90 text-[12px] font-bold px-4 py-2 rounded-xl transition-all cursor-pointer disabled:opacity-40 shadow-sm"
                   >
                     Add
                   </button>
                 </div>
-                {inputError && <p className="text-[11px] text-red-500 mt-2">{inputError}</p>}
+                {inputError && <p className="text-[11px] text-rose-500 font-medium">{inputError}</p>}
 
                 {locations.length > 0 && (
-                  <div className="flex flex-col gap-2.5 mt-4.5">
+                  <div className="flex flex-col gap-2 pt-1">
                     {locations.map((loc) => (
-                      <div key={loc.id} className="flex items-center justify-between bg-[var(--bg)] border border-[var(--border)] px-3.5 py-2.5 rounded-xl shadow-sm">
+                      <div key={loc.id} className="flex items-center justify-between bg-[#FAF8F3] border border-[#E5DFD3] px-3.5 py-2.5 rounded-xl shadow-sm">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="w-5 h-5 rounded-full bg-[var(--bg-soft)] border border-[var(--border)] flex items-center justify-center text-[10px] font-bold text-[var(--text-secondary)]">
+                          <span className="w-5 h-5 rounded-full bg-white border border-[#E5DFD3] flex items-center justify-center text-[10px] font-extrabold text-[var(--text-primary)]">
                             {loc.label}
                           </span>
-                          <span className="text-[12px] font-bold text-[var(--text-primary)] truncate max-w-[150px]">
+                          <span className="text-[12px] font-extrabold text-[var(--text-primary)] truncate max-w-[150px]">
                             {loc.address.split(',')[0]}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2.5">
-                          <span className={`text-[10px] font-extrabold ${loc.geocoded ? 'text-green-500' : loc.error ? 'text-red-500' : 'text-[var(--text-muted)]'}`}>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-extrabold ${loc.geocoded ? 'text-emerald-600' : loc.error ? 'text-rose-500' : 'text-[var(--text-muted)]'}`}>
                             {loc.geocoding ? '...' : loc.error ? 'Err' : '✓'}
                           </span>
                           <button
                             onClick={() => handleRemoveLocation(loc.id)}
-                            className="text-[var(--text-muted)] hover:text-red-500 p-1 transition-colors"
-                            aria-label="Remove location"
+                            className="text-[var(--text-muted)] hover:text-rose-500 p-1 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

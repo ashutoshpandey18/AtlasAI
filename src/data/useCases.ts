@@ -354,4 +354,71 @@ export const USE_CASES: UseCase[] = [
       nearest_gas_pipeline_distance_m: 0.13,
     },
   },
+  {
+    id: 'solar-carport',
+    name: 'Solar Carport',
+    description: 'Parking lot solar canopy on retail, commercial, or institutional sites',
+    fields: [
+      'slope_degrees', 'aspect_degrees', 'aspect_cardinal',
+      'within_floodplain_polygon',
+      'tree_canopy_pct', 'lcms_class', 'land_use_class', 'is_cultivated',
+      'primary_building_height_m', 'primary_building_footprint_sqm',
+      'nearest_transmission_line_distance_m', 'nearest_transmission_line_voltage_kv',
+      'nearest_transmission_line_voltage_class',
+      'nearest_power_plant_distance_m', 'nearest_power_plant_primary_fuel',
+      'nearest_power_plant_capacity_mw',
+      'intersects_wetland', 'intersects_conservation_easement', 'intersects_protected_area',
+      'political_region', 'political_county', 'political_locality',
+    ],
+    questions: [
+      {
+        id: 'canopy_type',
+        question: 'Target canopy structure type',
+        type: 'select',
+        options: [
+          { label: 'T-post carport — single row', value: 'tpost' },
+          { label: 'Inverted tee — dual row', value: 'inverted' },
+          { label: 'Full lot coverage — warehouse or big-box', value: 'full' },
+        ],
+        defaultValue: 'inverted',
+      },
+      {
+        id: 'ownership_type',
+        question: 'Is the parking lot owned or leased by the site operator?',
+        type: 'select',
+        options: [
+          { label: 'Owned — direct development', value: 'owned' },
+          { label: 'Leased — requires landlord consent', value: 'leased' },
+          { label: 'Unknown', value: 'unknown' },
+        ],
+        defaultValue: 'owned',
+        hint: 'Owned parcels allow immediate development — leased lots add negotiation complexity',
+      },
+      {
+        id: 'behind_meter',
+        question: 'Is this behind-the-meter (self-consumption) or grid export?',
+        type: 'select',
+        options: [
+          { label: 'Behind-the-meter — offset retail load', value: 'btm' },
+          { label: 'Grid export — sell to utility', value: 'export' },
+          { label: 'Hybrid — self-consume + export excess', value: 'hybrid' },
+        ],
+        defaultValue: 'btm',
+      },
+    ],
+    scoringWeights: {
+      // Flat slope is non-negotiable for carport structure
+      slope_degrees: 0.28,
+      // Must be clear sky — tree canopy kills solar yield
+      tree_canopy_pct: 0.22,
+      // Grid proximity for interconnect (behind-the-meter or export)
+      nearest_transmission_line_distance_m: 0.18,
+      // South-facing maximizes yield
+      aspect_degrees: 0.12,
+      // Flood risk affects structure foundations
+      within_floodplain_polygon: 0.10,
+      // Environmental constraints on developed land
+      intersects_wetland: 0.10,
+    },
+  },
 ];

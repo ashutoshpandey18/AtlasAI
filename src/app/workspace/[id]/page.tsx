@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import type { LocationEntry, LocationResult, UseCase, ProjectWorkspace } from '@/types/atlas';
 import { USE_CASES } from '@/data/useCases';
-import { fetchFields, askQuestion } from '@/services/mireye';
+import { fetchFields, fetchFieldsBatch, askQuestion } from '@/services/mireye';
 import { buildResults, scoreLocation } from '@/services/scoring';
 import { geocodeAddress } from '@/services/geocoder';
 import { askGemini } from '@/services/gemini';
@@ -81,23 +81,49 @@ export default function WorkspacePage() {
             }
             setProgress(initialProgress);
 
-            const settled = await Promise.all(
-              matched.locations.map(async (loc): Promise<LocationResult> => {
-                if (!loc.geocoded || loc.lat === null || loc.lng === null) {
-                  return buildResults(loc, null, uc, matched.requirements, loc.error || 'Address geocoding error');
-                }
-                setProgress((p) => ({ ...p, [loc.id]: 'Calling Mireye APIs...' }));
-                try {
-                  const data = await fetchFields(loc.lat, loc.lng, uc.fields);
-                  setProgress((p) => ({ ...p, [loc.id]: 'Complete' }));
-                  return buildResults(loc, data, uc, matched.requirements, null);
-                } catch (err) {
-                  const msg = err instanceof Error ? err.message : 'API connection error';
-                  setProgress((p) => ({ ...p, [loc.id]: `Error: ${msg}` }));
-                  return buildResults(loc, null, uc, matched.requirements, msg);
-                }
-              })
+            const geocodedLocs = matched.locations.filter(
+              (loc) => loc.geocoded && loc.lat !== null && loc.lng !== null
             );
+            const failedLocs = matched.locations.filter(
+              (loc) => !loc.geocoded || loc.lat === null || loc.lng === null
+            );
+
+            // Batch all geocoded locations in one API call
+            let batchMap = new Map<string, Awaited<ReturnType<typeof fetchFields>>>();
+            try {
+              setProgress((p) => {
+                const next = { ...p };
+                for (const loc of geocodedLocs) next[loc.id] = 'Calling Mireye APIs...';
+                return next;
+              });
+              batchMap = await fetchFieldsBatch(
+                geocodedLocs.map((loc) => ({ id: loc.id, lat: loc.lat!, lng: loc.lng! })),
+                uc.fields
+              );
+              setProgress((p) => {
+                const next = { ...p };
+                for (const loc of geocodedLocs) next[loc.id] = 'Complete';
+                return next;
+              });
+            } catch (err) {
+              const msg = err instanceof Error ? err.message : 'API connection error';
+              setProgress((p) => {
+                const next = { ...p };
+                for (const loc of geocodedLocs) next[loc.id] = `Error: ${msg}`;
+                return next;
+              });
+            }
+
+            const settled: LocationResult[] = [
+              ...failedLocs.map((loc) =>
+                buildResults(loc, null, uc, matched.requirements, loc.error || 'Address geocoding error')
+              ),
+              ...geocodedLocs.map((loc) => {
+                const data = batchMap.get(loc.id) ?? null;
+                return buildResults(loc, data, uc, matched.requirements, data ? null : 'No data returned');
+              }),
+            ];
+
             setResults(settled);
             setAnalyzing(false);
           }

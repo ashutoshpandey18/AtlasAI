@@ -6,6 +6,7 @@ export type UseCaseId =
   | 'battery-factory'
   | 'ev-charging'
   | 'solar-farm'
+  | 'solar-carport'
   | 'wind-farm'
   | 'retail-store'
   | 'manufacturing';

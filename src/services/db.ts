@@ -64,38 +64,12 @@ async function initDb() {
 }
 
 function getDefaultSeed(): ProjectWorkspace[] {
-  return [
-    {
-      id: 'campaign-demo-solar',
-      name: 'Solar Farm Campaign',
-      useCaseId: 'solar-farm',
-      requirements: { project_size: 'large', cultivated_ok: true },
-      locations: [
-        { id: 'loc-ohio', address: 'Pickaway County, OH', label: 'Pickaway County, OH', lat: 39.6012, lng: -82.9463, geocoding: false, geocoded: true, error: null }
-      ],
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'campaign-demo-warehouse',
-      name: 'Warehouse Campaign',
-      useCaseId: 'warehouse',
-      requirements: { rail_required: false, power_requirement: 'medium', flood_tolerance: false },
-      locations: [
-        { id: 'loc-memphis', address: 'Memphis, TN', label: 'Memphis, TN', lat: 35.1495, lng: -90.0490, geocoding: false, geocoded: true, error: null }
-      ],
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'campaign-demo-retail',
-      name: 'Retail Store Campaign',
-      useCaseId: 'retail-store',
-      requirements: { drive_thru: false, traffic_type: 'mixed' },
-      locations: [
-        { id: 'loc-florida', address: 'Central Florida Site', label: 'Central Florida Site', lat: 27.7568, lng: -81.4640, geocoding: false, geocoded: true, error: null }
-      ],
-      createdAt: new Date().toISOString()
-    }
-  ];
+  return [];
+}
+
+export async function clearAllCampaigns(): Promise<void> {
+  await initDb();
+  await client.execute('DELETE FROM campaigns');
 }
 
 export async function getCampaigns(): Promise<ProjectWorkspace[]> {

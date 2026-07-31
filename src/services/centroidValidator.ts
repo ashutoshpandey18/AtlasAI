@@ -86,12 +86,14 @@ function haversineMeters(lat1: number, lng1: number, lat2: number, lng2: number)
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function val<T>(fields: Record<string, MireyeFieldValue>, key: string): T | null {
+function val<T>(fields: Record<string, MireyeFieldValue> | undefined | null, key: string): T | null {
+  if (!fields) return null;
   const v = fields[key]?.value;
   return v !== undefined ? (v as T) : null;
 }
 
-function confidence(fields: Record<string, MireyeFieldValue>, key: string): string {
+function confidence(fields: Record<string, MireyeFieldValue> | undefined | null, key: string): string {
+  if (!fields) return 'low';
   return fields[key]?.confidence ?? 'low';
 }
 
@@ -339,7 +341,9 @@ export function validateCentroid(
   data: MireyeFetchResponse,
   cluster?: { lats: number[]; lngs: number[] },
 ): CentroidValidation {
-  const { lat, lng, fields } = data;
+  const lat = data?.lat ?? 0;
+  const lng = data?.lng ?? 0;
+  const fields = data?.fields ?? {};
   const flags: CentroidFlag[] = [];
 
   // Run all detectors

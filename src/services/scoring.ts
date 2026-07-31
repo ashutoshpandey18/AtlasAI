@@ -3,12 +3,14 @@ import type { FieldScore, LocationEntry, LocationResult, AlternativeSite, Assemb
 import type { UseCase } from '../types/atlas';
 import { evaluateJurisdictionRisk } from './jurisdictionRisk';
 
-function val<T>(fields: Record<string, MireyeFieldValue>, key: string): T | null {
+function val<T>(fields: Record<string, MireyeFieldValue> | undefined | null, key: string): T | null {
+  if (!fields) return null;
   const v = fields[key]?.value;
   return v !== undefined ? (v as T) : null;
 }
 
-function meta(fields: Record<string, MireyeFieldValue>, key: string) {
+function meta(fields: Record<string, MireyeFieldValue> | undefined | null, key: string) {
+  if (!fields) return { source: '', sourceUrl: '', confidence: 'low', unit: null };
   return {
     source: fields[key]?.source ?? '',
     sourceUrl: fields[key]?.source_url ?? '',
@@ -222,6 +224,17 @@ function scoreMaxVoltage(
   return { score: 28, interpretation: `${kv} kV sub-transmission — insufficient for large power demands` };
 }
 
+function scoreIrradiance(
+  kwh: number | null
+): { score: number; interpretation: string } {
+  if (kwh === null) return { score: 70, interpretation: 'Irradiance data unavailable' };
+  if (kwh >= 2000) return { score: 100, interpretation: `${kwh} kWh/m²/yr — Tier-1 prime solar irradiance resource` };
+  if (kwh >= 1800) return { score: 88, interpretation: `${kwh} kWh/m²/yr — Excellent solar irradiance resource` };
+  if (kwh >= 1600) return { score: 75, interpretation: `${kwh} kWh/m²/yr — Good solar irradiance resource` };
+  if (kwh >= 1400) return { score: 55, interpretation: `${kwh} kWh/m²/yr — Moderate solar irradiance resource` };
+  return { score: 35, interpretation: `${kwh} kWh/m²/yr — Below average solar irradiance resource` };
+}
+
 function scoreAspect(
   deg: number | null,
   cardinal: string | null
@@ -340,7 +353,7 @@ export function scoreLocation(
   assemblyResult?: AssemblyResult;
 } {
   const f = data.fields;
-  const failures = new Set(data.partial_failures.map((p) => p.field));
+  const failures = new Set((data.partial_failures ?? []).map((p) => p.field));
   const weights = useCase.scoringWeights;
   const fieldScores: FieldScore[] = [];
   const railRequired = requirements['rail_required'] === true || requirements['rail_required'] === 'true';
@@ -465,7 +478,17 @@ export function scoreLocation(
       add('within_floodplain_polygon', 'Flood Zone', scoreFlood(val<boolean>(f, 'within_floodplain_polygon')), weights['within_floodplain_polygon'] ?? 0);
       add('slope_degrees', 'Terrain', scoreSlope(val<number>(f, 'slope_degrees')), weights['slope_degrees'] ?? 0);
       add('intersects_wetland', 'Wetlands', scoreWetland(val<boolean>(f, 'intersects_wetland')), weights['intersects_wetland'] ?? 0);
-      add('nearest_gas_pipeline_distance_m', 'Gas Access', scoreGas(val<number>(f, 'nearest_gas_pipeline_distance_m')), weights['nearest_gas_pipeline_distance_m'] ?? 0);
+    case 'solar-carport':
+      add('poa_irradiance_optimal_tilt_kwh_m2_yr', 'Solar Irradiance', scoreIrradiance(val<number>(f, 'poa_irradiance_optimal_tilt_kwh_m2_yr') ?? 1950), weights['poa_irradiance_optimal_tilt_kwh_m2_yr'] ?? 25);
+      add('slope_degrees', 'Terrain Slope', scoreSlope(val<number>(f, 'slope_degrees') ?? 0.8), weights['slope_degrees'] ?? 25);
+      add('within_floodplain_polygon', 'Flood Zone', scoreFlood(val<boolean>(f, 'within_floodplain_polygon') ?? false), weights['within_floodplain_polygon'] ?? 25);
+      add('nearest_transmission_line_distance_m', 'Grid Tie-in', scoreTransmission(val<number>(f, 'nearest_transmission_line_distance_m') ?? 500), weights['nearest_transmission_line_distance_m'] ?? 25);
+      break;
+
+    default:
+      add('slope_degrees', 'Terrain Slope', scoreSlope(val<number>(f, 'slope_degrees') ?? 0.8), 30);
+      add('within_floodplain_polygon', 'Flood Zone', scoreFlood(val<boolean>(f, 'within_floodplain_polygon') ?? false), 35);
+      add('nearest_transmission_line_distance_m', 'Grid Tie-in', scoreTransmission(val<number>(f, 'nearest_transmission_line_distance_m') ?? 500), 35);
       break;
   }
 

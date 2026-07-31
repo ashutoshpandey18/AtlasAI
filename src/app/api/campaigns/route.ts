@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCampaigns, saveCampaign } from '@/services/db';
+import { getCampaigns, saveCampaign, clearAllCampaigns } from '@/services/db';
 import type { ProjectWorkspace } from '@/types/atlas';
 
 export async function GET() {
@@ -22,6 +22,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Database save error';
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
+export async function DELETE() {
+  try {
+    await clearAllCampaigns();
+    return NextResponse.json({ success: true, message: 'All campaigns deleted successfully' });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Database delete error';
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

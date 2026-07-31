@@ -51,8 +51,9 @@ export function evaluateJurisdictionRisk(
   lat: number,
   lng: number,
   fieldName: string,
-  fields: Record<string, MireyeFieldValue>
+  fields?: Record<string, MireyeFieldValue> | null
 ): JurisdictionRisk | undefined {
+  const safeFields = fields ?? {};
   const rto = getRtoRegion(lat, lng);
 
   // 1. Transmission line cross-RTO risk
@@ -82,9 +83,9 @@ export function evaluateJurisdictionRisk(
 
   // 2. FEMA Floodplain DFIRM panel vintage risk
   if (fieldName === 'within_floodplain_polygon') {
-    const confidence = fields['within_floodplain_polygon']?.confidence;
+    const confidence = safeFields['within_floodplain_polygon']?.confidence;
     const isMediumOrLow = confidence === 'medium' || confidence === 'low';
-    const vintage = fields['within_floodplain_polygon']?.dataset_vintage ?? '2018';
+    const vintage = safeFields['within_floodplain_polygon']?.dataset_vintage ?? '2018';
 
     if (isMediumOrLow || parseInt(vintage, 10) < 2020) {
       return {

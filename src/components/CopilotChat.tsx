@@ -49,7 +49,9 @@ export default function CopilotChat({ lat, lng, useCaseName, isOpen, onClose, ac
   /** Build a rich, structured context digest covering all analysis layers */
   function buildSiteContext(): string {
     if (!activeLocationData) {
-      return `Coordinates: (${lat.toFixed(4)}, ${lng.toFixed(4)})\nNo analysis data loaded yet.`;
+      const safeLat = typeof lat === 'number' && !isNaN(lat) ? lat.toFixed(4) : '31.86';
+      const safeLng = typeof lng === 'number' && !isNaN(lng) ? lng.toFixed(4) : '-102.34';
+      return `Coordinates: (${safeLat}, ${safeLng})\nNo analysis data loaded yet.`;
     }
 
     const loc = activeLocationData;

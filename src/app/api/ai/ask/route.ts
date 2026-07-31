@@ -6,7 +6,7 @@ const MODEL_NAME = 'llama-3.3-70b-versatile';
 export async function POST(req: Request) {
   try {
     const { prompt, systemPrompt, userQuestion } = await req.json();
-    const apiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: 'Groq API key is not configured on the server.' }, { status: 500 });

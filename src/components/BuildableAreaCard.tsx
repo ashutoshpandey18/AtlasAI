@@ -166,7 +166,7 @@ export default function BuildableAreaCard({
       <OwnerOutreachModal
         isOpen={loiModalOpen}
         onClose={() => setLoiModalOpen(false)}
-        address={`${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`}
+        address={typeof data?.lat === 'number' && typeof data?.lng === 'number' ? `${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}` : 'Target Parcel'}
         data={data}
         useCaseName="Solar / Data Center"
         targetAcres={report.netBuildableAcres}

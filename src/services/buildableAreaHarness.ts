@@ -27,7 +27,8 @@ export interface BuildableAreaReport {
   verdictReason: string;
 }
 
-function val<T>(fields: Record<string, MireyeFieldValue>, key: string): T | null {
+function val<T>(fields: Record<string, MireyeFieldValue> | undefined | null, key: string): T | null {
+  if (!fields) return null;
   const v = fields[key]?.value;
   return v !== undefined ? (v as T) : null;
 }

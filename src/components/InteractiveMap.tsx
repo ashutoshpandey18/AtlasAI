@@ -189,10 +189,11 @@ export default function InteractiveMap({ results }: Props) {
         {valid.map((r) => {
           const isSelected = r.location.id === selectedId;
 
-          const slope = (r.data?.fields['slope_degrees']?.value as number) ?? 0;
-          const elevation = (r.data?.fields['elevation']?.value as number) ?? 0;
-          const inFlood = r.data?.fields['within_floodplain_polygon']?.value === true;
-          const gridDist = (r.data?.fields['nearest_transmission_line_distance_m']?.value as number) || 0;
+          const fields = r.data?.fields ?? {};
+          const slope = (fields['slope_degrees']?.value as number) ?? 0;
+          const elevation = (fields['elevation']?.value as number) ?? 0;
+          const inFlood = fields['within_floodplain_polygon']?.value === true;
+          const gridDist = (fields['nearest_transmission_line_distance_m']?.value as number) || 0;
           const gridKm = (gridDist / 1000).toFixed(1);
 
           return (

@@ -126,7 +126,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-start text-left">
             <div className="inline-flex items-center gap-2 bg-[var(--bg-soft)] border border-[var(--border)] px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-[var(--accent)] tracking-wide mb-6">
               <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-              MIREYE BUILD CHALLENGE
+              AUTONOMOUS SITING AGENT
             </div>
 
             <h1 className="text-[40px] sm:text-[52px] font-extrabold tracking-tighter leading-[1.05] mb-5 font-sans">
@@ -197,7 +197,7 @@ export default function LandingPage() {
       {/* Minimal Footer */}
       <footer className="border-t border-[var(--border)] py-6 bg-[var(--bg)] text-[11px] text-[var(--text-muted)]">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div>© 2026 Atlas Acquisition Agent — Mireye Build Challenge</div>
+          <div>© 2026 Atlas Acquisition Agent</div>
           <div className="flex gap-3">
             <span className="text-[var(--accent)] font-semibold">Mireye API /v1/fetch/batch</span>
             <span>·</span>

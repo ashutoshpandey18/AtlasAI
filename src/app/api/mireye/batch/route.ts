@@ -10,19 +10,32 @@ interface BatchCoordinate {
   lng: number;
 }
 
+const DEFAULT_FIELDS = [
+  'poa_irradiance_optimal_tilt_kwh_m2_yr',
+  'slope_degrees',
+  'within_floodplain_polygon',
+  'transmission_line_distance_m',
+  'tree_canopy_pct',
+];
+
 export async function POST(req: Request) {
   try {
-    const { coordinates, fields } = await req.json() as {
-      coordinates: BatchCoordinate[];
-      fields: string[];
-    };
+    const body = await req.json();
+    const rawCoordinates = body.coordinates;
+    const rawFields = Array.isArray(body.fields) && body.fields.length > 0 ? body.fields : DEFAULT_FIELDS;
 
-    if (!Array.isArray(coordinates) || coordinates.length === 0) {
+    if (!Array.isArray(rawCoordinates) || rawCoordinates.length === 0) {
       return NextResponse.json({ error: 'coordinates must be a non-empty array.' }, { status: 400 });
     }
 
+    const coordinates: BatchCoordinate[] = rawCoordinates.map((c: any, idx: number) => ({
+      id: c.id || c.geo_id || `coord-${idx + 1}`,
+      lat: Number(c.lat),
+      lng: Number(c.lng ?? c.lon),
+    }));
+
     const token = process.env.MIREYE_API_TOKEN;
-    const sortedFields = [...fields].sort().join(',');
+    const sortedFields = [...rawFields].sort().join(',');
 
     // 1. Check cache for each coordinate individually
     const cacheResults: Record<string, unknown> = {};
@@ -61,7 +74,7 @@ export async function POST(req: Request) {
                 },
                 body: JSON.stringify({
                   locations: chunk.map((c) => ({ lat: c.lat, lng: c.lng })),
-                  fields,
+                  fields: rawFields,
                 }),
                 signal: controller.signal,
               });

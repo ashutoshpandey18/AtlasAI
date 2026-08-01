@@ -170,6 +170,45 @@ Instead of exposing raw geospatial attributes, Atlas translates Mireye's structu
 
 ---
 
+## 8. Insomnia API Testing & Endpoint Verification
+
+Atlas includes a complete suite of verified HTTP REST & Streaming SSE endpoints tested in **Insomnia**:
+
+### 1️⃣ Mireye Physical Location Fetch (Single Point) — `POST /api/mireye/fetch`
+Queries physical location ground-truth fields for exact lat/lng coordinates (NREL solar yield, USGS 3DEP slope, FEMA flood hazard, EIA transmission grid).
+
+![Mireye Single Point Fetch](public/assets/screenshots/insomnia_mireye_fetch.png)
+
+---
+
+### 2️⃣ Mireye Sub-Second Parallel Batch Ingestion — `POST /api/mireye/batch`
+Parallel batch query endpoint for inspecting entire commercial candidate portfolios with sub-second performance.
+
+![Mireye Sub-Second Parallel Batch Ingestion](public/assets/screenshots/insomnia_mireye_batch.png)
+
+---
+
+### 3️⃣ Mireye Natural Language Location Q&A — `POST /api/mireye/ask`
+Natural language location intelligence Q&A endpoint delivering instant physical suitability answers and citation tables.
+
+![Mireye Natural Language Location Q&A](public/assets/screenshots/insomnia_mireye_ask.png)
+
+---
+
+### 4️⃣ Streaming SSE AI Siting Agent Pipeline — `POST /api/agent/site-scan`
+Real-time Server-Sent Events (SSE) agent pipeline thatstreams Strategy Plans, Rejection Proofs, Technical Scores, and Executive Investment Memos.
+
+![Streaming SSE AI Siting Agent Pipeline](public/assets/screenshots/insomnia_agent_site_scan.png)
+
+---
+
+### 5️⃣ Fetch All Saved Acquisition Campaigns — `GET /api/campaigns`
+Fetches all persistent saved acquisition campaigns and candidate siting results from the database.
+
+![Fetch All Saved Acquisition Campaigns](public/assets/screenshots/insomnia_get_campaigns.png)
+
+---
+
 ## Quick Start (Run Locally)
 
 ```bash

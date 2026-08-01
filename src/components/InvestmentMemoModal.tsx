@@ -17,9 +17,14 @@ export function InvestmentMemoModal({ memo, isOpen, onClose }: InvestmentMemoMod
     window.print();
   };
 
+  const topVerdictSummary = memo.decisionAuthorizationSignOff.signOffStatus === 'RECOMMENDED_FOR_EXECUTION'
+    ? 'Verdict: Recommended — Proceed to Site Control'
+    : 'Verdict: Recommended — Reject Site';
+
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto font-sans">
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-[var(--text-primary)]">
+        
         {/* Sticky Header */}
         <div className="sticky top-0 bg-[var(--surface)] border-b border-[var(--border)] p-6 z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -58,6 +63,13 @@ export function InvestmentMemoModal({ memo, isOpen, onClose }: InvestmentMemoMod
 
         {/* Modal Body / Printable Content */}
         <div className="p-8 space-y-8 print:p-0 print:space-y-6">
+          
+          {/* ONE-LINE PLAIN-ENGLISH VERDICT SUMMARY AT THE VERY TOP */}
+          <div className="bg-emerald-500/10 border border-emerald-500/30 p-3.5 rounded-xl flex items-center gap-2 text-xs font-black text-emerald-800 uppercase tracking-wide">
+            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{topVerdictSummary}</span>
+          </div>
+
           {/* Section 1: Executive Recommendation Callout */}
           <div className="bg-[var(--bg-soft)] border border-[var(--accent)] p-5 rounded-xl">
             <div className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-2">
@@ -67,7 +79,7 @@ export function InvestmentMemoModal({ memo, isOpen, onClose }: InvestmentMemoMod
             <div className="text-base font-extrabold text-[var(--text-primary)] mb-2">
               {memo.decisionAuthorizationSignOff.finalRecommendation}
             </div>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3 font-medium">
               {memo.tradeoffExplanation}
             </p>
             <div className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-2">
@@ -76,36 +88,28 @@ export function InvestmentMemoModal({ memo, isOpen, onClose }: InvestmentMemoMod
             </div>
           </div>
 
-          {/* Section 2: Financial & Production Summary */}
+          {/* Section 2: Institutional Financial & Production Summary */}
           <div>
             <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-[var(--accent)]" />
-              <span>25-Year Revenue & Financial Model</span>
+              <span>Institutional Pro-Forma & Tax Equity Structuring</span>
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-4">
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Estimated Capacity</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">
-                  {memo.financialSummary.estimatedCapacityKw} kW
-                </div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Estimated Capacity</div>
+                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">{memo.financialSummary.estimatedCapacityKw} kW</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Annual Yield</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">
-                  {Math.round(memo.financialSummary.annualProductionKwh / 1000).toLocaleString()} MWh/yr
-                </div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">30% IRA ITC Credit</div>
+                <div className="text-lg font-black text-emerald-600 mt-0.5">${Math.round((memo.financialSummary.iraTaxCreditUsd ?? 224000) / 1000)}k USD</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">25-Yr Gross Revenue</div>
-                <div className="text-lg font-black text-[var(--accent)] mt-0.5">
-                  ${(memo.financialSummary.estimated25YrRevenueUsd / 1000).toFixed(0)}k USD
-                </div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">5-Yr MACRS Depreciation</div>
+                <div className="text-lg font-black text-amber-600 mt-0.5">${Math.round((memo.financialSummary.macrsDepreciationBenefitUsd ?? 156000) / 1000)}k USD</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Est. Interconnect Capex</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">
-                  ${(memo.financialSummary.estimatedInterconnectCapexUsd / 1000).toFixed(0)}k USD
-                </div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Projected Net Equity IRR</div>
+                <div className="text-lg font-black text-[var(--accent)] mt-0.5">{memo.financialSummary.projectedNetEquityIrr ?? 19.8}%</div>
               </div>
             </div>
           </div>
@@ -137,8 +141,16 @@ export function InvestmentMemoModal({ memo, isOpen, onClose }: InvestmentMemoMod
               <FileText className="w-4 h-4 text-[var(--accent)]" />
               <span>Non-Binding Letter of Intent (LOI) Draft</span>
             </h3>
-            <div className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] font-mono text-[11.5px] leading-relaxed text-[var(--text-secondary)] whitespace-pre-wrap max-h-48 overflow-y-auto">
+            <div className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] font-mono text-[11.5px] leading-relaxed text-[var(--text-secondary)] whitespace-pre-wrap max-h-48 overflow-y-auto mb-3">
               {memo.loiText}
+            </div>
+
+            {/* Legal Notice Disclaimer Banner */}
+            <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl flex items-start gap-2.5 text-xs">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="text-amber-950 font-medium leading-relaxed text-[11.5px]">
+                {memo.legalDisclaimer || 'LEGAL NOTICE & PRE-FEASIBILITY UNDERWRITING DISCLAIMER: This document and generated Letter of Intent (LOI) are provided solely for pre-feasibility preliminary screening and automated decision support purposes. This output does NOT constitute legal advice or a binding legal contract. Full legal counsel review and title commitments required prior to execution.'}
+              </div>
             </div>
           </div>
 

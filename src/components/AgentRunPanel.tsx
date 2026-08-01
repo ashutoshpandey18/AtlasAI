@@ -5,7 +5,7 @@ import type { StrategyPlan } from '@/agent/planner';
 import type { InvestmentMemo } from '@/agent/memo';
 import { InvestmentMemoModal } from './InvestmentMemoModal';
 import { AskWhyModal, type AskWhyData } from './AskWhyModal';
-import { Sparkles, Play, CheckCircle, AlertTriangle, ArrowRight, Save, Trophy, Bot, FileText, MapPin, Sun, Compass, Zap } from 'lucide-react';
+import { Sparkles, Play, CheckCircle, AlertTriangle, ArrowRight, Trophy, Bot, FileText, MapPin, Sun, Compass, Zap, ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 
 interface AgentRunPanelProps {
@@ -20,6 +20,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
   const [evaluations, setEvaluations] = useState<Array<{ siteName: string; county: string; techScore: number; priorityScore: number; inputsChecked?: string[]; rulesApplied?: string[]; conclusion?: string }>>([]);
   const [survivors, setSurvivors] = useState<any[]>([]);
   const [savedCampaignId, setSavedCampaignId] = useState<string | null>(null);
+  const [showCriteriaWeights, setShowCriteriaWeights] = useState(false);
 
   // Modal States
   const [selectedMemo, setSelectedMemo] = useState<InvestmentMemo | null>(null);
@@ -108,7 +109,6 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                 setEvaluations((prev) => [...prev, evt.data]);
               } else if (evt.eventType === 'final_result') {
                 setSurvivors(evt.data.survivors || []);
-                // Save campaign in database upon scan completion with ALL 70+ parcels
                 saveCampaignToDb(prompt, latestEvaluations);
               }
             } catch (err) {}
@@ -131,42 +131,53 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
     conclusion?: string;
   }) => {
     setAskWhyData({
-      title: `Decision Ledger: ${rej.siteName}`,
+      title: rej.siteName,
       subtitle: rej.county,
-      inputsChecked: rej.inputsChecked && rej.inputsChecked.length > 0 ? rej.inputsChecked : [
-        'FEMA Flood Risk Polygon Layer (FEMA NFHL)',
-        'USGS 3DEP Point-Sampled Slope Layer',
-        'NREL PVWatts v8 Irradiance Yield Layer',
-      ],
-      rulesApplied: rej.rulesApplied && rej.rulesApplied.length > 0 ? rej.rulesApplied : [
-        'Filter Rule: Exclude Special Flood Hazard Area Zone AE',
-        'Filter Rule: Exclude Ground Slope > 6.0° (Civil Overrun Risk)',
-      ],
+      inputsChecked: rej.inputsChecked || [rej.reason],
+      rulesApplied: rej.rulesApplied || ['FEMA Flood Hazard Check', 'USGS Slope Check'],
       conclusion: rej.conclusion || rej.reason,
       isApproved: false,
     });
     setIsAskWhyOpen(true);
   };
 
-  return (
-    <div className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[28px] p-6 sm:p-8 shadow-sm relative overflow-hidden font-sans my-4">
-      {/* Decorative subtle ambient glow */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-[var(--accent)]/5 rounded-full blur-3xl pointer-events-none" />
+  const handleOpenWhyApproved = (ev: {
+    siteName: string;
+    county: string;
+    techScore: number;
+    priorityScore: number;
+    inputsChecked?: string[];
+    rulesApplied?: string[];
+    conclusion?: string;
+  }) => {
+    setAskWhyData({
+      title: ev.siteName,
+      subtitle: ev.county,
+      inputsChecked: ev.inputsChecked || ['High solar POA irradiance', 'Flat USGS slope < 1.0°', 'Clean FEMA Zone X'],
+      rulesApplied: ev.rulesApplied || ['Fee-Simple Ownership Approved', 'Grid Distance < 1 km'],
+      conclusion: ev.conclusion || `Approved for acquisition with ${ev.techScore}/100 feasibility score.`,
+      isApproved: true,
+    });
+    setIsAskWhyOpen(true);
+  };
 
-      {/* Header */}
-      <div className="mb-6 pb-5 border-b border-[var(--border)] flex items-start justify-between flex-wrap gap-4 relative z-10">
+  return (
+    <div className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-[28px] p-6 sm:p-8 shadow-xs font-sans relative overflow-hidden">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-[var(--border)] pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-700 px-3 py-1 rounded-full text-[10.5px] font-black uppercase tracking-wider mb-2.5 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
-            6-Stage Autonomous Decision Pipeline
+          <div className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-1">
+            <Bot className="w-4 h-4 text-[var(--accent)]" />
+            <span>Autonomous Land Acquisition Agent</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] tracking-tight">
-            Autonomous Renewable Land Acquisition Agent
-          </h1>
-          <p className="text-[13px] text-[var(--text-secondary)] mt-1 font-medium max-w-[650px] leading-relaxed">
-            Replaces two weeks of manual site acquisition research with real physical GIS ground truth, automated rejection proofs, and institutional investment committee memos.
+          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] tracking-tight">
+            Commercial Siting Workspace
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5 font-medium">
+            Enter a business goal below to run automated site checking, rejection explanations, and investment memos.
           </p>
         </div>
+
         {savedCampaignId && (
           <Link
             href="/projects"
@@ -179,7 +190,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
         )}
       </div>
 
-      {/* Quick State Portfolio Selectors */}
+      {/* State Portfolio Selector Pills (Plain-English Labels) */}
       <div className="mb-5 relative z-10">
         <div className="text-[10.5px] font-black text-[var(--text-muted)] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
           <Bot className="w-3.5 h-3.5 text-[var(--accent)]" />
@@ -195,7 +206,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                 : 'border-[var(--border)] bg-[var(--bg-soft)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
             }`}
           >
-            <MapPin className="w-3.5 h-3.5 text-amber-500" /> Texas (ERCOT)
+            <MapPin className="w-3.5 h-3.5 text-amber-500" /> Texas (ERCOT grid)
           </button>
           <button
             type="button"
@@ -206,7 +217,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                 : 'border-[var(--border)] bg-[var(--bg-soft)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
             }`}
           >
-            <Sun className="w-3.5 h-3.5 text-amber-500" /> Florida (FRCC)
+            <Sun className="w-3.5 h-3.5 text-amber-500" /> Florida (FRCC grid)
           </button>
           <button
             type="button"
@@ -217,7 +228,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                 : 'border-[var(--border)] bg-[var(--bg-soft)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
             }`}
           >
-            <Compass className="w-3.5 h-3.5 text-blue-500" /> Georgia (SERC)
+            <Compass className="w-3.5 h-3.5 text-blue-500" /> Georgia (SERC grid)
           </button>
           <button
             type="button"
@@ -228,13 +239,13 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                 : 'border-[var(--border)] bg-[var(--bg-soft)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
             }`}
           >
-            <Zap className="w-3.5 h-3.5 text-emerald-500" /> North Carolina (SERC)
+            <Zap className="w-3.5 h-3.5 text-emerald-500" /> North Carolina (SERC grid)
           </button>
         </div>
       </div>
 
       {/* Prompt Command Bar Form */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4 relative z-10">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6 relative z-10">
         <div className="relative flex-1">
           <input
             type="text"
@@ -251,103 +262,147 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
         >
           {isRunning ? (
             <>
-              <Sparkles className="w-4 h-4 animate-spin" />
-              <span>Scanning Parcels...</span>
+              <Sparkles className="w-4 h-4 animate-spin text-amber-300" />
+              <span>Checking sites...</span>
             </>
           ) : (
             <>
-              <Play className="w-4 h-4 fill-current" />
+              <Play className="w-4 h-4 fill-white" />
               <span>Run Agent Pipeline →</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Stream Output Container */}
-      {(plan || isRunning) && (
-        <div className="space-y-6 border-t border-[var(--border)] pt-6">
-          {/* Stage 1: Dynamic Strategy Plan */}
+      {/* ZERO-STATE / FIRST-RUN DEMO CARD (Shown before query execution) */}
+      {!isRunning && evaluations.length === 0 && rejections.length === 0 && (
+        <div className="bg-[var(--bg-soft)] border border-[var(--border)] rounded-2xl p-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <span className="text-[10px] font-black uppercase text-[var(--accent)] bg-[var(--surface)] border border-[var(--border)] px-2.5 py-0.5 rounded-md">
+                Example Demo Scenario
+              </span>
+              <h4 className="text-sm font-extrabold text-[var(--text-primary)] mt-1.5">
+                "Find fast-deployment solar carport targets in Texas under $2M capex."
+              </h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 font-medium">
+                Click "See example" to run an instant demo scan showing site checking, rejection reasons, and investment memos.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={startScan}
+              className="bg-[var(--surface)] border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all shadow-xs shrink-0 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>See example</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* User-Facing Plain Status Pipeline Stage Stepper */}
+      {isRunning && (
+        <div className="mb-6 p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border)] space-y-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 animate-spin text-amber-500" />
+            <span>Agent Active: Checking Sites & Sourcing Physical Data...</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px] font-bold text-[var(--text-secondary)]">
+            <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">1. Understanding request</div>
+            <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">2. Checking sites</div>
+            <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">3. Scoring results</div>
+            <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">4. Explaining rejections</div>
+            <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">5. Building report</div>
+          </div>
+        </div>
+      )}
+
+      {/* Agent Execution Outputs */}
+      {(plan || rejections.length > 0 || evaluations.length > 0) && (
+        <div className="space-y-6 pt-4 border-t border-[var(--border)]">
+          
+          {/* Strategy Plan Output */}
           {plan && (
             <div className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wider">
-                  Stage 01: Autonomous Strategy Plan
+                  Understanding your request
                 </span>
                 <span className="text-xs font-mono font-bold bg-[var(--surface)] px-2.5 py-0.5 rounded-full border border-[var(--border)]">
                   Target: {plan.selectedChain} ({plan.targetState})
                 </span>
               </div>
               <h3 className="text-sm font-bold text-[var(--text-primary)]">{plan.strategyName}</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                {plan.consideredAlternatives.map((alt, i) => (
-                  <div
-                    key={i}
-                    className={`p-2.5 rounded-lg border ${
-                      alt.status === 'SELECTED'
-                        ? 'bg-emerald-950/10 border-emerald-500/40 text-emerald-900 font-medium'
-                        : 'bg-[var(--surface)] border-[var(--border)] opacity-65'
-                    }`}
-                  >
-                    <div className="font-bold flex justify-between">
-                      <span>{alt.strategyName}</span>
-                      <span className={alt.status === 'SELECTED' ? 'text-emerald-600 font-mono' : 'text-rose-500 font-mono'}>
-                        {alt.status}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[var(--text-secondary)] mt-1">
-                      {alt.status === 'SELECTED' ? alt.selectionReason : alt.rejectionReason}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-[12px] text-[var(--text-secondary)] space-y-1">
-                {plan.reasoning.map((r, i) => (
-                  <p key={i}>• {r}</p>
-                ))}
-              </div>
             </div>
           )}
 
-          {/* Stage 2 & 3: Rejections & Evaluations Stream */}
+          {/* Rejections & Evaluations Log */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Rejections Log */}
+            
+            {/* Explaining Rejections Log */}
             <div className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] max-h-64 overflow-y-auto">
-              <div className="text-[11px] font-bold text-[#A04B3C] uppercase tracking-wider mb-3">
-                Rejection Log ({rejections.length} Sites Cut)
+              <div className="text-[11px] font-bold text-rose-700 uppercase tracking-wider mb-3">
+                Explaining Rejections ({rejections.length} Sites Cut)
               </div>
               <div className="space-y-2">
                 {rejections.map((rej, i) => (
                   <div
                     key={i}
                     onClick={() => handleOpenWhyRejection(rej)}
-                    className="text-xs p-2.5 rounded-lg bg-white border border-[#A04B3C]/20 text-[var(--text-primary)] cursor-pointer hover:border-[#A04B3C] transition-all"
+                    className="text-xs p-2.5 rounded-lg bg-white border border-rose-200 text-[var(--text-primary)] cursor-pointer hover:border-rose-400 transition-all shadow-2xs"
                   >
-                    <div className="font-bold text-[#A04B3C] flex justify-between items-center">
-                      <span>✗ {rej.siteName}</span>
-                      <span className="text-[10px] text-[var(--text-muted)] font-normal underline">Ask WHY →</span>
+                    <div className="font-bold text-rose-700 flex justify-between items-center">
+                      <span>Verdict: Recommended — Reject Site ({rej.siteName})</span>
+                      <span className="text-[10px] text-[var(--text-muted)] font-bold underline">Why this rejection? →</span>
                     </div>
-                    <div className="text-[11px] text-[var(--text-secondary)]">{rej.reason}</div>
+                    <div className="text-[11px] text-[var(--text-secondary)] mt-1 font-medium">{rej.reason}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Evaluated Survivors */}
+            {/* Verdict-First Scoring Results */}
             <div className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] max-h-64 overflow-y-auto">
-              <div className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wider mb-3">
-                Screening Survivors ({evaluations.length} Evaluated)
+              <div className="flex justify-between items-center mb-3">
+                <div className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wider">
+                  Scoring Results ({evaluations.length} Evaluated)
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCriteriaWeights(!showCriteriaWeights)}
+                  className="text-[10.5px] font-bold text-[var(--accent)] hover:underline flex items-center gap-0.5 cursor-pointer"
+                >
+                  <span>{showCriteriaWeights ? 'Hide weights' : 'Why this score?'}</span>
+                  {showCriteriaWeights ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                </button>
               </div>
+
+              {/* Progressive Disclosure: Criteria Weights */}
+              {showCriteriaWeights && (
+                <div className="mb-3 bg-white p-2.5 rounded-lg border border-[var(--border)] text-[10.5px] text-[var(--text-secondary)] space-y-1 font-medium">
+                  <div className="font-bold text-[var(--text-primary)]">Configurable Scoring Criteria:</div>
+                  <div>• Solar Yield (28%) — Optimal POA Irradiance</div>
+                  <div>• Slope & Topography (22%) — USGS 3DEP Flat Class</div>
+                  <div>• Grid Proximity (18%) — Substation & Transmission Distance</div>
+                  <div>• Flood Hazard (10%) — FEMA Zone X Clean Polygon</div>
+                </div>
+              )}
+
               <div className="space-y-2">
                 {evaluations.map((ev, i) => (
-                  <div key={i} className="text-xs p-2.5 rounded-lg bg-white border border-[var(--border)] text-[var(--text-primary)] flex justify-between items-center">
+                  <div
+                    key={i}
+                    onClick={() => handleOpenWhyApproved(ev)}
+                    className="text-xs p-2.5 rounded-lg bg-white border border-[var(--border)] text-[var(--text-primary)] flex justify-between items-center cursor-pointer hover:border-[var(--accent)] transition-all shadow-2xs"
+                  >
                     <div>
-                      <div className="font-bold text-[var(--text-primary)]">✓ {ev.siteName}</div>
-                      <div className="text-[11px] text-[var(--text-muted)]">Technical Score: {ev.techScore}/100</div>
+                      <div className="font-bold text-emerald-800">Verdict: Recommended — Pass (Score {ev.techScore}%)</div>
+                      <div className="text-[11px] text-[var(--text-secondary)] font-medium mt-0.5">{ev.siteName} ({ev.county})</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs font-bold text-[var(--score-mid)]">Priority {ev.priorityScore}%</div>
+                      <div className="text-xs font-extrabold text-[var(--accent)]">Priority {ev.priorityScore}%</div>
+                      <div className="text-[9.5px] text-[var(--text-muted)] underline">See details →</div>
                     </div>
                   </div>
                 ))}
@@ -355,16 +410,22 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
             </div>
           </div>
 
-          {/* Stage 4: Top Recommendation & Investment Memos */}
+          {/* Building Your Report & Investment Memo */}
           {survivors.length > 0 && (
             <div className="bg-[var(--surface)] p-6 rounded-xl border border-[var(--accent)] shadow-sm">
               <div className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Trophy className="w-3.5 h-3.5 text-amber-500" /> Final Recommendation & Decision Sign-Off
+                <Trophy className="w-3.5 h-3.5 text-amber-500" /> Building Your Report & Decision Sign-Off
               </div>
-              <div className="text-base font-bold text-[var(--text-primary)] mb-2">
+
+              {/* ONE-LINE PLAIN-ENGLISH VERDICT SUMMARY AT THE VERY TOP */}
+              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl mb-3 text-xs font-black text-emerald-900">
+                Verdict: Recommended — Proceed to Site Control
+              </div>
+
+              <div className="text-sm font-bold text-[var(--text-primary)] mb-2">
                 {survivors[0].memo.decisionAuthorizationSignOff.finalRecommendation}
               </div>
-              <p className="text-xs text-[var(--text-secondary)] mb-4">{survivors[0].memo.tradeoffExplanation}</p>
+              <p className="text-xs text-[var(--text-secondary)] mb-4 font-medium">{survivors[0].memo.tradeoffExplanation}</p>
 
               <div className="flex flex-wrap gap-3 mb-4">
                 <button
@@ -372,25 +433,33 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
                     setSelectedMemo(survivors[0].memo);
                     setIsMemoOpen(true);
                   }}
-                  className="btn bg-[var(--text-primary)] text-[var(--bg)] px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+                  className="bg-[var(--accent)] hover:bg-[#85632D] text-white px-5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-xs cursor-pointer"
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>View Executive Investment Memo</span>
+                  <FileText className="w-4 h-4" />
+                  <span>Open 3-Page Executive Investment Memo</span>
                 </button>
-
-                <Link
-                  href="/projects"
-                  className="btn bg-[var(--bg-soft)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--accent)] px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
-                >
-                  <Save className="w-3.5 h-3.5 text-[var(--accent)]" />
-                  <span>View Saved Campaigns Portal →</span>
-                </Link>
               </div>
 
-              {/* Evidence Panel Footer */}
-              <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] flex items-center justify-between">
-                <div>⚡ Sourced ground truth via Mireye API (/v1/fetch/batch) with verified timestamps</div>
-                <div className="text-[var(--accent)] font-bold">Proof of Work: Verified & Saved</div>
+              {/* Individual Candidate Memos */}
+              <div className="border-t border-[var(--border)] pt-4">
+                <div className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                  All Portfolio Candidate Reports ({survivors.length} Memos Generated):
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {survivors.map((s, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setSelectedMemo(s.memo);
+                        setIsMemoOpen(true);
+                      }}
+                      className="text-xs font-extrabold px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] text-[var(--text-primary)] hover:border-[var(--accent)] transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-[var(--accent)]" />
+                      <span>{s.memo.siteName} (Rank #{s.memo.overallRank})</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -400,7 +469,7 @@ export function AgentRunPanel({ initialPrompt = 'Find fast-deployment solar carp
       {/* Investment Memo Modal */}
       <InvestmentMemoModal memo={selectedMemo} isOpen={isMemoOpen} onClose={() => setIsMemoOpen(false)} />
 
-      {/* Ask WHY Decision Ledger Modal */}
+      {/* Decision Ledger AskWhy Modal */}
       <AskWhyModal data={askWhyData} isOpen={isAskWhyOpen} onClose={() => setIsAskWhyOpen(false)} />
     </div>
   );

@@ -13,11 +13,22 @@ export async function POST(req: Request) {
     const userPrompt = body.prompt || 'Find commercial solar opportunities in Texas';
     const customSites = body.customSites;
 
+    let activeCustomSites = Array.isArray(customSites) ? customSites : [];
+
+    // Extract user-requested site count limit from prompt (e.g., "10 target sites", "5 sites", "top 10")
+    const countMatch = userPrompt.match(/(\d+)\s*(?:target\s*)?sites/i) || userPrompt.match(/top\s*(\d+)/i) || userPrompt.match(/(\d+)\s*parcels/i);
+    if (countMatch && activeCustomSites.length > 0) {
+      const requestedLimit = parseInt(countMatch[1], 10);
+      if (requestedLimit > 0 && requestedLimit < activeCustomSites.length) {
+        activeCustomSites = activeCustomSites.slice(0, requestedLimit);
+      }
+    }
+
     let enrichedDataset = [];
 
-    if (Array.isArray(customSites) && customSites.length > 0) {
+    if (activeCustomSites.length > 0) {
       // Ingest user's custom uploaded CSV/GeoJSON parcels directly into agent dataset
-      enrichedDataset = customSites.map((cs: any, idx: number) => {
+      enrichedDataset = activeCustomSites.map((cs: any, idx: number) => {
         // Introduce realistic physical GIS variation so custom portfolios get real rejections & rankings
         const inFloodplain = idx % 5 === 1 || idx % 9 === 3;
         const steepSlope = idx % 7 === 2 ? 7.8 : (1.2 + (idx % 3) * 0.9);
@@ -76,6 +87,14 @@ export async function POST(req: Request) {
             },
           },
         ];
+      }
+
+      // If user specified a target site limit on standard portfolio, slice it accordingly
+      if (countMatch && enrichedDataset.length > 0) {
+        const requestedLimit = parseInt(countMatch[1], 10);
+        if (requestedLimit > 0 && requestedLimit < enrichedDataset.length) {
+          enrichedDataset = enrichedDataset.slice(0, requestedLimit);
+        }
       }
     }
 

@@ -1,8 +1,13 @@
 # Atlas Acquisition Agent
-## AI Agent for Renewable Land Acquisition
+## Autonomous AI Agent for Commercial Renewable Land Acquisition
 
-**Live Demo:** [https://atlas-ai-1.vercel.app](https://atlas-ai-1.vercel.app)  
-**GitHub Repository:** [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-atlas--ai--1.vercel.app-amber?style=for-the-badge&logo=vercel)](https://atlas-ai-1.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-ashutoshpandey18/AtlasAI-white?style=for-the-badge&logo=github)](https://github.com/ashutoshpandey18/AtlasAI)
+[![Mireye API](https://img.shields.io/badge/Mireye_API-Verified_Intelligence-emerald?style=for-the-badge)](https://mireye.com)
+
+---
+
+![Atlas Acquisition Agent Landing Page](public/assets/screenshots/01-hero-landing-page.png)
 
 ---
 
@@ -11,7 +16,7 @@
 Commercial real estate and renewable energy developers spend weeks deciding which candidate sites deserve expensive engineering time and legal due diligence.
 
 Traditional site selection relies on a slow, fragmented manual workflow:  
-Maps $\rightarrow$ Raw GIS Layers $\rightarrow$ County Tax Records $\rightarrow$ Engineering Review $\rightarrow$ **Weeks of Delay**
+$$\text{Maps} \longrightarrow \text{Raw GIS Layers} \longrightarrow \text{County Tax Records} \longrightarrow \text{Engineering Review} \longrightarrow \textbf{Weeks of Delay}$$
 
 Traditional GIS tools are built for analysts to inspect maps. However, land acquisition directors do not need another website with pins on a map. They need **automated, defensible decisions**.
 
@@ -30,6 +35,10 @@ Traditional GIS tools are built for analysts to inspect maps. However, land acqu
 ## 3. How Atlas Works
 
 Atlas is an **Autonomous Decision Platform** that automates the early-stage screening, prioritization, and underwriting workflow for commercial renewable siting (retail solar carports, utility solar PV, battery energy storage systems, and EV charging plazas).
+
+### Autonomous 3D Decision Workspace & Pipeline
+
+![Atlas Autonomous 3D Pipeline Workspace](public/assets/screenshots/02-agent-3d-pipeline.png)
 
 ### Input-to-Output Flow
 
@@ -82,6 +91,8 @@ Atlas queries Mireye's structured location intelligence and federal GIS APIs (NO
 ### Step 4: Atlas Rejects Unsuitable Sites ("Ask WHY")
 Atlas automatically screens candidate store portfolios and cuts unviable parcels with written rejection proofs.
 
+![Live Rejection Ledger & Approved Candidates Stream](public/assets/screenshots/03-live-rejection-scoring.png)
+
 ```
 Candidate Site
   ↓
@@ -97,15 +108,28 @@ Alternative Adjacent Parcel Suggested
 ### Step 5: Atlas Explains Trade-Offs & Recommends Top Site
 Surfacing plain-English trade-off explanations and scoring technical feasibility (0–100 Feasibility Index).
 
-### Step 6: Atlas Generates Executive Investment Memo & LOI
+### Step 6: Executive Investment Committee Memo & LOI
 Generates a printable 3-page executive investment committee memo featuring:
-- **Financial Pro-Forma Modeling:** 30% IRA Investment Tax Credit (ITC), 5-Year MACRS depreciation, $15/kW O&M, and Net Equity IRR.
-- **Option LOI Contract:** Non-binding Letter of Intent to option commercial land.
-- **Legal Notice & Pre-Feasibility Underwriting Disclaimer.**
+
+![Executive Investment Committee Memo & Underwriting Modal](public/assets/screenshots/04-executive-investment-memo.png)
+
+> [!TIP]
+> **Key Features included in the Memo:**
+> - **Financial Pro-Forma Modeling:** 30% IRA Investment Tax Credit (ITC), 5-Year MACRS depreciation, $15/kW O&M, and Net Equity IRR ($19.8\%-32.7\%$).
+> - **Non-Binding Option LOI Contract:** Letter of Intent to option commercial land.
+> - **Mireye Proof-of-Work Evidence Panel:** Verified dataset source links, timestamps, and physical attribute citations.
 
 ---
 
-## 5. Decision Pipeline
+## 5. Saved Land Acquisition Campaigns Workspace
+
+Manage saved strategy plans, Mireye batch inspections, rejection logs, and executive investment memos in one persistent dashboard:
+
+![Saved Land Acquisition Campaigns Workspace](public/assets/screenshots/05-saved-campaigns-dashboard.png)
+
+---
+
+## 6. Decision Pipeline Architecture
 
 ```
 User Business Goal
@@ -130,7 +154,7 @@ Rejection Ledger ("Ask WHY") & Decision Sign-Off
 
 ---
 
-## 6. Why Mireye?
+## 7. Why Mireye?
 
 Google Maps answers:  
 > *"How do I get there?"*

@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Tesla Giga Texas Logistics Yard",
+        "county": "Travis County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.6171, 30.2223]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Amazon Fulfillment Hub SAT1",
+        "county": "Bexar County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-98.3912, 29.5104]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "FedEx Ground Terminal #750",
+        "county": "Dallas County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-96.8521, 32.8124]
+      }
+    }
+  ]
+}

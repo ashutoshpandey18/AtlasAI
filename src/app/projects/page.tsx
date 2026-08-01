@@ -62,9 +62,8 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
       
-      {/* Awwwards Liquid Cursor Glow, Floating Star Particles & Radial Vignette */}
+      {/* Awwwards Liquid Cursor Glow & Radial Vignette */}
       <AwwwardsCursorGlow />
-      <CosmicParticles />
       <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
 
       {/* Atmospheric Shifting Glow Orbs */}

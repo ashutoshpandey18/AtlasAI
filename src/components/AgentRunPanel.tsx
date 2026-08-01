@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, FileText, CheckCircle2 } from 'lucide-react';
+import { Play, FileText, CheckCircle2, Upload } from 'lucide-react';
 import { InvestmentMemoModal } from './InvestmentMemoModal';
 import { AskWhyModal, AskWhyData } from './AskWhyModal';
+import { ParcelUploadModal, CustomSiteParcel } from './ParcelUploadModal';
 import type { StrategyPlan } from '@/agent/planner';
 
 interface RejectionItem {
@@ -52,6 +53,11 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
 
   const [showCriteriaWeights, setShowCriteriaWeights] = useState(false);
 
+  // Custom Uploaded Parcel State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [customUploadedSites, setCustomUploadedSites] = useState<CustomSiteParcel[]>([]);
+  const [customUploadedFilename, setCustomUploadedFilename] = useState<string | null>(null);
+
   const startScan = async () => {
     setIsRunning(true);
     setPlan(null);
@@ -63,7 +69,10 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
       const response = await fetch('/api/agent/site-scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          customSites: customUploadedSites.length > 0 ? customUploadedSites : undefined,
+        }),
       });
 
       if (!response.body) return;
@@ -136,11 +145,39 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
   return (
     <div className="w-full bg-transparent text-white space-y-6 font-sans text-left relative z-10">
       
-      {/* Target State Selector Pills (Pure Borderless Typography Selectors) */}
+      {/* Target State Selector Pills & Custom CSV/GeoJSON Upload Button */}
       <div className="space-y-2">
-        <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
-          TARGET STATE PORTFOLIO:
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-mono font-bold">
+          <span className="text-slate-400 uppercase tracking-wider">TARGET STATE PORTFOLIO:</span>
+          
+          {/* Custom Upload Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setIsUploadModalOpen(true)}
+            className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-bold underline cursor-pointer transition-colors"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>{customUploadedSites.length > 0 ? `Uploaded: ${customUploadedFilename} (${customUploadedSites.length} Sites)` : 'Upload Custom CSV / GeoJSON Portfolio 📁'}</span>
+          </button>
         </div>
+
+        {/* Custom Upload Active Badge Callout */}
+        {customUploadedSites.length > 0 && (
+          <div className="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl flex items-center justify-between text-xs font-mono text-amber-400">
+            <span>Using Custom Ingested Portfolio: <strong>{customUploadedFilename}</strong> ({customUploadedSites.length} Candidate Sites)</span>
+            <button
+              type="button"
+              onClick={() => {
+                setCustomUploadedSites([]);
+                setCustomUploadedFilename(null);
+              }}
+              className="text-[10px] text-slate-400 hover:text-white underline"
+            >
+              Reset to Standard Portfolio
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center gap-3 flex-wrap text-xs font-bold font-mono">
           <button
             type="button"
@@ -359,6 +396,17 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
 
       {/* Decision Ledger AskWhy Modal */}
       <AskWhyModal data={askWhyData} isOpen={isAskWhyOpen} onClose={() => setIsAskWhyOpen(false)} />
+
+      {/* Custom Parcel CSV/GeoJSON Upload Modal */}
+      <ParcelUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadSuccess={(sites, filename) => {
+          setCustomUploadedSites(sites);
+          setCustomUploadedFilename(filename);
+          setPrompt(`Analyze custom uploaded parcel portfolio (${filename}) with ${sites.length} target sites.`);
+        }}
+      />
     </div>
   );
 }

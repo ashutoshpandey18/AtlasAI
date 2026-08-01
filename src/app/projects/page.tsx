@@ -74,26 +74,6 @@ export default function ProjectsPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
       <SatelliteRadarSweep />
 
-      {/* GEODO FLOATING LEFT HAND GRAPHIC */}
-      <div id="hand-left" className="absolute -left-[10%] top-[-10%] md:left-[-5%] md:top-[-15%] w-[50vw] md:w-[40vw] max-w-[800px] z-10 pointer-events-none opacity-90 animate-float-left">
-        <img
-          src="https://geodo.ai/assets/hand-left.png"
-          alt="Decorative hand illustration left"
-          className="w-full h-auto object-contain mix-blend-screen"
-          style={{ filter: 'grayscale(1) brightness(1.35) contrast(1.1)' }}
-        />
-      </div>
-
-      {/* GEODO FLOATING RIGHT HAND GRAPHIC */}
-      <div id="hand-right" className="absolute -right-[10%] top-[35%] md:right-[-5%] md:top-[30%] w-[50vw] md:w-[40vw] max-w-[800px] z-10 pointer-events-none opacity-90 animate-float-right">
-        <img
-          src="https://geodo.ai/assets/hand-right.png"
-          alt="Decorative hand illustration right"
-          className="w-full h-auto object-contain mix-blend-screen"
-          style={{ filter: 'grayscale(1) brightness(1.35) contrast(1.1)' }}
-        />
-      </div>
-
       {/* Atmospheric Ambient Glow Orbs */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/20 via-amber-500/10 to-transparent pointer-events-none z-0 blur-3xl" />
       <div className="absolute top-96 right-0 w-[550px] h-[550px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/15 to-transparent pointer-events-none z-0 blur-3xl" />

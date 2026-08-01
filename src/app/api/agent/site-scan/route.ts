@@ -3,6 +3,7 @@
 
 import { NextResponse } from 'next/server';
 import { runAcquisitionPipeline } from '../../../../agent/orchestrator';
+import { saveCampaign } from '@/services/db';
 import fs from 'fs';
 import path from 'path';
 
@@ -78,6 +79,24 @@ export async function POST(req: Request) {
         }
 
         try {
+          // Auto-persist scan execution as a Saved Campaign
+          saveCampaign({
+            id: `camp-${Date.now()}`,
+            name: userPrompt,
+            useCaseId: 'solar-carport' as any,
+            requirements: { prompt: userPrompt } as any,
+            locations: enrichedDataset.map((d: any) => ({
+              id: d.geo_id,
+              address: `${d.chain} ${d.county}`,
+              label: `${d.chain} ${d.county}`,
+              lat: d.lat,
+              lng: d.lon,
+              geocoding: false,
+              geocoded: true,
+            })),
+            createdAt: new Date().toISOString(),
+          }).catch((err) => console.error('Failed to auto-save campaign:', err));
+
           await runAcquisitionPipeline(userPrompt, enrichedDataset, (evt) => {
             sendEvent(evt);
           });

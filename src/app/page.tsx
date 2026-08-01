@@ -50,9 +50,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
-      
-      {/* Awwwards Liquid Cursor Glow & Orbital Satellite Radar Overlays */}
+
+      {/* Awwwards Liquid Cursor Glow, Floating Star Field & Orbital Satellite Radar Overlays */}
       <AwwwardsCursorGlow />
+      <CosmicParticles />
       <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
       <SatelliteRadarSweep />
 
@@ -85,7 +86,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative z-10 pt-16 pb-12 px-6 max-w-[1140px] mx-auto text-center flex flex-col items-center">
-        
+
         {/* Pure Borderless Typography Subheader Badge */}
         <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-amber-400 mb-6 relative z-10">
           <Bot className="w-3.5 h-3.5 text-amber-400" />
@@ -119,7 +120,7 @@ export default function Home() {
 
         {/* CARD-FREE INTERACTIVE PROMPT LAUNCHER */}
         <form onSubmit={handleLaunchAgent} className="w-full max-w-2xl mb-12 relative z-10 text-left">
-          
+
           {/* Pure Typography State Selector Header */}
           <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
             <Bot className="w-3.5 h-3.5 text-amber-400" />
@@ -131,11 +132,10 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setPrompt('Find fast-deployment solar carport targets in Texas under $2M capex.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-                prompt.includes('Texas')
+              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Texas')
                   ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
                   : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-              }`}
+                }`}
             >
               <MapPin className="w-3 h-3 text-amber-400" /> Texas (ERCOT grid)
             </button>
@@ -143,11 +143,10 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setPrompt('Find high-yield retail solar carport targets in Florida with low flood risk.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-                prompt.includes('Florida')
+              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Florida')
                   ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
                   : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-              }`}
+                }`}
             >
               <Sun className="w-3 h-3 text-amber-400" /> Florida (FRCC grid)
             </button>
@@ -155,11 +154,10 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setPrompt('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-                prompt.includes('Georgia')
+              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Georgia')
                   ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
                   : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-              }`}
+                }`}
             >
               <Compass className="w-3 h-3 text-amber-400" /> Georgia (SERC grid)
             </button>
@@ -167,11 +165,10 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setPrompt('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${
-                prompt.includes('North Carolina')
+              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('North Carolina')
                   ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
                   : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-              }`}
+                }`}
             >
               <Zap className="w-3 h-3 text-amber-400" /> North Carolina (SERC grid)
             </button>
@@ -234,7 +231,7 @@ export default function Home() {
       {/* Card-Free Minimalist Spatial Floating Footer */}
       <footer className="border-t border-white/10 py-16 bg-transparent text-slate-400 relative z-10 font-sans text-left">
         <div className="max-w-[1140px] mx-auto px-6 space-y-12">
-          
+
           {/* Top Row: Brand & Status Telemetry */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-white/10 font-mono text-xs">
             <div className="flex items-center gap-3">

@@ -64,7 +64,50 @@ async function initDb() {
 }
 
 function getDefaultSeed(): ProjectWorkspace[] {
-  return [];
+  const sampleLocations = Array.from({ length: 66 }, (_, i) => ({
+    id: `loc-${i}`,
+    address: `Dollar General Candidate Site #${i + 101}`,
+    label: `Candidate Site #${i + 101}`,
+    lat: 31.8608 + (i * 0.01),
+    lng: -102.3436 - (i * 0.01),
+    geocoding: false,
+    geocoded: true,
+  }));
+
+  return [
+    {
+      id: 'camp-tx-01',
+      name: 'Find fast-deployment solar carport targets in Texas under $2M capex.',
+      useCaseId: 'solar-carport' as any,
+      requirements: { targetState: 'TX', targetChain: 'Dollar General' } as any,
+      locations: sampleLocations as any,
+      createdAt: '2026-08-01T10:15:00.000Z',
+    },
+    {
+      id: 'camp-fl-02',
+      name: 'Find high-yield retail solar carport targets in Florida with low flood risk.',
+      useCaseId: 'solar-carport' as any,
+      requirements: { targetState: 'FL', targetChain: 'Dollar General' } as any,
+      locations: sampleLocations.slice(0, 48) as any,
+      createdAt: '2026-08-01T09:30:00.000Z',
+    },
+    {
+      id: 'camp-ga-03',
+      name: 'Find corporate-owned Dollar General sites in Georgia with strong solar potential.',
+      useCaseId: 'solar-carport' as any,
+      requirements: { targetState: 'GA', targetChain: 'Dollar General' } as any,
+      locations: sampleLocations.slice(0, 35) as any,
+      createdAt: '2026-07-31T18:20:00.000Z',
+    },
+    {
+      id: 'camp-nc-04',
+      name: 'Find retail carport candidate sites in North Carolina with quick grid tie-in.',
+      useCaseId: 'solar-carport' as any,
+      requirements: { targetState: 'NC', targetChain: 'Dollar General' } as any,
+      locations: sampleLocations.slice(0, 42) as any,
+      createdAt: '2026-07-30T14:45:00.000Z',
+    },
+  ];
 }
 
 export async function clearAllCampaigns(): Promise<void> {

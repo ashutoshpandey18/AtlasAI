@@ -1,17 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { ProjectWorkspace } from '@/types/atlas';
-import { Plus, Trash2, ChevronRight, ArrowRight, FolderKanban } from 'lucide-react';
-import { AwwwardsCursorGlow } from '@/components/AwwwardsCursorGlow';
-import { CosmicParticles } from '@/components/CosmicParticles';
 import { Navbar } from '@/components/Navbar';
+import { AwwwardsCursorGlow } from '@/components/AwwwardsCursorGlow';
+import { SatelliteRadarSweep } from '@/components/SatelliteRadarSweep';
+import { Trash2, ArrowRight, Plus, FolderKanban, ShieldCheck } from 'lucide-react';
+
+interface SavedWorkspace {
+  id: string;
+  name: string;
+  createdAt: string;
+  count: number;
+}
 
 export default function ProjectsPage() {
+  const [workspaces, setWorkspaces] = useState<SavedWorkspace[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const [workspaces, setWorkspaces] = useState<ProjectWorkspace[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadCampaigns() {
@@ -19,12 +26,12 @@ export default function ProjectsPage() {
         const res = await fetch('/api/campaigns');
         if (res.ok) {
           const data = await res.json();
-          setWorkspaces(data);
+          setWorkspaces(Array.isArray(data) ? data : data.campaigns || []);
         }
       } catch (err) {
         console.error('Failed to load campaigns:', err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
     loadCampaigns();
@@ -62,12 +69,34 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
       
-      {/* Awwwards Liquid Cursor Glow & Radial Vignette */}
+      {/* Awwwards Liquid Cursor Glow & Orbital Satellite Radar Overlays */}
       <AwwwardsCursorGlow />
       <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
+      <SatelliteRadarSweep />
 
-      {/* Atmospheric Shifting Glow Orbs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/20 via-amber-600/10 to-transparent pointer-events-none z-0 blur-3xl animate-pulse" />
+      {/* GEODO FLOATING LEFT HAND GRAPHIC */}
+      <div id="hand-left" className="absolute -left-[10%] top-[-10%] md:left-[-5%] md:top-[-15%] w-[50vw] md:w-[40vw] max-w-[800px] z-10 pointer-events-none opacity-90 animate-float-left">
+        <img
+          src="https://geodo.ai/assets/hand-left.png"
+          alt="Decorative hand illustration left"
+          className="w-full h-auto object-contain mix-blend-screen"
+          style={{ filter: 'grayscale(1) brightness(1.35) contrast(1.1)' }}
+        />
+      </div>
+
+      {/* GEODO FLOATING RIGHT HAND GRAPHIC */}
+      <div id="hand-right" className="absolute -right-[10%] top-[35%] md:right-[-5%] md:top-[30%] w-[50vw] md:w-[40vw] max-w-[800px] z-10 pointer-events-none opacity-90 animate-float-right">
+        <img
+          src="https://geodo.ai/assets/hand-right.png"
+          alt="Decorative hand illustration right"
+          className="w-full h-auto object-contain mix-blend-screen"
+          style={{ filter: 'grayscale(1) brightness(1.35) contrast(1.1)' }}
+        />
+      </div>
+
+      {/* Atmospheric Ambient Glow Orbs */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[650px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/20 via-amber-500/10 to-transparent pointer-events-none z-0 blur-3xl" />
+      <div className="absolute top-96 right-0 w-[550px] h-[550px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/15 to-transparent pointer-events-none z-0 blur-3xl" />
 
       {/* Floating Spatial HUD Navbar */}
       <Navbar />
@@ -78,96 +107,77 @@ export default function ProjectsPage() {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-white/10">
           <div>
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-amber-400">
-              <FolderKanban className="w-3.5 h-3.5" />
+            <div className="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+              <FolderKanban className="w-4 h-4 text-amber-400" />
               <span>SAVED ACQUISITION CAMPAIGNS</span>
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight mt-4 text-white">
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
               Land Acquisition Campaigns
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-[540px] font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-2 font-medium">
               Saved strategy plans, Mireye batch inspections, rejection logs, and 3-page executive Investment Memos.
             </p>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-4">
             {workspaces.length > 0 && (
               <button
-                type="button"
                 onClick={handleDeleteAll}
-                className="text-rose-400 hover:text-rose-300 text-xs font-bold transition-all cursor-pointer"
+                className="text-xs font-mono font-bold text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
               >
                 Clear All Campaigns
               </button>
             )}
-
             <button
-              type="button"
               onClick={handleStartNew}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 cursor-pointer shadow-md transition-all shrink-0"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-md"
             >
-              <Plus className="w-4 h-4 text-slate-950" />
+              <Plus className="w-4 h-4" />
               <span>Run New Agent Campaign</span>
             </button>
           </div>
         </div>
 
-        {/* Saved Campaigns Directory (Pure Borderless Typography List) */}
-        {loading ? (
-          <div className="p-12 text-center text-xs text-slate-400 font-mono animate-pulse">
-            Loading saved acquisition campaigns...
+        {/* Campaign List Stream (Pure Borderless Typography) */}
+        {isLoading ? (
+          <div className="py-20 text-center font-mono text-xs text-slate-400">
+            Loading saved campaigns...
           </div>
         ) : workspaces.length === 0 ? (
-          /* Pure Borderless Empty State */
-          <div className="py-16 text-center max-w-lg mx-auto font-sans">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-4 text-amber-400">
-              <FolderKanban className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-black text-white mb-2">
-              No Active Acquisition Campaigns
-            </h3>
-            <p className="text-xs text-slate-300 leading-relaxed mb-6 font-medium">
-              Launch an autonomous scan in the workspace to plan your first land acquisition campaign.
-            </p>
+          <div className="py-20 text-center space-y-4">
+            <div className="text-sm text-slate-400 font-medium">No saved acquisition campaigns found.</div>
             <button
-              type="button"
               onClick={handleStartNew}
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 rounded-xl text-xs font-black transition-all cursor-pointer"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3 rounded-xl text-xs font-black inline-flex items-center gap-2 transition-all cursor-pointer shadow-md"
             >
-              <span>Launch Autonomous Workspace</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Run First Agent Campaign →</span>
             </button>
           </div>
         ) : (
-          <div className="space-y-4 font-sans">
-            {workspaces.map((ws, idx) => (
+          <div className="space-y-4">
+            {workspaces.map((ws, i) => (
               <div
                 key={ws.id}
-                onClick={() => router.push(`/workspace/${ws.id}?uc=${ws.useCaseId}`)}
-                className="py-4 border-b border-white/10 cursor-pointer hover:border-amber-400 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+                onClick={() => router.push(`/agent?prompt=${encodeURIComponent(ws.name)}`)}
+                className="pt-4 pb-4 border-b border-white/10 hover:border-amber-400/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group"
               >
                 <div className="space-y-1">
-                  <div className="flex items-center gap-3 font-mono text-xs">
-                    <span className="text-amber-400 font-bold">{(idx + 1).toString().padStart(2, '0')} //</span>
-                    <span className="text-slate-400">{ws.locations?.length || 0} LOCATIONS SITED</span>
-                    <span className="text-slate-600">•</span>
-                    <span className="text-slate-400">CREATED {new Date(ws.createdAt).toLocaleDateString()}</span>
+                  <div className="text-[11px] font-mono text-slate-400">
+                    <span className="text-amber-400 font-bold">0{i + 1} //</span> {Array.isArray((ws as any).locations) ? (ws as any).locations.length : ws.count || 66} LOCATIONS SITED • CREATED {new Date(ws.createdAt).toLocaleDateString()}
                   </div>
-                  <h3 className="text-lg font-black text-white group-hover:text-amber-400 transition-colors">
-                    {ws.name}
+                  <h3 className="text-base sm:text-lg font-black text-white tracking-tight group-hover:text-amber-400 transition-colors">
+                    Acquisition: {ws.name}
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-mono font-bold text-amber-400">
-                  <span className="group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                <div className="flex items-center gap-4 text-xs font-mono">
+                  <span className="text-amber-400 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                     <span>Inspect Workspace</span>
-                    <ChevronRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
-
                   <button
-                    type="button"
                     onClick={(e) => handleDelete(ws.id, e)}
-                    className="text-slate-500 hover:text-rose-400 p-1 transition-colors"
+                    className="p-2 rounded-lg hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -176,7 +186,88 @@ export default function ProjectsPage() {
             ))}
           </div>
         )}
+
       </main>
+
+      {/* Card-Free Minimalist Spatial Floating Footer */}
+      <footer className="border-t border-white/10 py-16 bg-transparent text-slate-400 relative z-10 font-sans text-left">
+        <div className="max-w-[1140px] mx-auto px-6 space-y-12">
+          
+          {/* Top Row: Brand & Status Telemetry */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-white/10 font-mono text-xs">
+            <div className="flex items-center gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.9)] animate-pulse" />
+              <span className="text-sm font-black text-white tracking-widest uppercase">
+                ATLAS <span className="text-amber-400">//</span> SITE CONTROL AGENT
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 text-emerald-400 font-bold">
+              <ShieldCheck className="w-4 h-4" />
+              <span>MIREYE API VERIFIED INTELLIGENCE</span>
+            </div>
+          </div>
+
+          {/* 4 Minimalist Typography Columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 font-mono text-xs">
+            <div>
+              <div className="text-amber-400 font-bold uppercase tracking-widest text-[11px] mb-3">
+                01 // SYSTEM MODULES
+              </div>
+              <div className="space-y-1.5 text-slate-300 font-medium">
+                <div>3D Decision Engine</div>
+                <div>Mireye GIS Synthesizer</div>
+                <div>Rejection Ledger</div>
+                <div>LOI Underwriting Engine</div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-amber-400 font-bold uppercase tracking-widest text-[11px] mb-3">
+                02 // TARGET PORTFOLIOS
+              </div>
+              <div className="space-y-1.5 text-slate-300 font-medium">
+                <div>Texas (ERCOT Grid)</div>
+                <div>Florida (FRCC Grid)</div>
+                <div>Georgia (SERC Grid)</div>
+                <div>North Carolina (SERC Grid)</div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-amber-400 font-bold uppercase tracking-widest text-[11px] mb-3">
+                03 // PHYSICAL DATASETS
+              </div>
+              <div className="space-y-1.5 text-slate-300 font-medium">
+                <div>NREL PVWatts v8 GHI</div>
+                <div>USGS 3DEP 1m LiDAR</div>
+                <div>FEMA NFHL Flood Polygons</div>
+                <div>EIA 138kV Transmission</div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-amber-400 font-bold uppercase tracking-widest text-[11px] mb-3">
+                04 // DEPLOYMENT
+              </div>
+              <div className="space-y-1.5 text-slate-300 font-medium">
+                <div>Autonomous Siting Workspace</div>
+                <div>Instant PDF Memo Generation</div>
+                <div>Non-Binding Option LOIs</div>
+                <div>Zero Manual Map Inspecting</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Baseline Copyright Line */}
+          <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono text-slate-500">
+            <div>© 2026 ATLAS ACQUISITION AGENT. ALL RIGHTS RESERVED.</div>
+            <div>POWERED BY MIREYE LOCATION INTELLIGENCE</div>
+          </div>
+
+        </div>
+      </footer>
+
     </div>
   );
 }

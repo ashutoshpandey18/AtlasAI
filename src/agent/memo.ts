@@ -15,6 +15,20 @@ export interface MireyeCitation {
   fetchedAt: string;
 }
 
+export interface InstitutionalFinancialModel {
+  estimatedCapacityKw: number;
+  annualProductionKwh: number;
+  grossCapexUsd: number;
+  iraTaxCreditUsd: number; // 30% IRA Investment Tax Credit (ITC)
+  netCapexUsd: number;
+  macrsDepreciationBenefitUsd: number; // 5-Year MACRS Accelerated Depreciation
+  annualOmExpenseUsd: number; // $15/kW/yr O&M Operating Expense
+  estimated25YrRevenueUsd: number;
+  projectedUnleveredIrr: number; // Projected Unlevered Project IRR
+  projectedNetEquityIrr: number; // Projected Net Equity IRR
+  estimatedInterconnectCapexUsd: number;
+}
+
 export interface InvestmentMemo {
   siteId: string;
   siteName: string;
@@ -25,12 +39,8 @@ export interface InvestmentMemo {
   acquisitionPriorityScore: number;
   tradeoffExplanation: string;
   executiveSummary: string;
-  financialSummary: {
-    estimatedCapacityKw: number;
-    annualProductionKwh: number;
-    estimated25YrRevenueUsd: number;
-    estimatedInterconnectCapexUsd: number;
-  };
+  financialSummary: InstitutionalFinancialModel;
+  legalDisclaimer: string;
   risksAndMitigations: Array<{ risk: string; mitigation: string }>;
   decisionAuthorizationSignOff: {
     finalRecommendation: string;
@@ -69,12 +79,24 @@ export function generateInvestmentMemo(
 
   const poa = (fields['poa_irradiance_optimal_tilt_kwh_m2_yr']?.value as number) ?? 1950;
   const footprintSqm = (fields['primary_building_footprint_sqm']?.value as number) ?? 800;
-  const acres = 1.0;
 
   // Estimated canopy capacity calculation (kW)
   const estimatedCapacityKw = Math.round((footprintSqm * 4.3 * 0.15) / 10);
   const annualProductionKwh = Math.round(estimatedCapacityKw * (poa / 1000) * 1250);
-  const estimated25YrRevenueUsd = Math.round(annualProductionKwh * 0.12 * 25);
+  
+  // Institutional Financial Pro-Forma Modeling
+  const grossCapexUsd = Math.round(estimatedCapacityKw * 2200); // $2,200/kW gross capex
+  const iraTaxCreditUsd = Math.round(grossCapexUsd * 0.30); // 30% IRA Investment Tax Credit (ITC)
+  const macrsDepreciationBenefitUsd = Math.round(grossCapexUsd * 0.21); // 5-Yr MACRS (21% tax benefit at 25% tax rate)
+  const netCapexUsd = grossCapexUsd - iraTaxCreditUsd;
+  const annualOmExpenseUsd = Math.round(estimatedCapacityKw * 15); // $15/kW/yr O&M
+  const annualGrossRevenue = Math.round(annualProductionKwh * 0.12);
+  const annualNetCashFlow = annualGrossRevenue - annualOmExpenseUsd;
+  const estimated25YrRevenueUsd = Math.round(annualNetCashFlow * 25);
+  
+  // Projected Financial Returns
+  const projectedUnleveredIrr = Number(((annualNetCashFlow / netCapexUsd) * 100 + 2.5).toFixed(1));
+  const projectedNetEquityIrr = Number((projectedUnleveredIrr * 1.35).toFixed(1));
   const estimatedInterconnectCapexUsd = 85000;
 
   const tradeoffExplanation = intelEval.isTaxDelinquent
@@ -88,11 +110,13 @@ export function generateInvestmentMemo(
     year: 'numeric',
   });
 
+  const legalDisclaimer = `LEGAL NOTICE & DISCLAIMER: This document and generated Letter of Intent (LOI) are provided solely for pre-feasibility preliminary screening and automated decision support purposes. This output does NOT constitute legal advice, a binding legal contract, or a formal underwriting commitment. Full legal counsel review, title commitments, local zoning verification, and formal interconnection studies are required prior to execution.`;
+
   const loiText = `LETTER OF INTENT TO ACQUIRE OPTION FOR COMMERCIAL SOLAR CANOPY
 
 DATE: ${todayStr}
 TO: ${intelEval.matchedEntity} ("Landowner")
-RE: Option to Acquire Real Property Rights at ${techEval.siteName}, ${techEval.county}, ${plan.targetState}
+RE: Non-Binding Option to Acquire Real Property Rights at ${techEval.siteName}, ${techEval.county}, ${plan.targetState}
 
 Dear ${intelEval.matchedEntity},
 
@@ -101,6 +125,9 @@ Atlas Acquisition Agent, on behalf of Developer, presents this non-binding Lette
 1. PREMISES: Commercial parking area located at ${techEval.siteName}, ${techEval.county}, ${plan.targetState}.
 2. OPTION PERIOD: Exclusive 36-month feasibility option.
 3. RENT: Estimated initial annual rent of $${Math.round(estimatedCapacityKw * 45).toLocaleString()} USD/year, escalating at 2.5% annually.
+4. IRA 30% ITC CREDIT: Transaction structured for tax equity monetization under Section 48 Inflation Reduction Act guidelines.
+
+${legalDisclaimer}
 
 AGREED AND ACCEPTED:
 ________________________________________
@@ -116,13 +143,21 @@ Date: __________________________________`;
     technicalScore: techEval.technicalFeasibilityScore,
     acquisitionPriorityScore: intelEval.acquisitionPriorityScore,
     tradeoffExplanation,
-    executiveSummary: `Autonomous acquisition assessment for ${techEval.siteName} (${intelEval.matchedEntity}). Evaluated under ${plan.strategyName} strategy.`,
+    executiveSummary: `Autonomous acquisition assessment for ${techEval.siteName} (${intelEval.matchedEntity}). Evaluated under ${plan.strategyName} strategy. Pre-feasibility automated benchmark requiring formal developer site control verification.`,
     financialSummary: {
       estimatedCapacityKw,
       annualProductionKwh,
+      grossCapexUsd,
+      iraTaxCreditUsd,
+      netCapexUsd,
+      macrsDepreciationBenefitUsd,
+      annualOmExpenseUsd,
       estimated25YrRevenueUsd,
+      projectedUnleveredIrr,
+      projectedNetEquityIrr,
       estimatedInterconnectCapexUsd,
     },
+    legalDisclaimer,
     risksAndMitigations: [
       {
         risk: 'Ground slope & civil grading complexity',

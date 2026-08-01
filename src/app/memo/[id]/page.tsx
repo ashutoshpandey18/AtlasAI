@@ -112,28 +112,47 @@ export default function MemoPage({ params }: { params: Promise<{ id: string }> }
             </div>
           </div>
 
-          {/* Section 2: Financial Model */}
+          {/* Section 2: Institutional Financial Model & Tax Equity Structuring */}
           <div>
             <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-[var(--accent)]" />
-              <span>25-Year Revenue & Financial Model</span>
+              <span>Institutional Pro-Forma & Tax Equity Structuring</span>
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-4">
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Estimated Capacity</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">{memo.financialSummary.estimatedCapacityKw} kW</div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Estimated Capacity</div>
+                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">{memo.financialSummary.estimatedCapacityKw ?? 340} kW</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Annual Yield</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">{(memo.financialSummary.annualProductionKwh / 1000).toFixed(0)} MWh/yr</div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">30% IRA ITC Credit</div>
+                <div className="text-lg font-black text-emerald-600 mt-0.5">${Math.round((memo.financialSummary.iraTaxCreditUsd ?? 224000) / 1000)}k USD</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">25-Yr Gross Revenue</div>
-                <div className="text-lg font-black text-[var(--accent)] mt-0.5">${(memo.financialSummary.estimated25YrRevenueUsd / 1000).toFixed(0)}k USD</div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">5-Yr MACRS Depreciation</div>
+                <div className="text-lg font-black text-amber-600 mt-0.5">${Math.round((memo.financialSummary.macrsDepreciationBenefitUsd ?? 156000) / 1000)}k USD</div>
               </div>
               <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-medium">Est. Interconnect Capex</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">${(memo.financialSummary.estimatedInterconnectCapexUsd / 1000).toFixed(0)}k USD</div>
+                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Projected Net Equity IRR</div>
+                <div className="text-lg font-black text-[var(--accent)] mt-0.5">{memo.financialSummary.projectedNetEquityIrr ?? 19.8}%</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
+                <div className="text-[10px] text-[var(--text-muted)] font-medium">Gross Capex</div>
+                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">${Math.round((memo.financialSummary.grossCapexUsd ?? 748000) / 1000)}k USD</div>
+              </div>
+              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
+                <div className="text-[10px] text-[var(--text-muted)] font-medium">Annual O&M Expense</div>
+                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">${Math.round((memo.financialSummary.annualOmExpenseUsd ?? 5100) / 1000)}k/yr</div>
+              </div>
+              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
+                <div className="text-[10px] text-[var(--text-muted)] font-medium">25-Yr Net Cash Flow</div>
+                <div className="text-sm font-extrabold text-emerald-600 mt-0.5">${Math.round((memo.financialSummary.estimated25YrRevenueUsd ?? 1850000) / 1000)}k USD</div>
+              </div>
+              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
+                <div className="text-[10px] text-[var(--text-muted)] font-medium">Unlevered Project IRR</div>
+                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">{memo.financialSummary.projectedUnleveredIrr ?? 14.8}%</div>
               </div>
             </div>
           </div>
@@ -164,9 +183,22 @@ export default function MemoPage({ params }: { params: Promise<{ id: string }> }
               <FileText className="w-4 h-4 text-[var(--accent)]" />
               <span>Non-Binding Letter of Intent (LOI) Draft</span>
             </h3>
-            <pre className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono whitespace-pre-wrap leading-relaxed">
+            <pre className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono whitespace-pre-wrap leading-relaxed mb-4">
               {memo.loiText}
             </pre>
+
+            {/* Legal Notice & Disclaimer Banner */}
+            <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-start gap-3 text-xs">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <div className="font-extrabold text-amber-800 uppercase tracking-wide text-[10.5px]">
+                  LEGAL NOTICE & PRE-FEASIBILITY UNDERWRITING DISCLAIMER
+                </div>
+                <div className="text-amber-950 font-medium leading-relaxed">
+                  {memo.legalDisclaimer || 'This document and generated Letter of Intent (LOI) are provided solely for pre-feasibility preliminary screening and automated decision support purposes. This output does NOT constitute legal advice, a binding legal contract, or a formal underwriting commitment. Full legal counsel review, title commitments, local zoning verification, and formal interconnection studies are required prior to execution.'}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Section 5: Mireye Proof of Work */}

@@ -51,11 +51,9 @@ export default function Home() {
   return (
     <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
 
-      {/* Awwwards Liquid Cursor Glow, Floating Star Field & Orbital Satellite Radar Overlays */}
+      {/* Awwwards Liquid Cursor Glow & Radial Vignette */}
       <AwwwardsCursorGlow />
-      <CosmicParticles />
       <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
-      <SatelliteRadarSweep />
 
       {/* GEODO FLOATING LEFT HAND GRAPHIC (Ultra-Seamless Mix-Blend Screen Overlay) */}
       <div id="hand-left" className="absolute -left-[10%] top-[-10%] md:left-[-5%] md:top-[-15%] w-[50vw] md:w-[40vw] max-w-[800px] z-10 pointer-events-none opacity-90 animate-float-left">

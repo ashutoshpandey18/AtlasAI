@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Bot } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Bot, Cpu } from 'lucide-react';
 
 export function CompactAgentRobot() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [activeStage, setActiveStage] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const stages = [
     {
@@ -41,7 +44,41 @@ export function CompactAgentRobot() {
     },
   ];
 
+  // Detect mobile
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // IntersectionObserver for lazy desktop loading
+  useEffect(() => {
+    if (isMobile) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  // Load Spline script on desktop when in view
+  useEffect(() => {
+    if (isMobile || !isInView) return;
+
     if (!document.querySelector('script[src*="spline-viewer"]')) {
       const script = document.createElement('script');
       script.type = 'module';
@@ -52,10 +89,12 @@ export function CompactAgentRobot() {
     } else {
       setIsLoaded(true);
     }
-  }, []);
+  }, [isMobile, isInView]);
 
-  // Shadow Root style injection to remove Spline Logo watermark
+  // Hide Spline logo watermark safely
   useEffect(() => {
+    if (isMobile || !isLoaded) return;
+
     const hideSplineLogo = () => {
       const viewer = document.querySelector('spline-viewer');
       if (viewer && viewer.shadowRoot) {
@@ -77,7 +116,7 @@ export function CompactAgentRobot() {
 
     const interval = setInterval(hideSplineLogo, 150);
     return () => clearInterval(interval);
-  }, []);
+  }, [isMobile, isLoaded]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -89,14 +128,24 @@ export function CompactAgentRobot() {
   const currentStage = stages[activeStage];
 
   return (
-    <div className="w-full bg-transparent mb-8 text-left relative overflow-visible">
+    <div ref={containerRef} className="w-full bg-transparent mb-8 text-left relative overflow-visible">
       
-      {/* 2-COLUMN PURE TYPOGRAPHY LAYOUT (Zero div cards, zero box borders) */}
+      {/* 2-COLUMN LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-8 items-center">
         
-        {/* Left Column: 3D Robot Model (Rendered Directly On Page Canvas) */}
-        <div className="relative w-full h-[320px] sm:h-[380px] bg-transparent overflow-hidden flex items-center justify-center">
-          {isLoaded && !hasError ? (
+        {/* Left Column: 3D Robot Model (or Mobile Hologram) */}
+        <div className="relative w-full h-[240px] sm:h-[380px] bg-transparent overflow-hidden flex items-center justify-center">
+          {isMobile ? (
+            <div className="flex flex-col items-center justify-center text-center p-4 space-y-3">
+              <div className="w-20 h-20 rounded-full border border-amber-400/40 bg-amber-500/10 flex items-center justify-center text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)] animate-pulse">
+                <Bot className="w-10 h-10" />
+              </div>
+              <div className="text-[11px] font-mono text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Cpu className="w-3 h-3" />
+                <span>Agent Copilot Active</span>
+              </div>
+            </div>
+          ) : isLoaded && !hasError ? (
             // @ts-expect-error custom element
             <spline-viewer
               url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
@@ -104,7 +153,7 @@ export function CompactAgentRobot() {
             />
           ) : (
             <div className="flex flex-col items-center gap-2 text-slate-400 text-xs">
-              <Bot className="w-8 h-8 text-amber-400" />
+              <Bot className="w-8 h-8 text-amber-400 animate-pulse" />
               <span className="font-semibold text-slate-300">Loading 3D Model...</span>
             </div>
           )}

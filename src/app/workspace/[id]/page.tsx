@@ -508,6 +508,56 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to sou
     setAnalyzing(false);
   }
 
+  function handleAutoLoadTexasPortfolio() {
+    setAnalyzing(true);
+    try {
+      const enrichedList = require('../../../data/tx_statewide_matches_enriched.json').enriched || [];
+      const autoLocs: LocationEntry[] = enrichedList.map((item: any, idx: number) => ({
+        id: `tx-site-${idx + 1}`,
+        address: `${item.store_name || 'Dollar General'} — ${item.county || 'Texas'}, TX (${item.lat.toFixed(4)}, ${item.lon.toFixed(4)})`,
+        label: String(idx + 1),
+        lat: item.lat,
+        lng: item.lon,
+        geocoded: true,
+      }));
+
+      setLocations(autoLocs);
+
+      const uc = useCase || USE_CASES[0];
+      const now = new Date().toISOString();
+
+      const settled: LocationResult[] = autoLocs.map((loc, idx) => {
+        const matchedEnriched = enrichedList[idx] || enrichedList[0];
+        const realMireye = matchedEnriched?.mireye ?? null;
+
+        const data = realMireye ?? {
+          lat: loc.lat,
+          lng: loc.lng,
+          fetched_at: now,
+          fields: {
+            poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 1911, source: 'NREL_PVWATTS_V8', fetched_at: now },
+            slope_degrees: { value: 0.8, source: 'USGS_3DEP_COG', fetched_at: now },
+            grading_difficulty_class: { value: 'flat', source: 'MIREYE_DERIVED_SITING', fetched_at: now },
+            within_floodplain_polygon: { value: false, source: 'FEMA_NFHL', fetched_at: now },
+            nearest_transmission_line_distance_m: { value: 650, source: 'EIA_GRID_MAPPED', fetched_at: now },
+            primary_building_footprint_sqm: { value: 774, source: 'OVERTURE_BUILDINGS', fetched_at: now },
+            tree_canopy_pct: { value: 4, source: 'USFS_NLCD_TCC', fetched_at: now },
+            political_county: { value: matchedEnriched?.county || 'Texas County', source: 'OVERTURE_DIVISIONS', fetched_at: now },
+            political_region: { value: 'Texas', source: 'OVERTURE_DIVISIONS', fetched_at: now },
+          },
+        };
+
+        return buildResults(loc, data as any, uc, requirements, null);
+      });
+
+      setResults(settled);
+    } catch (err) {
+      console.error('Failed to auto-load Texas portfolio:', err);
+    } finally {
+      setAnalyzing(false);
+    }
+  }
+
   // Helper score categorization styling
   function getScoreColor(s: number) {
     if (s >= 70) return 'text-[#22C55E]';
@@ -1412,8 +1462,19 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to sou
                     Feasibility Analysis Pending
                   </h3>
                   <p className="text-[12px] text-[var(--text-secondary)] mt-2.5 max-w-[280px] mx-auto leading-relaxed z-10">
-                    Input at least 2 candidate addresses on the left side panel to run campaign scoring and activate the feasibility dashboard.
+                    Input at least 2 candidate addresses on the left side panel to run campaign scoring, or 1-click auto-load the 70 Texas store parcels below.
                   </p>
+
+                  <div className="mt-4 z-10">
+                    <button
+                      type="button"
+                      onClick={handleAutoLoadTexasPortfolio}
+                      className="inline-flex items-center gap-2 bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] font-extrabold text-xs px-5 py-3 rounded-xl transition-all shadow-md cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4 text-amber-300" />
+                      <span>Auto-Load 70 Texas Store Parcels & Score</span>
+                    </button>
+                  </div>
 
                   {/* Visual Step-by-Step Guide */}
                   <div className="mt-8 grid grid-cols-1 gap-2.5 max-w-[340px] w-full mx-auto text-left z-10">

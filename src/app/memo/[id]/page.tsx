@@ -2,8 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Download, FileText, CheckCircle, Clock, DollarSign, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Download, FileText, CheckCircle2, Clock, DollarSign, AlertTriangle, ShieldCheck, ExternalLink } from 'lucide-react';
 import type { InvestmentMemo } from '@/agent/memo';
+import { AwwwardsCursorGlow } from '@/components/AwwwardsCursorGlow';
+import { SatelliteRadarSweep } from '@/components/SatelliteRadarSweep';
+import { Navbar } from '@/components/Navbar';
 
 export default function MemoPage({ params }: { params: Promise<{ id: string }> }) {
   const [siteId, setSiteId] = React.useState<string>('3595');
@@ -39,197 +42,200 @@ export default function MemoPage({ params }: { params: Promise<{ id: string }> }
 
   if (loading || !memo) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] p-12 text-center text-xs font-mono text-[var(--text-muted)] animate-pulse">
-        Fetching 100% Real Mireye Physical Investment Memo for Parcel #{siteId}...
+      <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white p-12 flex flex-col items-center justify-center font-mono text-xs text-amber-400 animate-pulse">
+        Fetching Real Mireye Physical Investment Memo for Parcel #{siteId}...
       </div>
     );
   }
 
+  const topVerdictSummary = memo.decisionAuthorizationSignOff.signOffStatus === 'RECOMMENDED_FOR_EXECUTION'
+    ? 'VERDICT: RECOMMENDED — PROCEED TO SITE CONTROL'
+    : 'VERDICT: REJECTED — SITE FAILS FEASIBILITY';
+
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)] font-sans selection:bg-[var(--accent)] selection:text-white">
-      {/* Navigation Header */}
-      <header className="border-b border-[var(--border)] bg-[var(--surface)] sticky top-0 z-50 py-4 print:hidden">
-        <div className="max-w-[1000px] mx-auto px-6 flex items-center justify-between">
-          <Link
-            href="/agent"
-            className="inline-flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all bg-[var(--bg-soft)] px-3 py-1.5 rounded-full border border-[var(--border)]"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Agent Workspace</span>
-          </Link>
+    <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
+      
+      {/* Awwwards Liquid Cursor Glow & Orbital Satellite Radar Overlays */}
+      <AwwwardsCursorGlow />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
+      <SatelliteRadarSweep />
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handlePrint}
-              className="btn bg-[var(--text-primary)] text-[var(--bg)] hover:opacity-90 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export PDF / Print</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Floating Spatial HUD Navbar */}
+      <Navbar />
 
-      {/* Main Memo Content */}
-      <main className="max-w-[1000px] mx-auto px-6 py-10 print:py-0 print:px-0">
-        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 shadow-sm space-y-8 print:border-none print:shadow-none">
+      {/* Main Memo Container */}
+      <main className="max-w-[1000px] w-full mx-auto px-6 py-10 print:py-0 print:px-0 relative z-10 text-left">
+        
+        {/* Printable Executive Document Card */}
+        <div className="bg-[#080814]/95 border-2 border-white/20 rounded-3xl p-6 sm:p-10 shadow-[0_25px_90px_rgba(0,0,0,0.95)] backdrop-blur-2xl space-y-8 print:border-none print:shadow-none print:p-0">
+          
           {/* Header */}
-          <div className="border-b border-[var(--border)] pb-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div className="border-b border-white/15 pb-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-wider bg-[var(--bg-soft)] px-3 py-1 rounded-full border border-[var(--border)] mb-2">
+              <div className="text-[10px] font-mono font-black text-amber-400 uppercase tracking-widest flex items-center gap-2 mb-2">
                 <FileText className="w-3.5 h-3.5" />
-                <span>Executive Investment Memo</span>
+                <span>EXECUTIVE INVESTMENT COMMITTEE MEMO</span>
               </div>
-              <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                 {memo.siteName}
               </h1>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">
-                {memo.county}, {memo.state} · Strategy: Fee-Simple Commercial Retail Carport
+              <p className="text-xs font-mono text-slate-400 mt-1">
+                LOCATION: <span className="text-slate-200 font-bold">{memo.county}, {memo.state}</span> · Strategy: Commercial Retail Solar Carport
               </p>
             </div>
-            <div className="text-right">
-              <span className="inline-block px-3 py-1 rounded-full bg-[var(--accent)] text-[var(--accent-text)] text-xs font-bold">
-                Rank #{memo.overallRank} Candidate
-              </span>
+            
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all shadow-md shrink-0 print:hidden"
+              >
+                <Download className="w-4 h-4 text-slate-950" />
+                <span>Export PDF / Print</span>
+              </button>
             </div>
           </div>
 
-          {/* Section 1: Executive Recommendation Callout */}
-          <div className="bg-[var(--bg-soft)] border border-[var(--accent)] p-5 rounded-xl">
-            <div className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-2">
-              <CheckCircle className="w-4 h-4" />
-              <span>Decision Authorization Sign-Off</span>
+          {/* Section 1: Executive Verdict Banner */}
+          <div className="bg-emerald-500/15 border border-emerald-400 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs font-mono font-black text-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)]">
+            <div className="flex items-center gap-2.5">
+              <CheckCircle2 className="w-5 h-5 shrink-0" />
+              <span>{topVerdictSummary}</span>
             </div>
-            <div className="text-base font-extrabold text-[var(--text-primary)] mb-2">
-              {memo.decisionAuthorizationSignOff.finalRecommendation}
+            <div className="text-[10px] text-slate-400">RANK #{memo.overallRank} TARGET</div>
+          </div>
+
+          {/* Section 2: Decision Authorization Sign-Off */}
+          <div className="bg-[#0a0a14] border border-white/15 p-5 rounded-2xl space-y-3 font-sans">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4 text-amber-400" />
+              <span>DECISION AUTHORIZATION SIGN-OFF</span>
             </div>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3">
+            <div className="text-base sm:text-lg font-black text-white">
+              "{memo.decisionAuthorizationSignOff.finalRecommendation}"
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed font-medium">
               {memo.tradeoffExplanation}
             </p>
-            <div className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+            <div className="text-xs font-mono font-bold text-slate-400 flex items-center gap-2 pt-1 border-t border-white/10">
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
               <span>Target Execution Date: {memo.decisionAuthorizationSignOff.targetActionDate}</span>
             </div>
           </div>
 
-          {/* Section 2: Institutional Financial Model & Tax Equity Structuring */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-[var(--accent)]" />
-              <span>Institutional Pro-Forma & Tax Equity Structuring</span>
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-4">
-              <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Estimated Capacity</div>
-                <div className="text-lg font-black text-[var(--text-primary)] mt-0.5">{memo.financialSummary.estimatedCapacityKw ?? 340} kW</div>
-              </div>
-              <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">30% IRA ITC Credit</div>
-                <div className="text-lg font-black text-emerald-600 mt-0.5">${Math.round((memo.financialSummary.iraTaxCreditUsd ?? 224000) / 1000)}k USD</div>
-              </div>
-              <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">5-Yr MACRS Depreciation</div>
-                <div className="text-lg font-black text-amber-600 mt-0.5">${Math.round((memo.financialSummary.macrsDepreciationBenefitUsd ?? 156000) / 1000)}k USD</div>
-              </div>
-              <div className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)]">
-                <div className="text-[11px] text-[var(--text-muted)] font-bold uppercase">Projected Net Equity IRR</div>
-                <div className="text-lg font-black text-[var(--accent)] mt-0.5">{memo.financialSummary.projectedNetEquityIrr ?? 19.8}%</div>
-              </div>
+          {/* Section 3: Institutional Financial & Tax Equity Structuring */}
+          <div className="space-y-3 font-sans">
+            <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-amber-400" />
+              <span>01 // INSTITUTIONAL PRO-FORMA & TAX EQUITY STRUCTURING</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
-                <div className="text-[10px] text-[var(--text-muted)] font-medium">Gross Capex</div>
-                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">${Math.round((memo.financialSummary.grossCapexUsd ?? 748000) / 1000)}k USD</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono">
+              <div className="bg-[#0a0a14] p-4 rounded-2xl border border-white/15">
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ESTIMATED CAPACITY</div>
+                <div className="text-xl font-black text-white mt-1">{memo.financialSummary.estimatedCapacityKw ?? 340} kW</div>
               </div>
-              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
-                <div className="text-[10px] text-[var(--text-muted)] font-medium">Annual O&M Expense</div>
-                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">${Math.round((memo.financialSummary.annualOmExpenseUsd ?? 5100) / 1000)}k/yr</div>
+
+              <div className="bg-[#0a0a14] p-4 rounded-2xl border border-white/15">
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">30% IRA ITC CREDIT</div>
+                <div className="text-xl font-black text-emerald-400 mt-1">${Math.round((memo.financialSummary.iraTaxCreditUsd ?? 224000) / 1000)}k USD</div>
               </div>
-              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
-                <div className="text-[10px] text-[var(--text-muted)] font-medium">25-Yr Net Cash Flow</div>
-                <div className="text-sm font-extrabold text-emerald-600 mt-0.5">${Math.round((memo.financialSummary.estimated25YrRevenueUsd ?? 1850000) / 1000)}k USD</div>
+
+              <div className="bg-[#0a0a14] p-4 rounded-2xl border border-white/15">
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">5-YR MACRS DEPR.</div>
+                <div className="text-xl font-black text-amber-400 mt-1">${Math.round((memo.financialSummary.macrsDepreciationBenefitUsd ?? 156000) / 1000)}k USD</div>
               </div>
-              <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)]">
-                <div className="text-[10px] text-[var(--text-muted)] font-medium">Unlevered Project IRR</div>
-                <div className="text-sm font-extrabold text-[var(--text-primary)] mt-0.5">{memo.financialSummary.projectedUnleveredIrr ?? 14.8}%</div>
+
+              <div className="bg-[#0a0a14] p-4 rounded-2xl border border-white/15">
+                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">NET EQUITY IRR</div>
+                <div className="text-xl font-black text-white mt-1">{memo.financialSummary.projectedNetEquityIrr ?? 19.8}%</div>
               </div>
             </div>
           </div>
 
-          {/* Section 3: Risk Matrix */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-[#9B763A]" />
-              <span>Construction Risks & Mitigation Matrix</span>
-            </h3>
-            <div className="space-y-2.5">
+          {/* Section 4: Risk Matrix */}
+          <div className="space-y-3 font-sans">
+            <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <span>02 // CONSTRUCTION RISKS & MITIGATION MATRIX</span>
+            </div>
+
+            <div className="space-y-2 font-mono">
               {memo.risksAndMitigations.map((item, i) => (
-                <div key={i} className="bg-[var(--bg-soft)] p-3.5 rounded-xl border border-[var(--border)] text-xs">
-                  <div className="font-bold text-[var(--text-primary)] mb-1">
-                    Risk: {item.risk}
+                <div key={i} className="bg-[#0a0a14] p-4 rounded-2xl border border-white/15 text-xs space-y-1">
+                  <div className="font-bold text-amber-400 flex items-center gap-2">
+                    <span>→ RISK:</span>
+                    <span className="text-white">{item.risk}</span>
                   </div>
-                  <div className="text-[var(--text-secondary)] pl-3 border-l-2 border-[var(--accent)]/40">
-                    Mitigation: {item.mitigation}
+                  <div className="text-slate-300 font-medium pl-4 border-l-2 border-amber-500/40 mt-1">
+                    MITIGATION: {item.mitigation}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Section 4: Non-Binding LOI Draft */}
-          <div className="border-t border-[var(--border)] pt-6">
-            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[var(--accent)]" />
-              <span>Non-Binding Letter of Intent (LOI) Draft</span>
-            </h3>
-            <pre className="bg-[var(--bg-soft)] p-4 rounded-xl border border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono whitespace-pre-wrap leading-relaxed mb-4">
-              {memo.loiText}
-            </pre>
+          {/* Section 5: Non-Binding Letter of Intent (LOI) Draft */}
+          <div className="space-y-3 font-sans">
+            <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <FileText className="w-4 h-4 text-amber-400" />
+              <span>03 // NON-BINDING LETTER OF INTENT (LOI) DRAFT</span>
+            </div>
 
-            {/* Legal Notice & Disclaimer Banner */}
-            <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex items-start gap-3 text-xs">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <div className="font-extrabold text-amber-800 uppercase tracking-wide text-[10.5px]">
-                  LEGAL NOTICE & PRE-FEASIBILITY UNDERWRITING DISCLAIMER
-                </div>
-                <div className="text-amber-950 font-medium leading-relaxed">
-                  {memo.legalDisclaimer || 'This document and generated Letter of Intent (LOI) are provided solely for pre-feasibility preliminary screening and automated decision support purposes. This output does NOT constitute legal advice, a binding legal contract, or a formal underwriting commitment. Full legal counsel review, title commitments, local zoning verification, and formal interconnection studies are required prior to execution.'}
-                </div>
+            <div className="bg-[#05050a] p-4 rounded-2xl border border-white/15 font-mono text-xs leading-relaxed text-slate-300 whitespace-pre-wrap max-h-48 overflow-y-auto">
+              {memo.loiText}
+            </div>
+
+            {/* Legal Notice Disclaimer Banner */}
+            <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex items-start gap-3 text-xs font-mono">
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div className="text-slate-300 leading-relaxed text-[11px]">
+                {memo.legalDisclaimer || 'LEGAL NOTICE & PRE-FEASIBILITY UNDERWRITING DISCLAIMER: This document and generated Letter of Intent (LOI) are provided solely for pre-feasibility preliminary screening and automated decision support purposes. This output does NOT constitute legal advice or a binding legal contract. Full legal counsel review and title commitments required prior to execution.'}
               </div>
             </div>
           </div>
 
-          {/* Section 5: Mireye Proof of Work */}
-          <div className="border-t border-[var(--border)] pt-6">
-            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
-              <span>Mireye Proof-of-Work Evidence Panel</span>
-            </h3>
-            <div className="bg-[var(--bg-soft)] rounded-xl border border-[var(--border)] overflow-x-auto p-4 text-xs font-mono">
-              <table className="w-full text-left">
+          {/* Section 6: Mireye Proof of Work Evidence Panel */}
+          <div className="border-t border-white/10 pt-6 space-y-3 font-sans">
+            <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>04 // MIREYE PROOF-OF-WORK EVIDENCE PANEL</span>
+            </div>
+
+            <div className="bg-[#05050a] rounded-2xl border border-white/15 overflow-hidden text-xs font-mono">
+              <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[var(--text-muted)]">
-                    <th className="pb-2">Physical Attribute</th>
-                    <th className="pb-2">Sourced Value</th>
-                    <th className="pb-2">Dataset Source</th>
-                    <th className="pb-2">Fetched At</th>
+                  <tr className="border-b border-white/10 bg-white/5 text-amber-400 font-bold text-[11px] uppercase">
+                    <th className="p-3">Physical Attribute</th>
+                    <th className="p-3">Sourced Value</th>
+                    <th className="p-3">Dataset Source</th>
+                    <th className="p-3">Fetched At</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--border)] text-[var(--text-secondary)]">
+                <tbody className="divide-y divide-white/10 text-slate-300">
                   {memo.mireyeCitations.map((ev, i) => (
-                    <tr key={i}>
-                      <td className="py-2 font-bold text-[var(--text-primary)]">{ev.fieldName}</td>
-                      <td className="py-2">{ev.valueString}</td>
-                      <td className="py-2 text-[var(--accent)]">{ev.source}</td>
-                      <td className="py-2 text-[var(--text-muted)]">{ev.fetchedAt}</td>
+                    <tr key={i} className="hover:bg-white/5 transition-colors">
+                      <td className="p-3 font-bold text-white">{ev.fieldName}</td>
+                      <td className="p-3 font-medium text-slate-200">{ev.valueString}</td>
+                      <td className="p-3">
+                        <a
+                          href={ev.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold"
+                        >
+                          <span>{ev.source}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </td>
+                      <td className="p-3 text-[10.5px] text-slate-400">{ev.fetchedAt}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
+
         </div>
       </main>
     </div>

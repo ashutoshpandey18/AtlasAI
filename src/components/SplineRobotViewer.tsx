@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Pause, Play, ChevronRight, Bot, Cpu } from 'lucide-react';
+import { Sparkles, Pause, Play, ChevronRight } from 'lucide-react';
 
 export function SplineRobotViewer() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [speechIndex, setSpeechIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,20 +42,8 @@ export function SplineRobotViewer() {
     },
   ];
 
-  // Detect mobile & screen size
+  // Lazy load Spline viewer script when in viewport
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // IntersectionObserver for lazy desktop 3D loading
-  useEffect(() => {
-    if (isMobile) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -64,7 +51,7 @@ export function SplineRobotViewer() {
           observer.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
 
     if (containerRef.current) {
@@ -72,11 +59,10 @@ export function SplineRobotViewer() {
     }
 
     return () => observer.disconnect();
-  }, [isMobile]);
+  }, []);
 
-  // Load Spline viewer script only when desktop & in view
   useEffect(() => {
-    if (isMobile || !isInView) return;
+    if (!isInView) return;
 
     if (!document.querySelector('script[src*="spline-viewer"]')) {
       const script = document.createElement('script');
@@ -88,11 +74,11 @@ export function SplineRobotViewer() {
     } else {
       setIsLoaded(true);
     }
-  }, [isMobile, isInView]);
+  }, [isInView]);
 
   // Hide Spline logo watermark safely
   useEffect(() => {
-    if (isMobile || !isLoaded) return;
+    if (!isLoaded) return;
 
     const hideSplineLogo = () => {
       const viewer = document.querySelector('spline-viewer');
@@ -115,7 +101,7 @@ export function SplineRobotViewer() {
 
     const interval = setInterval(hideSplineLogo, 150);
     return () => clearInterval(interval);
-  }, [isMobile, isLoaded]);
+  }, [isLoaded]);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -128,10 +114,10 @@ export function SplineRobotViewer() {
   const currentDialogue = robotDialogues[speechIndex];
 
   return (
-    <div ref={containerRef} className="relative w-full min-h-[380px] sm:min-h-[580px] flex items-center justify-center bg-transparent overflow-visible">
+    <div ref={containerRef} className="relative w-full flex flex-col md:flex-row items-center justify-center bg-transparent overflow-visible min-h-[480px]">
       
-      {/* FLOATING HUD DIALOGUE OVERLAY */}
-      <div className="absolute top-2 left-4 right-4 sm:right-auto sm:left-6 sm:max-w-md z-30 space-y-2 pointer-events-auto">
+      {/* FLOATING / STACKED HUD DIALOGUE OVERLAY */}
+      <div className="w-full md:absolute md:top-2 md:left-6 md:max-w-md z-30 space-y-2 pointer-events-auto mb-4 md:mb-0 text-left">
         
         {/* Stage Badge & Controls */}
         <div className="flex items-center justify-between gap-3">
@@ -195,24 +181,9 @@ export function SplineRobotViewer() {
         </div>
       </div>
 
-      {/* 3D Spline Canvas or Lightweight 2D Hologram for Mobile */}
-      <div className="w-full h-full min-h-[360px] sm:min-h-[560px] flex items-center justify-center relative z-10 bg-transparent pt-32 sm:pt-0">
-        {isMobile ? (
-          /* HIGH-PERFORMANCE LIGHTWEIGHT MOBILE 2D HOLOGRAM (0% GPU Lag) */
-          <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
-            <div className="relative w-28 h-28 rounded-full border-2 border-amber-400/40 bg-gradient-to-b from-amber-500/20 via-black to-indigo-900/30 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.3)] animate-pulse">
-              <Bot className="w-14 h-14 text-amber-400" />
-              <div className="absolute inset-0 rounded-full border border-amber-400/30 animate-ping opacity-25" />
-            </div>
-            <div className="space-y-1 font-mono">
-              <div className="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
-                <Cpu className="w-3.5 h-3.5" />
-                <span>ATLAS HOLOGRAM COPILOT</span>
-              </div>
-              <div className="text-[11px] text-slate-400">Mobile Fast-Mode Active</div>
-            </div>
-          </div>
-        ) : isLoaded && !hasError ? (
+      {/* 3D Spline Canvas Container (Visible & Scaled Mobile & Desktop) */}
+      <div className="w-full h-[360px] sm:h-[540px] flex items-center justify-center relative z-10 bg-transparent">
+        {isLoaded && !hasError ? (
           // @ts-expect-error custom element
           <spline-viewer
             url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
@@ -223,15 +194,15 @@ export function SplineRobotViewer() {
             <div className="w-16 h-16 rounded-full border border-amber-500/30 bg-amber-500/10 flex items-center justify-center text-amber-400 animate-pulse">
               <Sparkles className="w-8 h-8" />
             </div>
-            <span className="font-semibold text-slate-300">Loading 3D Model...</span>
+            <span className="font-semibold text-slate-300">Loading 3D Robot Model...</span>
           </div>
         )}
       </div>
 
-      {/* Floating Label */}
-      <div className="absolute bottom-2 right-6 z-20 bg-black/60 border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-2 text-[11px] font-bold text-slate-300">
+      {/* Floating Badge */}
+      <div className="absolute bottom-2 right-4 sm:right-6 z-20 bg-black/60 border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-2 text-[11px] font-bold text-slate-300">
         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-        <span>{isMobile ? 'Mobile Hologram Mode' : '3D Autonomous Decision Model'}</span>
+        <span>3D Autonomous Decision Model</span>
       </div>
     </div>
   );

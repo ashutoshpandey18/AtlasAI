@@ -117,14 +117,49 @@ export function planAcquisitionStrategyFallback(userPrompt: string): StrategyPla
   else if (promptLower.includes('north carolina') || promptLower.includes(' nc')) targetState = 'NC';
   else if (promptLower.includes('alabama') || promptLower.includes(' al')) targetState = 'AL';
 
-  let strategyName = `Dollar General Fee-Simple Retail Carport (${targetState})`;
-  let selectedChain = 'Dollar General';
   const gridIso = targetState === 'TX' ? 'ERCOT' : targetState === 'FL' ? 'FRCC' : 'SERC';
+
+  let strategyName = `Commercial Retail Carport Solar (${targetState})`;
+  let selectedChain = 'Dollar General & Retail Portfolio';
   let rulesApplied: string[] = [
     'Filter: Fee-simple corporate ownership only (reject ground leases)',
     'Threshold: Parking area / building footprint ratio >= 2.5×',
     `Grid Constraint: ${gridIso} queue active capacity < 1,500 MW`,
   ];
+
+  if (promptLower.includes('battery') || promptLower.includes('bess') || promptLower.includes('storage')) {
+    strategyName = `Battery Energy Storage System (BESS) Gigafactory (${targetState})`;
+    selectedChain = 'Grid-Scale BESS Energy Storage';
+    rulesApplied = [
+      'Filter: Substation distance <= 1.0 km (high-voltage tie-in)',
+      `Grid Constraint: ${gridIso} queue interconnect capacity >= 50 MW`,
+      'Environmental: Exclude 100-year floodplain (FEMA Zone X mandatory)',
+    ];
+  } else if (promptLower.includes('solar farm') || promptLower.includes('ground solar') || promptLower.includes('pv')) {
+    strategyName = `Utility-Scale Solar PV Farm (${targetState})`;
+    selectedChain = 'Utility Solar PV Generation';
+    rulesApplied = [
+      'Threshold: Minimum contiguous parcel acreage >= 50 acres',
+      'Solar Yield: GHI >= 4.8 kWh/m²/day',
+      'Slope Limit: Slope <= 4.0 degrees (eliminate civil grading)',
+    ];
+  } else if (promptLower.includes('wind')) {
+    strategyName = `Utility Wind Energy Farm (${targetState})`;
+    selectedChain = 'Utility Wind Generation';
+    rulesApplied = [
+      'Setback: Residential property setback >= 1,000 feet',
+      'Environmental: Exclude migratory bird flight corridors',
+      'Grid Constraint: Transmission line voltage >= 138 kV',
+    ];
+  } else if (promptLower.includes('warehouse') || promptLower.includes('logistics')) {
+    strategyName = `Logistics & Fulfillment Center Hub (${targetState})`;
+    selectedChain = 'Industrial Warehouse Distribution';
+    rulesApplied = [
+      'Access: Major interstate/freeway distance <= 1.5 miles',
+      'Topography: Flat bedrock depth >= 150 cm',
+      'Zoning: Industrial M-1 / Heavy Commercial',
+    ];
+  }
 
   let alternatives: StrategyAlternative[] = [];
 

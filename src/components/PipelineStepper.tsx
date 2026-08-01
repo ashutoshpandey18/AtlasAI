@@ -119,7 +119,7 @@ export function PipelineStepper() {
           </div>
           <div className="bg-amber-950/10 border border-amber-800/40 p-3.5 rounded-xl text-xs">
             <div className="font-bold text-[var(--text-primary)] flex items-center justify-between mb-1">
-              <span>⭐ Priority Elevated: Nacogdoches #1</span>
+              <span>PRIORITY ELEVATED: Nacogdoches #1</span>
               <span className="text-[10px] font-mono bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full font-bold">
                 Priority 92%
               </span>

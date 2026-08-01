@@ -157,7 +157,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
             className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-bold underline cursor-pointer transition-colors"
           >
             <Upload className="w-3.5 h-3.5" />
-            <span>{customUploadedSites.length > 0 ? `Uploaded: ${customUploadedFilename} (${customUploadedSites.length} Sites)` : 'Upload Custom CSV / GeoJSON Portfolio 📁'}</span>
+            <span>{customUploadedSites.length > 0 ? `Uploaded: ${customUploadedFilename} (${customUploadedSites.length} Sites)` : 'Upload Custom CSV / GeoJSON Portfolio'}</span>
           </button>
         </div>
 

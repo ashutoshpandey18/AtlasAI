@@ -82,7 +82,7 @@ export default function WorkspacePage() {
               geocoded: true,
             }));
 
-            const enrichedList = require('../../../data/tx_statewide_matches_enriched.json').enriched || [];
+            const enrichedList = require('../../../../data/tx_statewide_matches_enriched.json').enriched || [];
             const now = new Date().toISOString();
 
             const settled: LocationResult[] = sanitizedLocs.map((loc, idx) => {
@@ -511,7 +511,7 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to sou
   function handleAutoLoadTexasPortfolio() {
     setAnalyzing(true);
     try {
-      const enrichedList = require('../../../data/tx_statewide_matches_enriched.json').enriched || [];
+      const enrichedList = require('../../../../data/tx_statewide_matches_enriched.json').enriched || [];
       const autoLocs: LocationEntry[] = enrichedList.map((item: any, idx: number) => ({
         id: `tx-site-${idx + 1}`,
         address: `${item.store_name || 'Dollar General'} — ${item.county || 'Texas'}, TX (${item.lat.toFixed(4)}, ${item.lon.toFixed(4)})`,

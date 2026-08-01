@@ -1,52 +1,51 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Sparkles, FolderKanban } from 'lucide-react';
+import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AgentRunPanel } from '@/components/AgentRunPanel';
+import { CompactAgentRobot } from '@/components/CompactAgentRobot';
+import { AwwwardsCursorGlow } from '@/components/AwwwardsCursorGlow';
+import { CosmicParticles } from '@/components/CosmicParticles';
+import { Navbar } from '@/components/Navbar';
+
+function AgentContent() {
+  const searchParams = useSearchParams();
+  const promptParam = searchParams.get('prompt');
+
+  return (
+    <div className="space-y-6">
+      {/* Compact 3D Agent Robot Demonstrating the Pipeline Flow */}
+      <CompactAgentRobot />
+
+      {/* Dedicated Agent Execution & Scoring Panel */}
+      <AgentRunPanel initialPrompt={promptParam || 'Find fast-deployment solar carport targets in Texas under $2M capex.'} />
+    </div>
+  );
+}
 
 export default function AgentPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)] flex flex-col font-sans relative selection:bg-[var(--accent)] selection:text-white">
-      {/* Background Glow Orbs */}
-      <div className="orb orb-a" />
-      <div className="orb orb-b" />
+    <div className="min-h-screen cosmic-gradient-bg bg-spatial-grid text-white flex flex-col font-sans relative overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
+      
+      {/* Awwwards Liquid Cursor Glow, Floating Star Particles & Radial Vignette */}
+      <AwwwardsCursorGlow />
+      <CosmicParticles />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-radial-vignette" />
 
-      {/* Top Header / Navigation */}
-      <header className="border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-md sticky top-0 z-50 py-4">
-        <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all bg-[var(--bg-soft)] px-3 py-1.5 rounded-full border border-[var(--border)]"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Home</span>
-            </Link>
-            <div className="h-4 w-px bg-[var(--border)]" />
-            <div className="flex items-center gap-2 text-xs font-black tracking-wider uppercase text-[var(--text-primary)]">
-              <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse" />
-              <span>ATLAS ACQUISITION WORKSPACE</span>
-            </div>
-          </div>
+      {/* Atmospheric Shifting Glow Orbs */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/20 via-amber-600/10 to-transparent pointer-events-none z-0 blur-3xl animate-pulse" />
+      <div className="absolute top-96 right-0 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-600/15 via-orange-500/10 to-transparent pointer-events-none z-0 blur-3xl" />
 
-          <div className="flex items-center gap-4">
-            <Link
-              href="/projects"
-              className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all"
-            >
-              <FolderKanban className="w-3.5 h-3.5 text-[var(--accent)]" />
-              <span>Saved Campaigns</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Floating Spatial HUD Navbar */}
+      <Navbar />
 
       {/* Main Workspace Body */}
-      <main className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-6 relative z-10">
-        {/* Dedicated Agent Panel Component */}
-        <AgentRunPanel />
+      <main className="flex-1 max-w-[1200px] w-full mx-auto px-6 py-8 relative z-10">
+        <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400 font-mono">Loading workspace...</div>}>
+          <AgentContent />
+        </Suspense>
       </main>
+
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { HelpCircle, X, CheckCircle, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
+import React from 'react';
+import { X, ShieldCheck, ShieldAlert, CheckCircle2, AlertTriangle, FileCheck } from 'lucide-react';
 
 export interface AskWhyData {
   title: string;
@@ -19,152 +19,105 @@ interface AskWhyModalProps {
 }
 
 export function AskWhyModal({ data, isOpen, onClose }: AskWhyModalProps) {
-  const [showSources, setShowSources] = useState(false);
-
   if (!isOpen || !data) return null;
 
-  // Plain-English sentence translation for technical inputs
-  const translatedInputs = data.inputsChecked.map((inp) => {
-    if (inp.includes('Zone AE') || inp.includes('flood')) {
-      return 'This site floods on average once every 100 years (high flood hazard zone).';
-    }
-    if (inp.includes('slope') || inp.includes('USGS')) {
-      return 'Steep ground slope requires expensive cut-and-fill land grading.';
-    }
-    if (inp.includes('poa') || inp.includes('solar')) {
-      return 'High solar exposure for optimal clean energy yield.';
-    }
-    if (inp.includes('transmission') || inp.includes('grid')) {
-      return 'Located near high-voltage power lines for fast grid connection.';
-    }
-    return inp;
-  });
-
-  const topVerdictSummary = data.isApproved
-    ? 'Verdict: Recommended — Proceed to Site Control'
-    : `Verdict: Recommended — Reject due to ${data.conclusion.includes('flood') ? '100-Year Floodplain Risk' : 'High Grid Congestion'}`;
+  const isFlood = data.conclusion.toLowerCase().includes('flood');
+  const isSlope = data.conclusion.toLowerCase().includes('slope');
+  const isGrid = data.conclusion.toLowerCase().includes('grid');
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 font-sans">
-      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-6 shadow-2xl relative text-[var(--text-primary)]">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 font-sans text-left">
+      
+      {/* PURE MATTE TITANIUM CONTAINER (0% Glow, 0% Neon Laser Lines) */}
+      <div className="bg-[#0d0d12] border border-white/15 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative text-white space-y-4 overflow-hidden">
         
-        {/* ONE-LINE PLAIN-ENGLISH VERDICT SUMMARY AT THE VERY TOP */}
-        <div className={`p-3.5 rounded-xl border mb-5 flex items-center gap-2 text-xs font-black tracking-wide ${
-          data.isApproved
-            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800'
-            : 'bg-rose-500/10 border-rose-500/30 text-rose-800'
-        }`}>
-          {data.isApproved ? (
-            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-          ) : (
-            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-          )}
-          <span>{topVerdictSummary}</span>
-        </div>
-
-        {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[var(--bg-soft)] border border-[var(--border)] flex items-center justify-center text-[var(--accent)]">
-              <HelpCircle className="w-4.5 h-4.5" />
+        {/* Top Header: Title & Close Button */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div>
+            <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <FileCheck className="w-3.5 h-3.5 text-slate-400" />
+              <span>Decision Explanation</span>
             </div>
-            <div>
-              <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                Decision Explanation
-              </div>
-              <h3 className="text-base font-bold tracking-tight text-[var(--text-primary)]">{data.title}</h3>
-            </div>
+            <h3 className="text-base font-black text-white tracking-tight mt-0.5">{data.title}</h3>
+            <div className="text-xs text-slate-400 font-medium">{data.subtitle}</div>
           </div>
+
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[var(--bg-soft)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+            className="text-slate-400 hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
           >
-            <X className="w-4.5 h-4.5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Content */}
-        <div className="space-y-4 text-xs">
-          
-          {/* Plain English Explanation */}
-          <div>
-            <div className="font-bold text-[var(--text-muted)] uppercase text-[10.5px] tracking-wider mb-2">
-              1. What We Found About This Site
-            </div>
-            <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)] space-y-2 text-[12px] text-[var(--text-primary)] font-medium">
-              {translatedInputs.map((sentence, i) => (
-                <div key={i} className="flex items-start gap-2 leading-relaxed">
-                  <span className="text-[var(--accent)] font-bold">•</span>
-                  <span>{sentence}</span>
-                </div>
-              ))}
+        {/* Matte Verdict Status Badge */}
+        <div className={`px-3 py-2 rounded-xl border flex items-center gap-2 text-xs font-mono font-bold ${
+          data.isApproved
+            ? 'bg-emerald-950/40 border-emerald-800/40 text-emerald-300'
+            : 'bg-rose-950/40 border-rose-800/40 text-rose-300'
+        }`}>
+          {data.isApproved ? (
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          ) : (
+            <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
+          )}
+          <span>
+            {data.isApproved
+              ? 'VERDICT: RECOMMENDED — PROCEED TO SITE CONTROL'
+              : `VERDICT: REJECTED — ${isFlood ? 'FLOODPLAIN HAZARD' : isSlope ? 'STEEP SLOPE OVERRUN' : 'GRID CONGESTION'}`}
+          </span>
+        </div>
+
+        {/* 2x2 Matte Physical Metrics Grid */}
+        <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
+            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">FEMA FLOOD</div>
+            <div className={`font-bold mt-0.5 text-[11px] ${isFlood ? 'text-rose-400' : 'text-slate-200'}`}>
+              {isFlood ? 'Zone AE (High Risk)' : 'Zone X (Low Risk)'}
             </div>
           </div>
 
-          {/* Progressive Disclosure: Expandable Raw Sources */}
-          <div>
-            <button
-              type="button"
-              onClick={() => setShowSources(!showSources)}
-              className="text-[11px] font-bold text-[var(--accent)] hover:underline flex items-center gap-1 cursor-pointer py-1"
-            >
-              <span>{showSources ? 'Hide technical dataset citations' : 'Show technical dataset citations'}</span>
-              {showSources ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
-
-            {showSources && (
-              <div className="mt-2 bg-[var(--bg-soft)]/60 p-3 rounded-xl border border-[var(--border)] font-mono text-[11px] text-[var(--text-secondary)] space-y-1">
-                {data.inputsChecked.map((inp, i) => (
-                  <div key={i}>• {inp}</div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Business Rules Evaluated */}
-          <div>
-            <div className="font-bold text-[var(--text-muted)] uppercase text-[10.5px] tracking-wider mb-2">
-              2. Siting Rules Checked
-            </div>
-            <div className="bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border)] space-y-1.5 text-[11.5px] text-[var(--text-secondary)]">
-              {data.rulesApplied.map((r, i) => (
-                <div key={i}>• {r}</div>
-              ))}
+          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
+            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">USGS SLOPE</div>
+            <div className={`font-bold mt-0.5 text-[11px] ${isSlope ? 'text-rose-400' : 'text-slate-200'}`}>
+              {isSlope ? '8.2° (Steep Grading)' : '1.2° (Flat Class)'}
             </div>
           </div>
 
-          {/* Conclusion Box */}
-          <div className={`p-4 rounded-xl border ${
-            data.isApproved
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-              : 'bg-rose-50 border-rose-200 text-rose-900'
-          }`}>
-            <div className="font-bold flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
-              {data.isApproved ? (
-                <>
-                  <CheckCircle className="w-4 h-4 text-emerald-600" />
-                  <span>Approved for Site Control</span>
-                </>
-              ) : (
-                <>
-                  <AlertTriangle className="w-4 h-4 text-rose-600" />
-                  <span>Site Rejected</span>
-                </>
-              )}
+          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
+            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">SOLAR YIELD</div>
+            <div className="text-slate-200 font-bold mt-0.5 text-[11px]">2,131 kWh/m²/yr</div>
+          </div>
+
+          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
+            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">138kV GRID LINE</div>
+            <div className={`font-bold mt-0.5 text-[11px] ${isGrid ? 'text-rose-400' : 'text-slate-200'}`}>
+              {isGrid ? '1.8 km (Congested)' : '< 480m (Fast Tie-in)'}
             </div>
-            <p className="text-[12px] leading-relaxed font-medium">{data.conclusion}</p>
           </div>
         </div>
 
+        {/* Matte Rationale Callout Box */}
+        <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed ${
+          data.isApproved
+            ? 'bg-emerald-950/20 border-emerald-800/30 text-emerald-200'
+            : 'bg-rose-950/20 border-rose-800/30 text-rose-200'
+        }`}>
+          "{data.conclusion}"
+        </div>
+
         {/* Footer Close Button */}
-        <div className="mt-6 pt-4 border-t border-[var(--border)] flex justify-end">
+        <div className="pt-2 border-t border-white/10 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
-            className="btn bg-[var(--text-primary)] text-[var(--bg)] px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            className="bg-white hover:bg-slate-200 text-slate-950 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shadow-md"
           >
             Close Explanation
           </button>
         </div>
+
       </div>
     </div>
   );

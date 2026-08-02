@@ -5,6 +5,8 @@ import { Play, FileText, CheckCircle2, Upload, Zap } from 'lucide-react';
 import { InvestmentMemoModal } from './InvestmentMemoModal';
 import { AskWhyModal, AskWhyData } from './AskWhyModal';
 import { ParcelUploadModal, CustomSiteParcel } from './ParcelUploadModal';
+import { ReasoningTimeline } from './ReasoningTimeline';
+import { DecisionLedger } from './DecisionLedger';
 import type { StrategyPlan } from '@/agent/planner';
 
 interface RejectionItem {
@@ -546,6 +548,14 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
 
             </div>
           )}
+
+          {/* Replayable AI Reasoning Timeline */}
+          <div className="pt-6 border-t border-white/10">
+            <ReasoningTimeline currentStage={plan?.selectedChain} isComplete={!isRunning} />
+          </div>
+
+          {/* Executive Decision Ledger */}
+          <DecisionLedger promptStr={prompt} rejections={rejections} evaluations={[]} />
 
         </div>
       )}

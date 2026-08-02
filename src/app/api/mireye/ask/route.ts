@@ -35,7 +35,13 @@ export async function POST(req: Request) {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ lat, lng, question: questionStr }),
+          body: JSON.stringify({
+            question: questionStr,
+            lat,
+            lng,
+            address: body.address || undefined,
+            include_trace: true,
+          }),
           signal: controller.signal,
         });
 

@@ -83,7 +83,7 @@ export default function ReportBuilderModal() {
       "▸ Computing suitability matrices in-memory...",
       "▸ Querying Mireye /v1/ask for narrative executive report...",
       "▸ Grounding data with primary federal citations...",
-      "✓ Campaign Report Compiled."
+      "[DONE] Campaign Report Compiled."
     ];
 
     let logIdx = 0;
@@ -287,11 +287,11 @@ export default function ReportBuilderModal() {
                         <span className="text-[var(--text-primary)] font-medium"> {log.replace("▸ ", "")}</span>
                       </>
                     );
-                  } else if (log.startsWith("✓")) {
+                  } else if (log.startsWith("[DONE]")) {
                     element = (
                       <>
-                        <span className="text-[var(--accent)] font-bold">✓</span>
-                        <span className="text-[var(--accent)] font-bold"> {log.replace("✓ ", "")}</span>
+                        <span className="text-[var(--accent)] font-bold">[DONE]</span>
+                        <span className="text-[var(--accent)] font-bold"> {log.replace("[DONE] ", "")}</span>
                       </>
                     );
                   }
@@ -402,5 +402,5 @@ const stepLogs = [
   "▸ Computing suitability matrices in-memory...",
   "▸ Querying Mireye /v1/ask for narrative executive report...",
   "▸ Grounding data with primary federal citations...",
-  "✓ Campaign Report Compiled."
+  "[DONE] Campaign Report Compiled."
 ];

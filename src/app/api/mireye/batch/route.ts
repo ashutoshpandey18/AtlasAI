@@ -16,6 +16,8 @@ const DEFAULT_FIELDS = [
   'within_floodplain_polygon',
   'transmission_line_distance_m',
   'tree_canopy_pct',
+  'substation_distance_m',
+  'intersects_wetland',
 ];
 
 export async function POST(req: Request) {
@@ -126,9 +128,9 @@ export async function POST(req: Request) {
 
     const merged = { ...cacheResults, ...fetchedResults };
 
-    // Save to cache asynchronously
+    // Save ONLY authentic Mireye API results to cache (do not cache fallbacks)
     for (const coord of uncachedCoords) {
-      if (fetchedResults[coord.id]) {
+      if (fetchedResults[coord.id] && (fetchedResults[coord.id] as any)._isFallback !== true) {
         const key = `mireye-fetch:${coord.lat.toFixed(4)},${coord.lng.toFixed(4)},${sortedFields}`;
         setCache(key, fetchedResults[coord.id]).catch(() => {});
       }

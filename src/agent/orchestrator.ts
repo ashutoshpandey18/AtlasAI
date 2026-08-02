@@ -82,10 +82,12 @@ export async function runAcquisitionPipeline(
   for (const item of enrichedDataset) {
     const rawCounty = item.county || (item.mireye?.fields?.['political_county']?.value as string);
     const county = resolveRealCounty(item.lat, item.lon, rawCounty);
-    const shortId = item.geo_id.replace(/^0+/, '') || '45835';
-    const siteName = `${item.chain || 'Dollar General'} ${county} #${shortId}`;
+    const shortId = item.geo_id ? item.geo_id.slice(-6) : '45835';
+    const siteName = item.chain && item.chain.includes('#') 
+      ? item.chain 
+      : `${item.chain || 'Dollar General'} ${county} #${shortId}`;
 
-    const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, county, item.mireye);
+    const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, county, item.mireye, userPrompt);
     const intelEval = evaluateAcquisitionIntelligence(item.geo_id, county, item.owner);
 
     if (techEval.hasDealKiller) {

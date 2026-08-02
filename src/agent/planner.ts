@@ -122,55 +122,64 @@ export function planAcquisitionStrategyFallback(userPrompt: string): StrategyPla
   let strategyName = `Commercial Retail Carport Solar (${targetState})`;
   let selectedChain = 'Dollar General & Retail Portfolio';
   let rulesApplied: string[] = [
-    'Filter: Fee-simple corporate ownership only (reject ground leases)',
-    'Threshold: Parking area / building footprint ratio >= 2.5×',
-    `Grid Constraint: ${gridIso} queue active capacity < 1,500 MW`,
+    'Ownership Structure: Prioritize fee-simple corporate ownership to eliminate complex landlord ground-lease approvals',
+    'Parking Ratio: Require parking lot footprint ratio >= 2.5× building area for optimal ~250kW Canopy capacity',
+    `Grid Interconnect: Screen active ${gridIso} queue congestion to ensure interconnect timelines under 12 months`,
   ];
 
   if (promptLower.includes('battery') || promptLower.includes('bess') || promptLower.includes('storage')) {
-    strategyName = `Battery Energy Storage System (BESS) Gigafactory (${targetState})`;
+    strategyName = `${targetState} Power Storage Initiative`;
     selectedChain = 'Grid-Scale BESS Energy Storage';
     rulesApplied = [
-      'Filter: Substation distance <= 1.0 km (high-voltage tie-in)',
-      `Grid Constraint: ${gridIso} queue interconnect capacity >= 50 MW`,
-      'Environmental: Exclude 100-year floodplain (FEMA Zone X mandatory)',
+      'Grid Tie-in: Substation distance <= 1.0 km for direct high-voltage distribution interconnect',
+      `Queue Capacity: Confirm ${gridIso} feeder capacity >= 50 MW without major network upgrades`,
+      'Environmental: Mandatory FEMA Zone X clearance to safeguard critical battery storage infrastructure',
+    ];
+  } else if (promptLower.includes('carport') || promptLower.includes('canopy') || promptLower.includes('retail solar')) {
+    strategyName = `${targetState} Retail Solar Canopy Strategy`;
+    selectedChain = 'Dollar General & Retail Portfolio';
+    rulesApplied = [
+      'Fee-Simple Ownership: Corporate fee-simple title verified (zero landlord ground lease risk)',
+      'Parking Footprint: Parking ratio >= 2.5× building footprint (~250kW canopy capacity)',
+      'Environmental Safety: Unencumbered FEMA Zone X clearance (zero 100-year flood risk)',
     ];
   } else if (promptLower.includes('solar farm') || promptLower.includes('ground solar') || promptLower.includes('pv')) {
     strategyName = `Utility-Scale Solar PV Farm (${targetState})`;
     selectedChain = 'Utility Solar PV Generation';
     rulesApplied = [
-      'Threshold: Minimum contiguous parcel acreage >= 50 acres',
-      'Solar Yield: GHI >= 4.8 kWh/m²/day',
-      'Slope Limit: Slope <= 4.0 degrees (eliminate civil grading)',
+      'Parcel Scale: Minimum contiguous acreage >= 50 acres for multi-MW single-axis tracking array',
+      'Solar Radiometry: NREL PVWatts GHI >= 4.8 kWh/m²/day for top-tier annual yield',
+      'Civil Topography: Slope <= 4.0° to eliminate earthwork cut-and-fill grading costs',
+    ];
+  } else if (promptLower.includes('tax-delinquent') || promptLower.includes('tax delinquent') || promptLower.includes('delinquent tax')) {
+    strategyName = 'Motivated Seller Tax Delinquency Option Strategy';
+    selectedChain = 'Dollar General & Family Dollar TX';
+    rulesApplied = [
+      'Assessor Audit: County Tax Assessor delinquency >= $15,000 overdue',
+      'Seller Motivation: 2+ years overdue property taxes create 3.2× higher option acceptance probability',
+      'Title Clearance: Exclude active Chapter 11/13 bankruptcy litigation encumbrances',
     ];
   } else if (promptLower.includes('wind')) {
     strategyName = `Utility Wind Energy Farm (${targetState})`;
     selectedChain = 'Utility Wind Generation';
     rulesApplied = [
-      'Setback: Residential property setback >= 1,000 feet',
-      'Environmental: Exclude migratory bird flight corridors',
-      'Grid Constraint: Transmission line voltage >= 138 kV',
+      'Setback Compliance: Residential acoustic setback >= 1,000 feet',
+      'Environmental Corridor: Exclude USFWS migratory bird flight corridors and protected habitats',
+      'Transmission Tie-in: Interconnect voltage >= 138 kV for utility bulk power export',
     ];
   } else if (promptLower.includes('warehouse') || promptLower.includes('logistics')) {
     strategyName = `Logistics & Fulfillment Center Hub (${targetState})`;
     selectedChain = 'Industrial Warehouse Distribution';
     rulesApplied = [
-      'Access: Major interstate/freeway distance <= 1.5 miles',
-      'Topography: Flat bedrock depth >= 150 cm',
-      'Zoning: Industrial M-1 / Heavy Commercial',
+      'Logistics Access: Interstate highway interchange distance <= 1.5 miles',
+      'Civil Foundation: Bedrock depth >= 150 cm to support heavy slab loading',
+      'Zoning Control: Industrial M-1 / Heavy Commercial zoning entitlement confirmed',
     ];
   }
 
   let alternatives: StrategyAlternative[] = [];
 
-  if (promptLower.includes('tax') || promptLower.includes('delinquent') || promptLower.includes('seller') || promptLower.includes('20k')) {
-    strategyName = 'Motivated Seller Tax Delinquency Option Strategy';
-    selectedChain = 'Dollar General & Family Dollar TX';
-    rulesApplied = [
-      'Filter: County Tax Assessor Delinquency >= $15,000 overdue',
-      'Priority Signal: Elevated option willingness (2+ years overdue taxes)',
-      'Constraint: Exclude active bankruptcy litigation properties',
-    ];
+  if (strategyName.includes('Tax')) {
     alternatives = [
       {
         strategyName: 'Standard Commercial Retail Siting',
@@ -195,7 +204,7 @@ export function planAcquisitionStrategyFallback(userPrompt: string): StrategyPla
         strategyName: 'Walmart Big-Box Commercial Solar',
         targetChain: 'Walmart',
         status: 'REJECTED',
-        rejectionReason: 'Lower fee-simple ownership rate (~52% leased ground); high urban ERCOT queue saturation (>3,200 MW active).',
+        rejectionReason: 'Lower fee-simple corporate ownership (~52% leased ground); high urban ERCOT queue saturation (>3,200 MW active).',
         ownershipRatePct: 52,
         lotCoverageRatio: 2.1,
       },
@@ -203,7 +212,7 @@ export function planAcquisitionStrategyFallback(userPrompt: string): StrategyPla
         strategyName: 'Dollar General Fee-Simple Retail Carport',
         targetChain: 'Dollar General',
         status: 'SELECTED',
-        selectionReason: 'High fee-simple corporate ownership (~74%), 4.3× lot coverage ratio, and 81% rural location profile with minimal grid queue congestion.',
+        selectionReason: 'High fee-simple corporate ownership (~74%), 4.3× parking lot coverage ratio, and 81% rural location profile with minimal grid queue congestion.',
         ownershipRatePct: 74,
         lotCoverageRatio: 4.3,
       },
@@ -218,10 +227,10 @@ export function planAcquisitionStrategyFallback(userPrompt: string): StrategyPla
     selectedChain,
     strategyName,
     reasoning: [
-      `Goal Analyzed: "${userPrompt}"`,
-      `Evaluated ${alternatives.length} candidate acquisition strategies for ${targetState}.`,
-      `${strategyName} selected for execution based on parameter constraints.`,
-      selectedAlt.selectionReason || 'Optimized for rapid acquisition and minimal negotiation friction.',
+      `Formulated targeted site acquisition strategy for "${userPrompt}".`,
+      `Evaluated ${alternatives.length} candidate deployment strategies across the ${targetState} grid territory.`,
+      `Selected ${strategyName} to maximize site control velocity and minimize interconnection queue risk.`,
+      selectedAlt.selectionReason || 'Optimized for rapid option execution and sub-market lease rate negotiation.',
     ],
     rulesApplied,
     consideredAlternatives: alternatives,

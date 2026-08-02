@@ -177,7 +177,18 @@ export async function deleteCampaign(id: string): Promise<void> {
   });
 }
 
+// Fast In-Memory RAM Cache (0ms latency) backed by Turso SQLite persistence
+const inMemoryCache = new Map<string, { value: any; timestamp: number }>();
+const MAX_IN_MEMORY_ENTRIES = 5000;
+
 export async function getCache(key: string): Promise<any | null> {
+  // 1. Check in-memory RAM cache first (0ms latency)
+  const memoryHit = inMemoryCache.get(key);
+  if (memoryHit) {
+    return memoryHit.value;
+  }
+
+  // 2. Fall back to Turso SQLite disk/network cache
   await initDb();
   try {
     const res = await client.execute({
@@ -185,7 +196,15 @@ export async function getCache(key: string): Promise<any | null> {
       args: [key],
     });
     if (res.rows.length === 0) return null;
-    return JSON.parse(String(res.rows[0].value));
+
+    const parsedValue = JSON.parse(String(res.rows[0].value));
+    
+    // Seed in-memory RAM cache for future 0ms hits
+    if (inMemoryCache.size < MAX_IN_MEMORY_ENTRIES) {
+      inMemoryCache.set(key, { value: parsedValue, timestamp: Date.now() });
+    }
+
+    return parsedValue;
   } catch (err) {
     console.error('Failed to read from Turso cache:', err);
     return null;
@@ -193,18 +212,30 @@ export async function getCache(key: string): Promise<any | null> {
 }
 
 export async function setCache(key: string, value: any): Promise<void> {
-  await initDb();
-  try {
-    await client.execute({
-      sql: `INSERT INTO api_cache (key, value, createdAt)
-            VALUES (?, ?, ?)
-            ON CONFLICT(key) DO UPDATE SET
-              value = excluded.value,
-              createdAt = excluded.createdAt`,
-      args: [key, JSON.stringify(value), new Date().toISOString()],
-    });
-  } catch (err) {
-    console.error('Failed to write to Turso cache:', err);
+  // 1. Instantly write to in-memory RAM cache (0ms latency)
+  if (inMemoryCache.size >= MAX_IN_MEMORY_ENTRIES) {
+    // Evict oldest 500 items if cache capacity reached
+    const keysToEvict = Array.from(inMemoryCache.keys()).slice(0, 500);
+    keysToEvict.forEach((k) => inMemoryCache.delete(k));
   }
+  inMemoryCache.set(key, { value, timestamp: Date.now() });
+
+  // 2. Dispatch non-blocking background write to Turso SQLite
+  initDb().then(async () => {
+    try {
+      await client.execute({
+        sql: `INSERT INTO api_cache (key, value, createdAt)
+              VALUES (?, ?, ?)
+              ON CONFLICT(key) DO UPDATE SET
+                value = excluded.value,
+                createdAt = excluded.createdAt`,
+        args: [key, JSON.stringify(value), new Date().toISOString()],
+      });
+    } catch (err) {
+      console.error('Failed to write to Turso cache:', err);
+    }
+  }).catch((err) => {
+    console.error('Failed to initialize Turso DB during background cache write:', err);
+  });
 }
 

@@ -43,7 +43,7 @@ export function PipelineStepper() {
             <div className="p-3 rounded-xl border bg-[var(--bg-soft)]/60 border-[var(--border)] opacity-60">
               <div className="font-bold text-xs flex justify-between">
                 <span>Walmart Big-Box Solar</span>
-                <span className="text-rose-500 font-mono">✗ REJECTED</span>
+                <span className="text-rose-500 font-mono">[REJECTED]</span>
               </div>
               <p className="text-[11px] text-[var(--text-secondary)] mt-1">
                 Lower fee-simple ownership rate (52% leased); urban ERCOT queue saturation &gt;3,200 MW.
@@ -53,7 +53,7 @@ export function PipelineStepper() {
               <div className="font-bold text-xs flex justify-between">
                 <span>Dollar General Fee-Simple Carport</span>
                 <span className="font-mono bg-[var(--accent)] text-[var(--accent-text)] px-2.5 py-0.5 rounded-full text-[10px] font-bold">
-                  ✓ SELECTED
+                  [SELECTED]
                 </span>
               </div>
               <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-normal">

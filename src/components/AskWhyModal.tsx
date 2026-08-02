@@ -22,8 +22,6 @@ export function AskWhyModal({ data, isOpen, onClose }: AskWhyModalProps) {
   if (!isOpen || !data) return null;
 
   const isFlood = data.conclusion.toLowerCase().includes('flood');
-  const isSlope = data.conclusion.toLowerCase().includes('slope');
-  const isGrid = data.conclusion.toLowerCase().includes('grid');
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 font-sans text-left">
@@ -65,41 +63,45 @@ export function AskWhyModal({ data, isOpen, onClose }: AskWhyModalProps) {
           <span>
             {data.isApproved
               ? 'VERDICT: RECOMMENDED — PROCEED TO SITE CONTROL'
-              : `VERDICT: REJECTED — ${isFlood ? 'FLOODPLAIN HAZARD' : isSlope ? 'STEEP SLOPE OVERRUN' : 'GRID CONGESTION'}`}
+              : 'VERDICT: REJECTED — DISQUALIFIED ON CIVIL / ENVIRONMENTAL FEASIBILITY'}
           </span>
         </div>
 
-        {/* 2x2 Matte Physical Metrics Grid */}
-        <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
-            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">FEMA FLOOD</div>
-            <div className={`font-bold mt-0.5 text-[11px] ${isFlood ? 'text-rose-400' : 'text-slate-200'}`}>
-              {isFlood ? 'Zone AE (High Risk)' : 'Zone X (Low Risk)'}
+        {/* Dynamic Mireye Physical Signals Grid */}
+        {data.inputsChecked && data.inputsChecked.length > 0 && (
+          <div className="space-y-2">
+            <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+              MIREYE PHYSICAL SIGNALS CHECKED:
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+              {data.inputsChecked.map((input, idx) => (
+                <div key={idx} className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl font-mono text-[11px] text-slate-200">
+                  {input}
+                </div>
+              ))}
             </div>
           </div>
+        )}
 
-          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
-            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">USGS SLOPE</div>
-            <div className={`font-bold mt-0.5 text-[11px] ${isSlope ? 'text-rose-400' : 'text-slate-200'}`}>
-              {isSlope ? '8.2° (Steep Grading)' : '1.2° (Flat Class)'}
+        {/* Applied Rules / Constraints Ledger */}
+        {data.rulesApplied && data.rulesApplied.length > 0 && (
+          <div className="space-y-1.5 pt-1">
+            <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+              APPLIED RULES & CONSTRAINTS:
+            </div>
+            <div className="space-y-1 text-xs font-mono text-slate-300">
+              {data.rulesApplied.map((rule, idx) => (
+                <div key={idx} className="flex items-start gap-1.5 text-[11px]">
+                  <span className="text-amber-400 font-bold">→</span>
+                  <span>{rule}</span>
+                </div>
+              ))}
             </div>
           </div>
+        )}
 
-          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
-            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">SOLAR YIELD</div>
-            <div className="text-slate-200 font-bold mt-0.5 text-[11px]">2,131 kWh/m²/yr</div>
-          </div>
-
-          <div className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl">
-            <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">138kV GRID LINE</div>
-            <div className={`font-bold mt-0.5 text-[11px] ${isGrid ? 'text-rose-400' : 'text-slate-200'}`}>
-              {isGrid ? '1.8 km (Congested)' : '< 480m (Fast Tie-in)'}
-            </div>
-          </div>
-        </div>
-
-        {/* Matte Rationale Callout Box */}
-        <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed ${
+        {/* Rationale Callout Box */}
+        <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed font-mono ${
           data.isApproved
             ? 'bg-emerald-950/20 border-emerald-800/30 text-emerald-200'
             : 'bg-rose-950/20 border-rose-800/30 text-rose-200'

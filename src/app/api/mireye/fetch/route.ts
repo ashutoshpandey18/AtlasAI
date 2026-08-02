@@ -35,13 +35,13 @@ export async function POST(req: Request) {
     if (!res.ok) {
       console.warn(`[Mireye API Warning] Received status ${res.status} for coords (${lat}, ${lng}). Utilizing structured fallback data.`);
       const fallbackData = createFallbackResponse(lat, lng, Array.isArray(fields) ? fields : []);
-      await setCache(cacheKey, fallbackData);
+      // DO NOT cache synthetic fallback responses
       return NextResponse.json(fallbackData);
     }
 
     const data = await res.json();
     
-    // Save to Turso persistent edge cache
+    // Save ONLY authentic Mireye API responses to persistent cache
     await setCache(cacheKey, data);
 
     return NextResponse.json(data);

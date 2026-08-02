@@ -25,6 +25,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
   const [parsedSites, setParsedSites] = useState<CustomSiteParcel[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
+  const [skippedCount, setSkippedCount] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -56,32 +57,52 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
   };
 
   const parseCsv = (csvText: string) => {
-    const lines = csvText.split('\n').filter((l) => l.trim().length > 0);
+    setSkippedCount(0);
+    const lines = csvText.split(/\r?\n/).filter((l) => l.trim().length > 0);
     if (lines.length < 2) {
-      setErrorMsg('CSV must contain a header row and at least 1 data row.');
+      setErrorMsg('CSV must contain a header row and at least 1 valid candidate data row.');
       return;
     }
 
-    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
-    const nameIdx = headers.findIndex((h) => h.includes('name') || h.includes('site') || h.includes('store'));
-    const countyIdx = headers.findIndex((h) => h.includes('county'));
-    const stateIdx = headers.findIndex((h) => h.includes('state'));
-    const latIdx = headers.findIndex((h) => h.includes('lat'));
-    const lngIdx = headers.findIndex((h) => h.includes('lng') || h.includes('lon'));
+    const rawHeaders = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
+    
+    // Fuzzy Header Alias Matching (Latitude, Longitude, Site Name, County, State)
+    const latIdx = rawHeaders.findIndex((h) => ['lat', 'latitude', 'y', 'lat_coord', 'lat_dd', 'y_coord'].includes(h) || h.includes('latitude') || h.includes('lat'));
+    const lngIdx = rawHeaders.findIndex((h) => ['lng', 'lon', 'longitude', 'x', 'long', 'lng_dd', 'long_coord', 'x_coord'].includes(h) || h.includes('longitude') || h.includes('lng') || h.includes('lon'));
+    const nameIdx = rawHeaders.findIndex((h) => ['site_name', 'name', 'store_name', 'site', 'property', 'apn', 'store', 'chain'].includes(h) || h.includes('name') || h.includes('site') || h.includes('store'));
+    const countyIdx = rawHeaders.findIndex((h) => ['county', 'parish', 'district'].includes(h) || h.includes('county'));
+    const stateIdx = rawHeaders.findIndex((h) => ['state', 'st'].includes(h) || h.includes('state'));
 
     if (latIdx === -1 || lngIdx === -1) {
-      setErrorMsg('CSV must contain "lat" and "lng" (or "lon") column headers.');
+      setErrorMsg('CSV header missing coordinate columns. Please include "lat" (or "latitude"/"y") and "lng" (or "longitude"/"lon"/"x").');
       return;
     }
 
     const sites: CustomSiteParcel[] = [];
+    const seenCoords = new Set<string>();
+    let skipped = 0;
+
     for (let i = 1; i < lines.length; i++) {
       const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
-      if (cols.length <= Math.max(latIdx, lngIdx)) continue;
+      if (cols.length <= Math.max(latIdx, lngIdx)) {
+        skipped++;
+        continue;
+      }
 
       const lat = parseFloat(cols[latIdx]);
       const lng = parseFloat(cols[lngIdx]);
-      if (isNaN(lat) || isNaN(lng)) continue;
+      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+        skipped++;
+        continue;
+      }
+
+      // Deduplicate coordinates
+      const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+      if (seenCoords.has(coordKey)) {
+        skipped++;
+        continue;
+      }
+      seenCoords.add(coordKey);
 
       const siteName = nameIdx !== -1 && cols[nameIdx] ? cols[nameIdx] : `Uploaded Site #${i}`;
       const county = countyIdx !== -1 && cols[countyIdx] ? cols[countyIdx] : 'Custom County';
@@ -100,20 +121,27 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
     }
 
     if (sites.length === 0) {
-      setErrorMsg('No valid coordinate rows found in CSV.');
+      setErrorMsg('No valid coordinate rows found in CSV portfolio.');
       return;
     }
 
+    setSkippedCount(skipped);
     setParsedSites(sites);
   };
 
   const parseGeoJson = (jsonText: string) => {
+    setSkippedCount(0);
     const data = JSON.parse(jsonText);
     const sites: CustomSiteParcel[] = [];
+    const seenCoords = new Set<string>();
+    let skipped = 0;
 
     const features = data.type === 'FeatureCollection' ? data.features : [data];
     features.forEach((feat: any, idx: number) => {
-      if (!feat.geometry) return;
+      if (!feat.geometry) {
+        skipped++;
+        return;
+      }
       let lat = 0;
       let lng = 0;
 
@@ -125,10 +153,20 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
         lat = ring.reduce((acc: number, pt: number[]) => acc + pt[1], 0) / ring.length;
       }
 
-      if (!lat || !lng) return;
+      if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+        skipped++;
+        return;
+      }
+
+      const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+      if (seenCoords.has(coordKey)) {
+        skipped++;
+        return;
+      }
+      seenCoords.add(coordKey);
 
       const props = feat.properties || {};
-      const siteName = props.name || props.site_name || props.store_name || `GeoJSON Site #${idx + 1}`;
+      const siteName = props.name || props.site_name || props.store_name || props.apn || `GeoJSON Site #${idx + 1}`;
       const county = props.county || 'Custom County';
       const state = (props.state || 'TX').toUpperCase();
 
@@ -149,6 +187,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
       return;
     }
 
+    setSkippedCount(skipped);
     setParsedSites(sites);
   };
 
@@ -254,10 +293,16 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
         {/* Parsed Sites Preview */}
         {parsedSites.length > 0 && (
           <div className="p-4 rounded-2xl bg-[#0a0a14] border border-white/15 space-y-3 font-mono text-xs">
-            <div className="flex items-center justify-between text-emerald-400 font-bold">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between font-bold">
+              <div className="flex items-center gap-2 text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Successfully Parsed {parsedSites.length} Candidate Parcels</span>
+                <span>{parsedSites.length} Candidate Parcels Imported</span>
+                {skippedCount > 0 && (
+                  <span className="text-amber-400 text-[11px] font-normal font-mono ml-2 inline-flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>({skippedCount} duplicate/invalid rows skipped)</span>
+                  </span>
+                )}
               </div>
               <span className="text-[10px] text-slate-400">{uploadedFilename}</span>
             </div>

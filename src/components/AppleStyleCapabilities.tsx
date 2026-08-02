@@ -71,7 +71,7 @@ export function AppleStyleCapabilities() {
             <div className="md:w-1/4 space-y-1">
               <div className="flex items-center gap-3 font-mono">
                 <span className="text-3xl sm:text-4xl font-black text-amber-400">
-                  {cap.num} //
+                  {cap.num}
                 </span>
                 <span className="text-xs font-bold text-slate-400 tracking-widest uppercase">
                   {cap.stageTag}

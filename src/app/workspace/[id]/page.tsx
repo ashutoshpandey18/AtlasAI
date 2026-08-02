@@ -775,7 +775,7 @@ Keep your analysis to 3 concise, professional sentences. Refer explicitly to sou
                           </div>
                           <div className="flex items-center gap-2 shrink-0 ml-2">
                             <span className={`text-[10px] font-extrabold ${loc.geocoded ? 'text-emerald-600' : loc.error ? 'text-rose-500' : 'text-[var(--text-muted)]'}`}>
-                              {loc.geocoding ? '...' : loc.error ? 'Err' : '✓'}
+                              {loc.geocoding ? '...' : loc.error ? 'Err' : 'OK'}
                             </span>
                             <button
                               onClick={() => handleRemoveLocation(loc.id)}

@@ -43,9 +43,18 @@ export default function Home() {
     return () => clearInterval(typingInterval);
   }, [promptIndex]);
 
+  const handlePillClick = (selectedPrompt: string) => {
+    setPrompt(selectedPrompt);
+    router.push(`/agent?prompt=${encodeURIComponent(selectedPrompt)}`);
+  };
+
   const handleLaunchAgent = (e: React.FormEvent) => {
     e.preventDefault();
     router.push(`/agent?prompt=${encodeURIComponent(prompt)}`);
+  };
+
+  const handleInstantDemo = () => {
+    router.push(`/agent?prompt=${encodeURIComponent(prompt)}&demo=true`);
   };
 
   return (
@@ -86,8 +95,8 @@ export default function Home() {
       <section className="relative z-10 pt-16 pb-12 px-6 max-w-[1140px] mx-auto text-center flex flex-col items-center">
 
         {/* Pure Borderless Typography Subheader Badge */}
-        <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-amber-400 mb-6 relative z-10">
-          <Bot className="w-3.5 h-3.5 text-amber-400" />
+        <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-slate-300 mb-6 relative z-10">
+          <Bot className="w-3.5 h-3.5 text-slate-300" />
           <span>AUTONOMOUS AI AGENT FOR RENEWABLE LAND ACQUISITION</span>
         </div>
 
@@ -101,7 +110,7 @@ export default function Home() {
           {/* Line 2: Land Siting in Minutes */}
           <div className="relative inline-flex items-center justify-center gap-x-3 pb-3 whitespace-nowrap">
             <VignetteText text="Land Siting in" />
-            <span className="font-serif italic font-normal bg-gradient-to-r from-amber-300 via-white to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]">
+            <span className="font-serif italic font-normal bg-gradient-to-r from-slate-100 via-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(255,255,255,0.35)]">
               Minutes
             </span>
 
@@ -117,62 +126,66 @@ export default function Home() {
         </p>
 
         {/* CARD-FREE INTERACTIVE PROMPT LAUNCHER */}
-        <form onSubmit={handleLaunchAgent} className="w-full max-w-2xl mb-12 relative z-10 text-left">
+        <form onSubmit={handleLaunchAgent} className="w-full max-w-2xl mb-12 relative z-10 text-left font-sans">
 
           {/* Pure Typography State Selector Header */}
-          <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+          <div className="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
             <Bot className="w-3.5 h-3.5 text-amber-400" />
             <span>SELECT TARGET STATE PORTFOLIO:</span>
           </div>
 
-          {/* Floating State Selector Pills (Zero Card Container) */}
-          <div className="flex items-center gap-2 flex-wrap mb-5">
+          {/* Borderless State Selector Typography Stream (0 Cards, 0 Pill Divs) */}
+          <div className="flex items-center gap-3 flex-wrap text-xs font-mono mb-6">
             <button
               type="button"
-              onClick={() => setPrompt('Find fast-deployment solar carport targets in Texas under $2M capex.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Texas')
-                  ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
-                  : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-                }`}
+              onClick={() => handlePillClick('Find fast-deployment solar carport targets in Texas under $2M capex.')}
+              className={`cursor-pointer transition-all ${
+                prompt.includes('Texas')
+                  ? 'text-amber-400 font-bold border-b border-amber-400 pb-0.5'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <MapPin className="w-3 h-3 text-amber-400" /> Texas (ERCOT grid)
+              Texas (ERCOT grid)
             </button>
-
+            <span className="text-slate-600">•</span>
             <button
               type="button"
-              onClick={() => setPrompt('Find high-yield retail solar carport targets in Florida with low flood risk.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Florida')
-                  ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
-                  : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-                }`}
+              onClick={() => handlePillClick('Find high-yield retail solar carport targets in Florida with low flood risk.')}
+              className={`cursor-pointer transition-all ${
+                prompt.includes('Florida')
+                  ? 'text-amber-400 font-bold border-b border-amber-400 pb-0.5'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <Sun className="w-3 h-3 text-amber-400" /> Florida (FRCC grid)
+              Florida (FRCC grid)
             </button>
-
+            <span className="text-slate-600">•</span>
             <button
               type="button"
-              onClick={() => setPrompt('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('Georgia')
-                  ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
-                  : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-                }`}
+              onClick={() => handlePillClick('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
+              className={`cursor-pointer transition-all ${
+                prompt.includes('Georgia')
+                  ? 'text-amber-400 font-bold border-b border-amber-400 pb-0.5'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <Compass className="w-3 h-3 text-amber-400" /> Georgia (SERC grid)
+              Georgia (SERC grid)
             </button>
-
+            <span className="text-slate-600">•</span>
             <button
               type="button"
-              onClick={() => setPrompt('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
-              className={`text-xs font-mono font-bold px-3.5 py-2 rounded-full border transition-all cursor-pointer flex items-center gap-1.5 ${prompt.includes('North Carolina')
-                  ? 'border-amber-500 bg-amber-500 text-slate-950 font-black shadow-[0_0_15px_rgba(245,158,11,0.5)]'
-                  : 'border-white/15 bg-white/5 text-slate-300 hover:border-amber-500/50 hover:text-white'
-                }`}
+              onClick={() => handlePillClick('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
+              className={`cursor-pointer transition-all ${
+                prompt.includes('North Carolina')
+                  ? 'text-amber-400 font-bold border-b border-amber-400 pb-0.5'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <Zap className="w-3 h-3 text-amber-400" /> North Carolina (SERC grid)
+              North Carolina (SERC grid)
             </button>
           </div>
 
-          {/* Prompt Input & Launch Button (Borderless Glass Line) */}
+          {/* Borderless Prompt Input Line & Action Triggers */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <input
@@ -180,15 +193,25 @@ export default function Home() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder={typedPlaceholder}
-                className="w-full bg-[#080814]/90 border-2 border-white/20 focus:border-amber-500 rounded-2xl px-4 py-3.5 text-xs sm:text-sm font-mono text-white placeholder-slate-500 focus:outline-none transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                className="w-full bg-transparent border-b-2 border-white/20 focus:border-amber-400 px-4 py-3.5 text-xs sm:text-sm font-mono text-white placeholder-slate-500 focus:outline-none font-medium transition-all"
               />
             </div>
+            
+            <button
+              type="button"
+              onClick={handleInstantDemo}
+              className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-5 py-3.5 rounded-xl font-black text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            >
+              <Zap className="w-4 h-4 fill-slate-950 text-slate-950" />
+              <span>Run Instant Demo</span>
+            </button>
+
             <button
               type="submit"
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-[0_0_25px_rgba(245,158,11,0.4)] flex items-center justify-center gap-2 cursor-pointer shrink-0"
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
             >
-              <Play className="w-4 h-4 fill-slate-950" />
-              <span>Run Agent Pipeline →</span>
+              <Play className="w-4 h-4 fill-white" />
+              <span>Run Live Scan →</span>
             </button>
           </div>
         </form>

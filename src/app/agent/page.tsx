@@ -11,6 +11,7 @@ import { Navbar } from '@/components/Navbar';
 function AgentContent() {
   const searchParams = useSearchParams();
   const promptParam = searchParams.get('prompt');
+  const isDemo = searchParams.get('demo') === 'true';
 
   return (
     <div className="space-y-6">
@@ -18,7 +19,11 @@ function AgentContent() {
       <CompactAgentRobot />
 
       {/* Dedicated Agent Execution & Scoring Panel */}
-      <AgentRunPanel initialPrompt={promptParam || 'Find fast-deployment solar carport targets in Texas under $2M capex.'} />
+      <AgentRunPanel
+        initialPrompt={promptParam || 'Find fast-deployment solar carport targets in Texas under $2M capex.'}
+        autoRunInstantDemo={isDemo}
+        autoRunScan={!isDemo && !!promptParam}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, FileText, CheckCircle2, Upload } from 'lucide-react';
+import { Play, FileText, CheckCircle2, Upload, Zap } from 'lucide-react';
 import { InvestmentMemoModal } from './InvestmentMemoModal';
 import { AskWhyModal, AskWhyData } from './AskWhyModal';
 import { ParcelUploadModal, CustomSiteParcel } from './ParcelUploadModal';
@@ -33,13 +33,23 @@ interface SurvivorItem {
 
 interface AgentRunPanelProps {
   initialPrompt?: string;
+  autoRunInstantDemo?: boolean;
+  autoRunScan?: boolean;
 }
 
-export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
+export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }: AgentRunPanelProps) {
   const [prompt, setPrompt] = useState(
     initialPrompt || 'Find fast-deployment solar carport targets in Texas under $2M capex.'
   );
   const [isRunning, setIsRunning] = useState(false);
+
+  React.useEffect(() => {
+    if (autoRunInstantDemo) {
+      runInstantDemo();
+    } else if (autoRunScan) {
+      startScan(initialPrompt);
+    }
+  }, [autoRunInstantDemo, autoRunScan]);
   const [plan, setPlan] = useState<StrategyPlan | null>(null);
   const [rejections, setRejections] = useState<RejectionItem[]>([]);
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
@@ -58,8 +68,117 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
   const [customUploadedSites, setCustomUploadedSites] = useState<CustomSiteParcel[]>([]);
   const [customUploadedFilename, setCustomUploadedFilename] = useState<string | null>(null);
 
-  const startScan = async () => {
+  const [scanStep, setScanStep] = useState<string>('');
+
+  const runInstantDemo = async () => {
     setIsRunning(true);
+    setPlan(null);
+    setRejections([]);
+    setEvaluations([]);
+    setSurvivors([]);
+    setScanStep('Loading Precomputed Campaign...');
+
+    try {
+      const res = await fetch('/api/memo/0');
+      if (res.ok) {
+        const demoMemo = await res.json();
+        
+        const demoPlan: StrategyPlan = {
+          businessGoal: 'Find fast-deployment solar carport targets in Texas under $2M capex.',
+          targetState: 'TX',
+          selectedChain: 'Dollar General Texas Portfolio',
+          strategyName: 'ERCOT Commercial Retail Solar Canopy Strategy',
+          reasoning: [
+            'Formulated targeted acquisition strategy for fast-deployment solar carports in Texas.',
+            'Evaluated candidate deployment strategies across ERCOT grid distribution territory.',
+            'Selected Dollar General fee-simple retail portfolio to maximize site control velocity.',
+            'Optimized for sub-market option lease negotiation and Section 48 IRA tax equity monetization.',
+          ],
+          rulesApplied: [
+            'Fee-Simple Ownership: Corporate fee-simple title verified (zero landlord ground lease risk)',
+            'Parking Footprint: Parking ratio >= 2.5× building footprint (~250kW canopy capacity)',
+            'Environmental Safety: Unencumbered FEMA Zone X clearance (zero 100-year flood risk)',
+          ],
+          consideredAlternatives: [
+            {
+              strategyName: 'Walmart Big-Box Solar',
+              targetChain: 'Walmart',
+              status: 'REJECTED',
+              rejectionReason: 'Lower fee-simple ownership rate (~52% ground lease); high urban ERCOT queue saturation.',
+              ownershipRatePct: 52,
+              lotCoverageRatio: 2.1,
+            },
+            {
+              strategyName: 'Dollar General Retail Carport',
+              targetChain: 'Dollar General',
+              status: 'SELECTED',
+              selectionReason: '74% fee-simple corporate ownership, 4.3× parking ratio, and minimal grid queue congestion.',
+              ownershipRatePct: 74,
+              lotCoverageRatio: 4.3,
+            },
+          ],
+        };
+
+        const demoRejections: RejectionItem[] = [
+          {
+            siteName: 'Dollar General Harris County #1042',
+            reason: 'Disqualified via FEMA NFHL: Parcel falls within 100-year Special Flood Hazard Area (Zone AE), incurring structural elevation mandates (+18% CapEx).',
+            inputsChecked: ['FEMA Flood Risk: Zone AE (Special Flood Hazard Area)', 'USGS Slope: 1.8° (Flat)', 'POA Irradiance: 1,980 kWh/m²/yr'],
+            rulesApplied: ['Constraint: Siting within FEMA 100-Year Special Flood Hazard Area triggers mandatory base flood elevation mandates'],
+          },
+          {
+            siteName: 'Dollar General Travis County #0819',
+            reason: 'Disqualified via USGS 3DEP 1m LiDAR: Ground slope of 7.4° exceeds single-axis tracker racking tolerances (+$145k/acre earthwork overrun).',
+            inputsChecked: ['FEMA Flood Risk: Zone X (Clear)', 'USGS Slope: 7.4° (Severe Slope)', 'POA Irradiance: 2,050 kWh/m²/yr'],
+            rulesApplied: ['Constraint: Topographical terrain slope > 4.0° exceeds standard tracker racking tolerance'],
+          },
+        ];
+
+        const demoEvaluations: EvaluationItem[] = [
+          {
+            siteName: 'Dollar General Austin County #03595',
+            county: 'Austin County',
+            techScore: 94,
+            priorityScore: 92,
+            inputsChecked: ['FEMA Flood Risk: Zone X (Clear)', 'USGS Slope: 1.1° (Flat)', 'POA Irradiance: 2,131 kWh/m²/yr', '138kV Transmission: < 480m'],
+            rulesApplied: ['Approved: Flat terrain, zero flood hazard, prime solar irradiance yield'],
+            conclusion: 'APPROVED: Technical Feasibility Score 94/100 with unencumbered Zone X flood clearance and flat 1.1° civil terrain.',
+          },
+          {
+            siteName: 'Dollar General Ector County #45835',
+            county: 'Ector County',
+            techScore: 88,
+            priorityScore: 88,
+            inputsChecked: ['FEMA Flood Risk: Zone X (Clear)', 'USGS Slope: 1.4° (Flat)', 'POA Irradiance: 2,090 kWh/m²/yr'],
+            rulesApplied: ['Approved: Low queue congestion territory, clear fee-simple title'],
+            conclusion: 'APPROVED: Technical Feasibility Score 88/100 with clear civil and floodplain status.',
+          },
+        ];
+
+        setPlan(demoPlan);
+        setRejections(demoRejections);
+        setEvaluations(demoEvaluations);
+        setSurvivors([
+          {
+            siteName: demoMemo.siteName || 'Dollar General Austin County #03595',
+            county: demoMemo.county || 'Austin County',
+            geoId: demoMemo.siteId || '03595',
+            memo: demoMemo,
+          },
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to run instant demo:', err);
+    } finally {
+      setIsRunning(false);
+      setScanStep('');
+    }
+  };
+
+  const startScan = async (targetPrompt?: string) => {
+    const promptToUse = targetPrompt || prompt;
+    setIsRunning(true);
+    setScanStep('Step 1 of 4: Formulating Strategy Plan...');
     setPlan(null);
     setRejections([]);
     setEvaluations([]);
@@ -70,7 +189,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt,
+          prompt: promptToUse,
           customSites: customUploadedSites.length > 0 ? customUploadedSites : undefined,
         }),
       });
@@ -98,12 +217,15 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
 
               if (eType === 'strategy_plan') {
                 setPlan(eData);
+                setScanStep('Step 2 of 4: Querying Mireye GIS Endpoints...');
               } else if (eType === 'site_rejected') {
                 setRejections((prev) => [...prev, eData]);
+                setScanStep('Step 3 of 4: Screening Rejection Flaws...');
               } else if (eType === 'site_evaluated') {
                 setEvaluations((prev) => [...prev, eData]);
               } else if (eType === 'final_result') {
                 setSurvivors(eData.survivors || []);
+                setScanStep('Step 4 of 4: Generating Investment Memo...');
               }
             } catch (err) {
               console.error('Failed to parse SSE event:', err);
@@ -115,7 +237,13 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
       console.error('Agent execution failed:', err);
     } finally {
       setIsRunning(false);
+      setScanStep('');
     }
+  };
+
+  const handlePillClick = (selectedPrompt: string) => {
+    setPrompt(selectedPrompt);
+    startScan(selectedPrompt);
   };
 
   const handleOpenWhyRejection = (rej: RejectionItem) => {
@@ -161,30 +289,31 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
           </button>
         </div>
 
-        {/* Custom Upload Active Badge Callout */}
+        {/* Custom Upload Active Badge Callout (Borderless Spatial Line) */}
         {customUploadedSites.length > 0 && (
-          <div className="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl flex items-center justify-between text-xs font-mono text-amber-400">
-            <span>Using Custom Ingested Portfolio: <strong>{customUploadedFilename}</strong> ({customUploadedSites.length} Candidate Sites)</span>
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-300">
+            <span>Using Custom Ingested Portfolio: <strong className="text-white">{customUploadedFilename}</strong> ({customUploadedSites.length} Candidate Sites)</span>
             <button
               type="button"
               onClick={() => {
                 setCustomUploadedSites([]);
                 setCustomUploadedFilename(null);
               }}
-              className="text-[10px] text-slate-400 hover:text-white underline"
+              className="text-[10px] text-slate-400 hover:text-white underline cursor-pointer"
             >
               Reset to Standard Portfolio
             </button>
           </div>
         )}
 
-        <div className="flex items-center gap-3 flex-wrap text-xs font-bold font-mono">
+        {/* State Portfolio Selection Pills */}
+        <div className="flex items-center gap-3 flex-wrap text-xs font-mono pt-1">
           <button
             type="button"
-            onClick={() => setPrompt('Find fast-deployment solar carport targets in Texas under $2M capex.')}
+            onClick={() => handlePillClick('Find fast-deployment solar carport targets in Texas under $2M capex.')}
             className={`cursor-pointer transition-all ${
               prompt.includes('Texas')
-                ? 'text-amber-400 underline font-black'
+                ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -193,10 +322,10 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
           <span className="text-slate-600">•</span>
           <button
             type="button"
-            onClick={() => setPrompt('Find high-yield retail solar carport targets in Florida with low flood risk.')}
+            onClick={() => handlePillClick('Find high-yield retail solar carport targets in Florida with low flood risk.')}
             className={`cursor-pointer transition-all ${
               prompt.includes('Florida')
-                ? 'text-amber-400 underline font-black'
+                ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -205,10 +334,10 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
           <span className="text-slate-600">•</span>
           <button
             type="button"
-            onClick={() => setPrompt('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
+            onClick={() => handlePillClick('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
             className={`cursor-pointer transition-all ${
               prompt.includes('Georgia')
-                ? 'text-amber-400 underline font-black'
+                ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -217,10 +346,10 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
           <span className="text-slate-600">•</span>
           <button
             type="button"
-            onClick={() => setPrompt('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
+            onClick={() => handlePillClick('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
             className={`cursor-pointer transition-all ${
               prompt.includes('North Carolina')
-                ? 'text-amber-400 underline font-black'
+                ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -229,7 +358,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
         </div>
       </div>
 
-      {/* Borderless Prompt Input & Run Button Line */}
+      {/* Borderless Prompt Input & Run Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <div className="relative flex-1">
           <input
@@ -237,24 +366,53 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter business goal (e.g. Find fast-deployment solar in Texas or Florida)..."
-            className="w-full bg-[#0a0a14] border-b-2 border-white/20 focus:border-amber-400 px-4 py-3.5 text-xs sm:text-sm text-white focus:outline-none font-semibold transition-all"
+            className="w-full bg-[#0a0a14] border-b-2 border-white/20 focus:border-white/80 px-4 py-3.5 text-xs sm:text-sm text-white focus:outline-none font-semibold transition-all"
           />
         </div>
+        
+        {/* Instant Demo Fast Button */}
         <button
-          onClick={startScan}
+          type="button"
+          onClick={runInstantDemo}
           disabled={isRunning}
-          className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-6 py-3.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shrink-0 shadow-md"
+          className="bg-slate-100 hover:bg-white text-slate-950 border border-white/40 px-5 py-3.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_4px_20px_rgba(255,255,255,0.12)] shrink-0"
+        >
+          <Zap className="w-4 h-4 fill-slate-950 text-slate-950" />
+          <span>Run Instant Demo</span>
+        </button>
+
+        {/* Live SSE Pipeline Launch Button */}
+        <button
+          onClick={() => startScan()}
+          disabled={isRunning}
+          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shrink-0"
         >
           {isRunning ? (
-            <span>Checking sites...</span>
+            <span>Processing...</span>
           ) : (
             <>
-              <Play className="w-4 h-4 fill-slate-950" />
-              <span>Run Agent Pipeline →</span>
+              <Play className="w-4 h-4 fill-white" />
+              <span>Run Live Agent Scan →</span>
             </>
           )}
         </button>
       </div>
+
+      {/* Progress Bar Loader During Active Scans */}
+      {isRunning && (
+        <div className="bg-[#0c0c16] border border-amber-500/30 p-3.5 rounded-2xl space-y-2 animate-pulse font-mono text-xs">
+          <div className="flex items-center justify-between text-amber-400 font-bold">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+              <span>{scanStep || 'Executing Mireye Site Control Agent Pipeline...'}</span>
+            </div>
+            <span className="text-[10px] text-slate-400">Sub-second Latency</span>
+          </div>
+          <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+            <div className="bg-gradient-to-r from-amber-500 via-emerald-400 to-amber-400 h-full w-3/4 rounded-full animate-pulse" />
+          </div>
+        </div>
+      )}
 
       {/* Streamed Execution Outputs (Pure Typography Streams) */}
       {(plan || rejections.length > 0 || evaluations.length > 0) && (
@@ -262,11 +420,12 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
           
           {/* Strategy Plan Stream */}
           {plan && (
-            <div className="space-y-1 font-mono text-xs">
-              <div className="text-amber-400 font-bold uppercase tracking-wider">
-                UNDERSTANDING YOUR REQUEST // TARGET: {plan.selectedChain} ({plan.targetState})
+            <div className="space-y-1 font-mono text-xs border-b border-white/10 pb-3">
+              <div className="text-slate-300 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 animate-pulse" />
+                <span>UNDERSTANDING YOUR REQUEST • TARGET: {plan.selectedChain} ({plan.targetState})</span>
               </div>
-              <div className="text-sm font-bold text-white">{plan.strategyName}</div>
+              <div className="text-sm font-bold text-white tracking-tight mt-0.5">{plan.strategyName}</div>
             </div>
           )}
 
@@ -329,7 +488,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
                       <div className="text-[11px] text-slate-300 mt-0.5">Feasibility Score: {ev.techScore}/100</div>
                     </div>
                     <div className="text-right font-mono">
-                      <div className="text-xs font-bold text-amber-400">Priority {ev.priorityScore}%</div>
+                      <div className="text-xs font-bold text-slate-200">Priority {ev.priorityScore}%</div>
                       <div className="text-[10px] text-slate-400 underline">See details →</div>
                     </div>
                   </div>
@@ -345,9 +504,9 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
               
               {/* Header Badge */}
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  <span>01 // RANK #1 CANDIDATE TARGET</span>
+                <span className="font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-slate-200 shadow-[0_0_8px_rgba(255,255,255,0.6)] animate-pulse" />
+                  <span>01 • RANK #1 CANDIDATE TARGET</span>
                 </span>
                 <span className="text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
@@ -361,7 +520,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
                   {survivors[0].siteName}
                 </h3>
                 <div className="text-xs font-mono text-slate-400">
-                  LOCATION: <span className="text-slate-200 font-bold">{survivors[0].county}, TX</span>
+                  LOCATION: <span className="text-slate-200 font-bold">{survivors[0].county || survivors[0].memo?.county || 'Austin County'}, {survivors[0].memo?.state || plan?.targetState || 'TX'}</span>
                 </div>
               </div>
 
@@ -378,7 +537,7 @@ export function AgentRunPanel({ initialPrompt }: AgentRunPanelProps) {
                     setSelectedMemo(survivors[0].memo);
                     setIsMemoOpen(true);
                   }}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-md"
+                  className="bg-slate-100 hover:bg-white text-slate-950 border border-white/40 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all cursor-pointer shadow-[0_4px_20px_rgba(255,255,255,0.12)]"
                 >
                   <FileText className="w-4 h-4" />
                   <span>Open 3-Page Executive Investment Memo →</span>

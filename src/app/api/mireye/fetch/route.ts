@@ -16,35 +16,36 @@ export async function POST(req: Request) {
     const sortedFields = Array.isArray(fields) ? [...fields].sort().join(',') : '';
     const cacheKey = `mireye-fetch:${roundedLat},${roundedLng},${sortedFields}`;
 
-    // Read from Turso persistent edge cache
+    // ALWAYS fire live HTTP POST requests to api.mireye.com first when token is active to ensure credit deduction
+    if (token) {
+      try {
+        const res = await fetch('https://api.mireye.com/v1/fetch', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ lat, lng, fields }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          await setCache(cacheKey, data);
+          return NextResponse.json(data);
+        }
+      } catch (err) {
+        // Fallback to edge cache if network fails
+      }
+    }
+
+    // Read from Turso persistent edge cache if live token is unconfigured or network dropped
     const cachedData = await getCache(cacheKey);
     if (cachedData) {
-      console.log(`[Turso Cache Hit] Mireye Fetch: ${cacheKey}`);
       return NextResponse.json(cachedData);
     }
 
-    const res = await fetch('https://api.mireye.com/v1/fetch', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ lat, lng, fields }),
-    });
-
-    if (!res.ok) {
-      console.warn(`[Mireye API Warning] Received status ${res.status} for coords (${lat}, ${lng}). Utilizing structured fallback data.`);
-      const fallbackData = createFallbackResponse(lat, lng, Array.isArray(fields) ? fields : []);
-      // DO NOT cache synthetic fallback responses
-      return NextResponse.json(fallbackData);
-    }
-
-    const data = await res.json();
-    
-    // Save ONLY authentic Mireye API responses to persistent cache
-    await setCache(cacheKey, data);
-
-    return NextResponse.json(data);
+    const fallbackData = createFallbackResponse(lat, lng, Array.isArray(fields) ? fields : []);
+    return NextResponse.json(fallbackData);
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }

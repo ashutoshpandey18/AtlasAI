@@ -178,23 +178,17 @@ export async function POST(req: Request) {
           ];
           const sortedFields = [...mireyeFields].sort().join(',');
 
-          // Query live Mireye API / cache for genuine physical signals
+          // Always execute live Mireye API network calls first when token is active to ensure credit deduction
           await Promise.all(
             enrichedDataset.map(async (item: any) => {
               const lat = Number(item.lat);
               const lng = Number(item.lon ?? item.lng);
               const cacheKey = `mireye-fetch:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
 
-              const cachedMireye = await getCache(cacheKey);
-              if (cachedMireye && cachedMireye.fields) {
-                item.mireye = cachedMireye;
-                return;
-              }
-
               if (token) {
                 try {
                   const controller = new AbortController();
-                  const timeoutId = setTimeout(() => controller.abort(), 1500);
+                  const timeoutId = setTimeout(() => controller.abort(), 3000);
 
                   const res = await fetch('https://api.mireye.com/v1/fetch', {
                     method: 'POST',
@@ -213,11 +207,18 @@ export async function POST(req: Request) {
                     if (data && data.fields) {
                       item.mireye = data;
                       await setCache(cacheKey, data);
+                      return;
                     }
                   }
                 } catch (e) {
-                  // Network fallback handled gracefully via cached/pre-warmed physical structure
+                  // Fallback to cache if network times out
                 }
+              }
+
+              // Read from cache if live network call is unconfigured or timed out
+              const cachedMireye = await getCache(cacheKey);
+              if (cachedMireye && cachedMireye.fields) {
+                item.mireye = cachedMireye;
               }
             })
           );

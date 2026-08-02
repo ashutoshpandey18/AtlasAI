@@ -138,7 +138,7 @@ export function ReasoningTimeline({ steps, currentStage, isComplete }: Props) {
             <div
               key={step.id}
               onClick={() => setExpandedStep(isExpanded ? null : step.id)}
-              className="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 hover:border-white/20 transition-all cursor-pointer"
+              className="py-2 border-b border-white/10 hover:border-white/30 transition-all cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5 font-mono text-xs">

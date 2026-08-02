@@ -555,7 +555,12 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           </div>
 
           {/* Executive Decision Ledger */}
-          <DecisionLedger promptStr={prompt} rejections={rejections} evaluations={[]} />
+          <DecisionLedger
+            promptStr={prompt}
+            rejections={rejections}
+            evaluations={evaluations}
+            winnerSite={survivors.length > 0 ? (survivors[0] as any) : null}
+          />
 
         </div>
       )}

@@ -13,9 +13,9 @@ export interface RejectionItem {
 
 interface Props {
   promptStr?: string;
-  evaluations?: LocationResult[];
+  evaluations?: any[];
   rejections?: RejectionItem[];
-  winnerSite?: LocationResult | null;
+  winnerSite?: any | null;
 }
 
 export function DecisionLedger({ promptStr, evaluations = [], rejections = [], winnerSite }: Props) {
@@ -89,23 +89,23 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
           </div>
 
           {/* Business Impact Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-mono text-xs">
-            <div className="p-3 border border-white/10 bg-white/5 rounded-xl space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 font-mono text-xs">
+            <div className="pt-2 border-t border-white/10 space-y-1">
               <div className="text-[10px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                 <DollarSign className="w-3 h-3 text-emerald-400" />
                 <span>CapEx Savings (Civil Grading)</span>
               </div>
-              <div className="text-sm font-bold text-white font-sans">
+              <div className="text-xs sm:text-sm font-bold text-white font-sans">
                 ~$145,000 Saved via USGS 3DEP 1.2° Flat Slope
               </div>
             </div>
 
-            <div className="p-3 border border-white/10 bg-white/5 rounded-xl space-y-1">
+            <div className="pt-2 border-t border-white/10 space-y-1">
               <div className="text-[10px] text-emerald-400 font-bold uppercase flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
                 <span>IRA §48 Tax Credit Bonus</span>
               </div>
-              <div className="text-sm font-bold text-white font-sans">
+              <div className="text-xs sm:text-sm font-bold text-white font-sans">
                 30% to 40% ITC Tax Credit Rate Qualified
               </div>
             </div>

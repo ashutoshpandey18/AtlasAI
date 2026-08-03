@@ -29,13 +29,17 @@ export async function POST(req: Request) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+        const mireyePayload: Record<string, any> = {};
+        if (address) mireyePayload.address = address;
+        if (apn) mireyePayload.apn = apn;
+
         const res = await fetch('https://api.mireye.com/v1/lookup', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ address, apn }),
+          body: JSON.stringify(mireyePayload),
           signal: controller.signal,
         });
 

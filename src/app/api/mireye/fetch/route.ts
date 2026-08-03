@@ -38,9 +38,12 @@ export async function POST(req: Request) {
           const data = await res.json();
           await setCache(cacheKey, data);
           return NextResponse.json(data);
+        } else {
+          const errText = await res.text();
+          return NextResponse.json({ error: `Mireye API Fetch Error (${res.status}): ${errText}` }, { status: res.status });
         }
-      } catch (err) {
-        // Fallback to edge cache if network fails
+      } catch (err: any) {
+        return NextResponse.json({ error: `Mireye API network fetch error: ${err.message}` }, { status: 500 });
       }
     }
 

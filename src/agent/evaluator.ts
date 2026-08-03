@@ -46,7 +46,8 @@ export function evaluateSiteTechnicalFeasibility(
   siteName: string,
   county: string,
   mireyeData: MireyeFetchResponse,
-  userPrompt?: string
+  userPrompt?: string,
+  rawState?: string
 ): SiteEvaluationResult {
   const fields = mireyeData.fields ?? {};
   const fatalFlaws: DealKillerFlaw[] = [];
@@ -66,9 +67,18 @@ export function evaluateSiteTechnicalFeasibility(
   if (/\b(north\s+carolina|nc)\b/i.test(promptLower)) targetStates.push('NC');
   if (/\b(ohio|oh)\b/i.test(promptLower)) targetStates.push('OH');
   if (/\b(arizona|az)\b/i.test(promptLower)) targetStates.push('AZ');
+  if (/\b(california|ca)\b/i.test(promptLower)) targetStates.push('CA');
 
-  const siteState = (fields.political_region?.value as string) || 
-    (siteName.includes(', FL') ? 'FL' : siteName.includes(', GA') ? 'GA' : siteName.includes(', NC') ? 'NC' : siteName.includes(', OH') ? 'OH' : siteName.includes(', AZ') ? 'AZ' : (county.includes('County') ? 'TX' : 'TX'));
+  let siteState = rawState || (fields.political_region?.value as string) || (fields.political_state?.value as string);
+  if (!siteState || siteState.length > 2) {
+    if (/\bAZ\b/i.test(siteName) || /\bArizona\b/i.test(siteName)) siteState = 'AZ';
+    else if (/\bCA\b/i.test(siteName) || /\bCalifornia\b/i.test(siteName)) siteState = 'CA';
+    else if (/\bFL\b/i.test(siteName) || /\bFlorida\b/i.test(siteName)) siteState = 'FL';
+    else if (/\bGA\b/i.test(siteName) || /\bGeorgia\b/i.test(siteName)) siteState = 'GA';
+    else if (/\bNC\b/i.test(siteName) || /\bNorth Carolina\b/i.test(siteName)) siteState = 'NC';
+    else if (/\bOH\b/i.test(siteName) || /\bOhio\b/i.test(siteName)) siteState = 'OH';
+    else siteState = 'TX';
+  }
 
   // 0. State Jurisdiction Check
   if (targetStates.length > 0 && !targetStates.includes(siteState)) {

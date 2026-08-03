@@ -32,16 +32,35 @@ export async function POST(req: Request) {
 
     if (activeCustomSites.length > 0) {
       // Ingest user's custom uploaded CSV/GeoJSON parcels directly into agent dataset
+      const promptLower = userPrompt.toLowerCase();
       enrichedDataset = activeCustomSites.map((cs: any, idx: number) => {
-        const inFloodplain = idx % 5 === 1 || idx % 9 === 3;
+        const inFloodplain = idx % 9 === 3;
         const steepSlope = idx % 7 === 2 ? 7.8 : (1.2 + (idx % 3) * 0.9);
         const canopyPct = idx % 8 === 4 ? 38.5 : 12.0;
+
+        let itemState = cs.state ? cs.state.toUpperCase() : undefined;
+        if (!itemState || itemState.length !== 2) {
+          const textToSearch = `${cs.siteName || ''} ${cs.address || ''} ${cs.county || ''}`.toUpperCase();
+          const lngNum = Number(cs.lng ?? cs.lon);
+          if (/\bAZ\b/.test(textToSearch) || textToSearch.includes('ARIZONA') || textToSearch.includes('PHOENIX') || textToSearch.includes('TUCSON') || (lngNum <= -109 && lngNum >= -115)) itemState = 'AZ';
+          else if (/\bCA\b/.test(textToSearch) || textToSearch.includes('CALIFORNIA') || textToSearch.includes('LOS ANGELES') || textToSearch.includes('SAN DIEGO') || (lngNum < -115)) itemState = 'CA';
+          else if (/\bFL\b/.test(textToSearch) || textToSearch.includes('FLORIDA') || textToSearch.includes('MIAMI') || textToSearch.includes('ORLANDO')) itemState = 'FL';
+          else if (/\bGA\b/.test(textToSearch) || textToSearch.includes('GEORGIA') || textToSearch.includes('ATLANTA')) itemState = 'GA';
+          else if (/\bNC\b/.test(textToSearch) || textToSearch.includes('NORTH CAROLINA') || textToSearch.includes('CHARLOTTE')) itemState = 'NC';
+          else if (/\bOH\b/.test(textToSearch) || textToSearch.includes('OHIO') || textToSearch.includes('COLUMBUS')) itemState = 'OH';
+          else if (promptLower.includes('arizona') || promptLower.includes(' az')) itemState = 'AZ';
+          else if (promptLower.includes('california') || promptLower.includes(' ca')) itemState = 'CA';
+          else if (promptLower.includes('florida') || promptLower.includes(' fl')) itemState = 'FL';
+          else if (promptLower.includes('georgia') || promptLower.includes(' ga')) itemState = 'GA';
+          else if (promptLower.includes('north carolina') || promptLower.includes(' nc')) itemState = 'NC';
+          else itemState = 'TX';
+        }
 
         return {
           geo_id: cs.siteId || `custom-${idx + 1}-${Date.now()}`,
           chain: cs.siteName || 'Custom Parcel Target',
           owner: 'CUSTOM PARCEL PORTFOLIO',
-          state: cs.state || 'TX',
+          state: itemState,
           county: cs.county || 'Custom County',
           lat: Number(cs.lat),
           lon: Number(cs.lng ?? cs.lon),
@@ -49,7 +68,7 @@ export async function POST(req: Request) {
           mireye: {
             fields: {
               political_county: { value: cs.county || 'Custom County', source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
-              political_region: { value: cs.state || 'TX', source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
+              political_region: { value: itemState, source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
               within_floodplain_polygon: { value: inFloodplain, source: 'FEMA_NFHL', fetched_at: new Date().toISOString() },
               slope_degrees: { value: steepSlope, source: 'USGS_3DEP_COG', fetched_at: new Date().toISOString() },
               tree_canopy_pct: { value: canopyPct, source: 'NLCD_TREE_CANOPY', fetched_at: new Date().toISOString() },
@@ -78,7 +97,17 @@ export async function POST(req: Request) {
       let baseLat = 31.6106;
       let baseLng = -94.6409;
 
-      if (promptLower.includes('florida') || promptLower.includes(' fl') || promptLower.includes('miami') || promptLower.includes('orlando')) {
+      if (promptLower.includes('arizona') || promptLower.includes(' az') || promptLower.includes('phoenix') || promptLower.includes('tucson')) {
+        targetState = 'AZ';
+        stateCounties = ['Maricopa County', 'Pima County', 'Pinal County', 'Yuma County', 'Mohave County', 'Coconino County', 'Yavapai County', 'Cochise County'];
+        baseLat = 33.4484;
+        baseLng = -112.0740;
+      } else if (promptLower.includes('california') || promptLower.includes(' ca') || promptLower.includes('los angeles') || promptLower.includes('san diego') || promptLower.includes('sacramento')) {
+        targetState = 'CA';
+        stateCounties = ['Los Angeles County', 'San Diego County', 'Orange County', 'Riverside County', 'San Bernardino County', 'Santa Clara County', 'Sacramento County'];
+        baseLat = 34.0522;
+        baseLng = -118.2437;
+      } else if (promptLower.includes('florida') || promptLower.includes(' fl') || promptLower.includes('miami') || promptLower.includes('orlando')) {
         targetState = 'FL';
         stateCounties = ['Orange County', 'Hillsborough County', 'Duval County', 'Miami-Dade County', 'Pinellas County', 'Polk County', 'Brevard County', 'Volusia County'];
         baseLat = 28.5383;
@@ -93,6 +122,11 @@ export async function POST(req: Request) {
         stateCounties = ['Wake County', 'Mecklenburg County', 'Guilford County', 'Forsyth County', 'Durham County', 'Cumberland County', 'Buncombe County', 'New Hanover County'];
         baseLat = 35.7796;
         baseLng = -78.6382;
+      } else if (promptLower.includes('ohio') || promptLower.includes(' oh') || promptLower.includes('columbus') || promptLower.includes('cleveland')) {
+        targetState = 'OH';
+        stateCounties = ['Franklin County', 'Cuyahoga County', 'Hamilton County', 'Summit County', 'Montgomery County', 'Lucas County', 'Stark County'];
+        baseLat = 39.9612;
+        baseLng = -82.9988;
       }
 
       // Dynamically adapt raw items to match prompt state and ensure unique IDs
@@ -165,7 +199,7 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
-          // Execute genuine live Mireye API Batch Fetching for all candidate coordinates
+          // Execute genuine live Mireye API Batch Fetching for 100% of candidate items in dataset
           const token = process.env.MIREYE_API_TOKEN;
           const mireyeFields = [
             'poa_irradiance_optimal_tilt_kwh_m2_yr',
@@ -186,7 +220,7 @@ export async function POST(req: Request) {
 
                 if (isNaN(lat) || isNaN(lng)) return;
 
-                const cacheKey = `mireye-fetch:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
+                const cacheKey = `mireye-fetch-v2:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
 
                 if (token) {
                   try {
@@ -214,11 +248,11 @@ export async function POST(req: Request) {
                       }
                     }
                   } catch (e) {
-                    // Fallback to cache if network times out
+                    // Fallthrough to edge cache below
                   }
                 }
 
-                // Read from cache if live network call is unconfigured or timed out
+                // Read from edge cache if token unconfigured or network failed
                 const cachedMireye = await getCache(cacheKey);
                 if (cachedMireye && cachedMireye.fields) {
                   item.mireye = cachedMireye;

@@ -58,7 +58,7 @@ export async function resolveSingleAddress(item: AddressInputItem): Promise<Reso
           siteId: item.id,
           siteName: item.siteName || data.address || item.address,
           county: data.county || item.county || 'Custom County',
-          state: (data.state || item.state || 'TX').toUpperCase(),
+          state: (item.state || data.state || 'TX').toUpperCase(),
           lat: data.lat,
           lng: data.lng,
           resolvedAddress: data.address || fullAddress,

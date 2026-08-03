@@ -87,7 +87,7 @@ export async function runAcquisitionPipeline(
       ? item.chain 
       : `${item.chain || 'Dollar General'} ${county} #${shortId}`;
 
-    const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, county, item.mireye, userPrompt);
+    const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, county, item.mireye, userPrompt, item.state);
     const intelEval = evaluateAcquisitionIntelligence(item.geo_id, county, item.owner);
 
     if (techEval.hasDealKiller) {

@@ -247,6 +247,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
   };
 
   const handlePillClick = (selectedPrompt: string) => {
+    if (isRunning) return;
     setPrompt(selectedPrompt);
     startScan(selectedPrompt);
   };

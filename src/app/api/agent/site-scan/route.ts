@@ -188,12 +188,8 @@ export async function POST(req: Request) {
 
           // Execute genuine live Mireye API Batch Fetching for 100% of candidate items in dataset
           const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
-          const mireyeFields = [
-            'poa_irradiance_optimal_tilt_kwh_m2_yr',
-            'slope_degrees',
-            'within_floodplain_polygon',
-            'tree_canopy_pct',
-          ];
+          // Single primary physical GIS field to enforce 1 credit per site billing on Mireye API
+          const mireyeFields = ['poa_irradiance_optimal_tilt_kwh_m2_yr'];
           const sortedFields = [...mireyeFields].sort().join(',');
 
           // Execute live Mireye API network calls in controlled parallel chunks of 25 for sub-3s serverless completion

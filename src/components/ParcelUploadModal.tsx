@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles, Zap, ArrowRight } from 'lucide-react';
 import type { AddressInputItem } from '@/services/addressLookupService';
 
 export interface CustomSiteParcel {
@@ -27,6 +27,9 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
   const [skippedCount, setSkippedCount] = useState<number>(0);
+  const [isResolvingAddresses, setIsResolvingAddresses] = useState(false);
+  const [resolutionProgress, setResolutionProgress] = useState<{ current: number; total: number } | null>(null);
+  const [ingestionMode, setIngestionMode] = useState<'COORDINATES' | 'ADDRESS_LOOKUP' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -56,10 +59,6 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
 
     reader.readAsText(file);
   };
-
-  const [isResolvingAddresses, setIsResolvingAddresses] = useState(false);
-  const [resolutionProgress, setResolutionProgress] = useState<{ current: number; total: number } | null>(null);
-  const [ingestionMode, setIngestionMode] = useState<'COORDINATES' | 'ADDRESS_LOOKUP' | null>(null);
 
   const parseCsv = async (csvText: string) => {
     setSkippedCount(0);
@@ -331,14 +330,20 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           <div className={`p-3 rounded-xl border transition-all ${ingestionMode === 'COORDINATES' ? 'bg-amber-500/10 border-amber-400 text-amber-300' : 'bg-slate-950/60 border-white/10 text-slate-400'}`}>
             <div className="font-bold flex items-center justify-between text-white">
               <span>Option A: Coordinates</span>
-              <span className="text-[10px] bg-amber-400/20 text-amber-400 px-1.5 py-0.5 rounded">⚡ Fastest</span>
+              <span className="text-[10px] bg-amber-400/20 text-amber-400 px-1.5 py-0.5 rounded flex items-center gap-1">
+                <Zap className="w-3 h-3 text-amber-400" />
+                <span>Fastest</span>
+              </span>
             </div>
             <div className="text-[11px] mt-1 text-slate-400">CSV/GeoJSON containing lat, lng values for instant evaluation.</div>
           </div>
           <div className={`p-3 rounded-xl border transition-all ${ingestionMode === 'ADDRESS_LOOKUP' ? 'bg-amber-500/10 border-amber-400 text-amber-300' : 'bg-slate-950/60 border-white/10 text-slate-400'}`}>
             <div className="font-bold flex items-center justify-between text-white">
               <span>Option B: Addresses</span>
-              <span className="text-[10px] bg-emerald-400/20 text-emerald-400 px-1.5 py-0.5 rounded">Mireye Lookup</span>
+              <span className="text-[10px] bg-emerald-400/20 text-emerald-400 px-1.5 py-0.5 rounded flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-emerald-400" />
+                <span>Mireye Lookup</span>
+              </span>
             </div>
             <div className="text-[11px] mt-1 text-slate-400">CSV with street, city, state. Auto-resolves locations via /v1/lookup.</div>
           </div>
@@ -406,12 +411,12 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           <div className="p-4 rounded-2xl bg-[#0a0a14] border border-white/15 space-y-3 font-mono text-xs">
             <div className="flex items-center justify-between font-bold">
               <div className="flex items-center gap-2 text-emerald-400">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>✓ {parsedSites.length} Resolved Candidate Sites</span>
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                <span>{parsedSites.length} Resolved Candidate Sites</span>
                 {skippedCount > 0 && (
                   <span className="text-amber-400 text-[11px] font-normal font-mono ml-2 inline-flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                    <span>(⚠ {skippedCount} unresolved/invalid skipped)</span>
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>({skippedCount} unresolved/invalid skipped)</span>
                   </span>
                 )}
               </div>
@@ -450,7 +455,8 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all cursor-pointer disabled:opacity-40 shadow-md"
           >
             <Sparkles className="w-4 h-4 fill-slate-950" />
-            <span>Ingest Portfolio into Agent ({parsedSites.length} Sites) →</span>
+            <span>Ingest Portfolio into Agent ({parsedSites.length} Sites)</span>
+            <ArrowRight className="w-4 h-4 text-slate-950" />
           </button>
         </div>
 

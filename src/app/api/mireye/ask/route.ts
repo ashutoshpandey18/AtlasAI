@@ -17,11 +17,16 @@ export async function POST(req: Request) {
     const lng = body.lng !== undefined ? Number(body.lng) : (winnerSite?.lng || winnerSite?.lon || -102.3436);
 
     const token = process.env.MIREYE_API_TOKEN;
-    const cacheKey = `mireye-ask:${questionStr.toLowerCase()}:${winnerSite?.siteName || ''}:${survivors.length}:${rejections.length}`;
+    const cacheKey = `mireye-ask-v2:${questionStr.toLowerCase()}:${winnerSite?.siteName || ''}:${survivors.length}:${rejections.length}`;
 
-    // Read from Turso persistent edge cache
+    // Read from Turso persistent edge cache (bypassing stale generic refusal payloads)
     const cachedData = await getCache(cacheKey);
-    if (cachedData) {
+    if (
+      cachedData &&
+      typeof cachedData.answer === 'string' &&
+      !cachedData.answer.includes("doesn't appear to be answerable") &&
+      !cachedData.answer.includes('Mireye Earth answers questions')
+    ) {
       return NextResponse.json(cachedData);
     }
 
@@ -56,7 +61,15 @@ export async function POST(req: Request) {
         clearTimeout(timeoutId);
 
         if (res.ok) {
-          responseData = await res.json();
+          const data = await res.json();
+          if (
+            data &&
+            typeof data.answer === 'string' &&
+            !data.answer.includes("doesn't appear to be answerable") &&
+            !data.answer.includes('Mireye Earth answers questions')
+          ) {
+            responseData = data;
+          }
         }
       } catch (err) {
         // Fallback below

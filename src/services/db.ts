@@ -189,8 +189,8 @@ export async function getCache(key: string): Promise<any | null> {
   }
 
   // 2. Fall back to Turso SQLite disk/network cache
-  await initDb();
   try {
+    await initDb();
     const res = await client.execute({
       sql: 'SELECT value FROM api_cache WHERE key = ?',
       args: [key],

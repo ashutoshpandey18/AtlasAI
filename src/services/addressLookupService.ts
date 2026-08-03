@@ -68,7 +68,7 @@ export async function resolveSingleAddress(item: AddressInputItem): Promise<Reso
       }
     }
   } catch (err) {
-    // Network fallback handled gracefully
+    // Network error
   }
 
   return null;

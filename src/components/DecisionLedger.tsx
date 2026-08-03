@@ -51,7 +51,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
         <div className="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <div className="text-[10px] text-slate-400 uppercase font-bold">Candidates Evaluated</div>
-            <div className="text-lg font-black text-white">{totalEvaluated || 5} Candidate Sites</div>
+            <div className="text-lg font-black text-white">{totalEvaluated} Candidate Sites</div>
           </div>
           <div>
             <div className="text-[10px] text-rose-400 uppercase font-bold flex items-center gap-1">

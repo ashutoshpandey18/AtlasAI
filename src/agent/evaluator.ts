@@ -81,7 +81,8 @@ export function evaluateSiteTechnicalFeasibility(
   }
 
   // 0. State Jurisdiction Check
-  if (targetStates.length > 0 && !targetStates.includes(siteState)) {
+  const isCustomPortfolio = geoId.startsWith('custom-') || geoId.startsWith('addr-') || promptLower.includes('custom uploaded') || promptLower.includes('portfolio (data');
+  if (targetStates.length > 0 && !targetStates.includes(siteState) && !isCustomPortfolio) {
     inputsChecked.push(`State Jurisdiction: ${siteState} (Outside target states: ${targetStates.join(', ')})`);
     rulesApplied.push(`Constraint: Regional Siting Mandate restricting evaluation to ${targetStates.join(', ')}`);
     fatalFlaws.push({

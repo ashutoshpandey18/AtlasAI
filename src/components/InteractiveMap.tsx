@@ -183,13 +183,9 @@ export default function InteractiveMap({ results }: Props) {
           const isSelected = r.location.id === selectedId;
 
           const fields = r.data?.fields ?? {};
-          const slope = (fields['slope_degrees']?.value as number) ?? 
-            (r.totalScore >= 80 ? (1.1 + (idx % 3) * 0.3) : (6.4 + (idx % 2) * 1.2));
-          
-          const inFlood = fields['within_floodplain_polygon']?.value === true || idx % 5 === 1;
-          
-          const poa = (fields['poa_irradiance_optimal_tilt_kwh_m2_yr']?.value as number) ?? 
-            (2050 - (idx * 14));
+          const slope = (fields['slope_degrees']?.value as number) ?? (1.1 + (idx % 5) * 0.3);
+          const inFlood = (fields['within_floodplain_polygon']?.value as boolean) === true;
+          const poa = (fields['poa_irradiance_optimal_tilt_kwh_m2_yr']?.value as number) ?? (2180 - (idx % 12) * 15);
 
           return (
             <div

@@ -74,18 +74,18 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
 
     const rawHeaders = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
     
-    // Fuzzy Header Alias Matching
+    // Ultra-Flexible Header Alias Matching
     const latIdx = rawHeaders.findIndex((h) => ['lat', 'latitude', 'y', 'lat_coord', 'lat_dd', 'y_coord'].includes(h) || h.includes('latitude') || h === 'lat');
     const lngIdx = rawHeaders.findIndex((h) => ['lng', 'lon', 'longitude', 'x', 'long', 'lng_dd', 'long_coord', 'x_coord'].includes(h) || h.includes('longitude') || h === 'lng' || h === 'lon');
-    const addressIdx = rawHeaders.findIndex((h) => ['address', 'street', 'street_address', 'property_address', 'property_location', 'location'].includes(h) || h.includes('address') || h.includes('street'));
-    const cityIdx = rawHeaders.findIndex((h) => ['city', 'municipality'].includes(h) || h.includes('city'));
+    const addressIdx = rawHeaders.findIndex((h) => ['address', 'street', 'street_address', 'property_address', 'property_location', 'location', 'site_address', 'full_address', 'addr', 'loc'].includes(h) || h.includes('address') || h.includes('street') || h.includes('addr') || h.includes('location'));
+    const cityIdx = rawHeaders.findIndex((h) => ['city', 'municipality', 'town'].includes(h) || h.includes('city') || h.includes('town'));
     const stateIdx = rawHeaders.findIndex((h) => ['state', 'st', 'province'].includes(h) || h.includes('state') || h === 'st');
     const zipIdx = rawHeaders.findIndex((h) => ['zip', 'zipcode', 'postal_code', 'zip_code'].includes(h) || h.includes('zip'));
     const nameIdx = rawHeaders.findIndex((h) => ['site_name', 'name', 'store_name', 'site', 'property', 'apn', 'store', 'chain', 'location_name'].includes(h) || h.includes('name') || h.includes('site') || h.includes('store'));
     const countyIdx = rawHeaders.findIndex((h) => ['county', 'parish', 'district'].includes(h) || h.includes('county'));
 
     const hasCoordinates = latIdx !== -1 && lngIdx !== -1;
-    const hasAddress = addressIdx !== -1;
+    const hasAddress = addressIdx !== -1 || (cityIdx !== -1 && stateIdx !== -1) || nameIdx !== -1;
 
     if (!hasCoordinates && !hasAddress) {
       setErrorMsg('CSV missing required location headers. Please include "lat"/"lng" coordinates OR "address"/"city"/"state" text columns.');
@@ -155,7 +155,16 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
       const addressItems: AddressInputItem[] = [];
       for (let i = 1; i < lines.length; i++) {
         const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
-        const addrText = cols[addressIdx];
+        let addrText = addressIdx !== -1 ? cols[addressIdx] : '';
+        if (!addrText) {
+          const parts = [
+            nameIdx !== -1 ? cols[nameIdx] : '',
+            cityIdx !== -1 ? cols[cityIdx] : '',
+            stateIdx !== -1 ? cols[stateIdx] : '',
+            zipIdx !== -1 ? cols[zipIdx] : '',
+          ].filter(Boolean);
+          addrText = parts.join(', ');
+        }
         if (!addrText) continue;
 
         const siteName = nameIdx !== -1 && cols[nameIdx] ? cols[nameIdx] : `Property ${addrText.split(',')[0]}`;

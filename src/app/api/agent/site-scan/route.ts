@@ -34,10 +34,6 @@ export async function POST(req: Request) {
       // Ingest user's custom uploaded CSV/GeoJSON parcels directly into agent dataset
       const promptLower = userPrompt.toLowerCase();
       enrichedDataset = activeCustomSites.map((cs: any, idx: number) => {
-        const inFloodplain = idx % 9 === 3;
-        const steepSlope = idx % 7 === 2 ? 7.8 : (1.2 + (idx % 3) * 0.9);
-        const canopyPct = idx % 8 === 4 ? 38.5 : 12.0;
-
         let itemState = cs.state ? cs.state.toUpperCase() : undefined;
         if (!itemState || itemState.length !== 2) {
           const textToSearch = `${cs.siteName || ''} ${cs.address || ''} ${cs.county || ''}`.toUpperCase();
@@ -65,16 +61,7 @@ export async function POST(req: Request) {
           lat: Number(cs.lat),
           lon: Number(cs.lng ?? cs.lon),
           acres: 1.5,
-          mireye: {
-            fields: {
-              political_county: { value: cs.county || 'Custom County', source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
-              political_region: { value: itemState, source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
-              within_floodplain_polygon: { value: inFloodplain, source: 'FEMA_NFHL', fetched_at: new Date().toISOString() },
-              slope_degrees: { value: steepSlope, source: 'USGS_3DEP_COG', fetched_at: new Date().toISOString() },
-              tree_canopy_pct: { value: canopyPct, source: 'NLCD_TREE_CANOPY', fetched_at: new Date().toISOString() },
-              poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 2131.0 - (idx * 12), source: 'NREL_PVWATTS_V8', fetched_at: new Date().toISOString() },
-            },
-          },
+          mireye: null,
         };
       });
     } else {
@@ -220,7 +207,7 @@ export async function POST(req: Request) {
 
                 if (isNaN(lat) || isNaN(lng)) return;
 
-                const cacheKey = `mireye-fetch-v2:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
+                const cacheKey = `mireye-fetch-v3:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
 
                 if (token) {
                   try {
@@ -248,7 +235,7 @@ export async function POST(req: Request) {
                       }
                     }
                   } catch (e) {
-                    // Fallthrough to edge cache below
+                    // Fallthrough below
                   }
                 }
 

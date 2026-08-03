@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     const reqState = String(body.state || '').trim().toUpperCase();
-    const token = process.env.MIREYE_API_TOKEN;
+    const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN;
     const cacheKey = `mireye-lookup-v2:${(address || apn).toLowerCase()}`;
 
     // Check edge cache

@@ -200,7 +200,7 @@ export async function POST(req: Request) {
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
           // Execute genuine live Mireye API Batch Fetching for 100% of candidate items in dataset
-          const token = process.env.MIREYE_API_TOKEN;
+          const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN;
           const mireyeFields = [
             'poa_irradiance_optimal_tilt_kwh_m2_yr',
             'slope_degrees',
@@ -209,8 +209,8 @@ export async function POST(req: Request) {
           ];
           const sortedFields = [...mireyeFields].sort().join(',');
 
-          // Execute live Mireye API network calls in controlled parallel chunks of 10 to ensure zero socket timeouts
-          const BATCH_SIZE = 10;
+          // Execute live Mireye API network calls in controlled parallel chunks of 25 for sub-3s serverless completion
+          const BATCH_SIZE = 25;
           for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
             const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
             await Promise.all(

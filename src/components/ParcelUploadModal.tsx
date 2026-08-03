@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
+import type { AddressInputItem } from '@/services/addressLookupService';
 
 export interface CustomSiteParcel {
   siteId: string;
@@ -56,8 +57,16 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
     reader.readAsText(file);
   };
 
-  const parseCsv = (csvText: string) => {
+  const [isResolvingAddresses, setIsResolvingAddresses] = useState(false);
+  const [resolutionProgress, setResolutionProgress] = useState<{ current: number; total: number } | null>(null);
+  const [ingestionMode, setIngestionMode] = useState<'COORDINATES' | 'ADDRESS_LOOKUP' | null>(null);
+
+  const parseCsv = async (csvText: string) => {
     setSkippedCount(0);
+    setErrorMsg(null);
+    setParsedSites([]);
+    setIngestionMode(null);
+
     const lines = csvText.split(/\r?\n/).filter((l) => l.trim().length > 0);
     if (lines.length < 2) {
       setErrorMsg('CSV must contain a header row and at least 1 valid candidate data row.');
@@ -66,67 +75,135 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
 
     const rawHeaders = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
     
-    // Fuzzy Header Alias Matching (Latitude, Longitude, Site Name, County, State)
-    const latIdx = rawHeaders.findIndex((h) => ['lat', 'latitude', 'y', 'lat_coord', 'lat_dd', 'y_coord'].includes(h) || h.includes('latitude') || h.includes('lat'));
-    const lngIdx = rawHeaders.findIndex((h) => ['lng', 'lon', 'longitude', 'x', 'long', 'lng_dd', 'long_coord', 'x_coord'].includes(h) || h.includes('longitude') || h.includes('lng') || h.includes('lon'));
-    const nameIdx = rawHeaders.findIndex((h) => ['site_name', 'name', 'store_name', 'site', 'property', 'apn', 'store', 'chain'].includes(h) || h.includes('name') || h.includes('site') || h.includes('store'));
+    // Fuzzy Header Alias Matching
+    const latIdx = rawHeaders.findIndex((h) => ['lat', 'latitude', 'y', 'lat_coord', 'lat_dd', 'y_coord'].includes(h) || h.includes('latitude') || h === 'lat');
+    const lngIdx = rawHeaders.findIndex((h) => ['lng', 'lon', 'longitude', 'x', 'long', 'lng_dd', 'long_coord', 'x_coord'].includes(h) || h.includes('longitude') || h === 'lng' || h === 'lon');
+    const addressIdx = rawHeaders.findIndex((h) => ['address', 'street', 'street_address', 'property_address', 'property_location', 'location'].includes(h) || h.includes('address') || h.includes('street'));
+    const cityIdx = rawHeaders.findIndex((h) => ['city', 'municipality'].includes(h) || h.includes('city'));
+    const stateIdx = rawHeaders.findIndex((h) => ['state', 'st', 'province'].includes(h) || h.includes('state') || h === 'st');
+    const zipIdx = rawHeaders.findIndex((h) => ['zip', 'zipcode', 'postal_code', 'zip_code'].includes(h) || h.includes('zip'));
+    const nameIdx = rawHeaders.findIndex((h) => ['site_name', 'name', 'store_name', 'site', 'property', 'apn', 'store', 'chain', 'location_name'].includes(h) || h.includes('name') || h.includes('site') || h.includes('store'));
     const countyIdx = rawHeaders.findIndex((h) => ['county', 'parish', 'district'].includes(h) || h.includes('county'));
-    const stateIdx = rawHeaders.findIndex((h) => ['state', 'st'].includes(h) || h.includes('state'));
 
-    if (latIdx === -1 || lngIdx === -1) {
-      setErrorMsg('CSV header missing coordinate columns. Please include "lat" (or "latitude"/"y") and "lng" (or "longitude"/"lon"/"x").');
+    const hasCoordinates = latIdx !== -1 && lngIdx !== -1;
+    const hasAddress = addressIdx !== -1;
+
+    if (!hasCoordinates && !hasAddress) {
+      setErrorMsg('CSV missing required location headers. Please include "lat"/"lng" coordinates OR "address"/"city"/"state" text columns.');
       return;
     }
 
-    const sites: CustomSiteParcel[] = [];
-    const seenCoords = new Set<string>();
-    let skipped = 0;
+    // Mode 1: Coordinates Available (Preferred)
+    if (hasCoordinates) {
+      setIngestionMode('COORDINATES');
+      const sites: CustomSiteParcel[] = [];
+      const seenCoords = new Set<string>();
+      let skipped = 0;
 
-    for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
-      if (cols.length <= Math.max(latIdx, lngIdx)) {
-        skipped++;
-        continue;
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
+        if (cols.length <= Math.max(latIdx, lngIdx)) {
+          skipped++;
+          continue;
+        }
+
+        const lat = parseFloat(cols[latIdx]);
+        const lng = parseFloat(cols[lngIdx]);
+        if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+          skipped++;
+          continue;
+        }
+
+        const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        if (seenCoords.has(coordKey)) {
+          skipped++;
+          continue;
+        }
+        seenCoords.add(coordKey);
+
+        const siteName = nameIdx !== -1 && cols[nameIdx] ? cols[nameIdx] : `Uploaded Site #${i}`;
+        const county = countyIdx !== -1 && cols[countyIdx] ? cols[countyIdx] : 'Custom County';
+        const state = stateIdx !== -1 && cols[stateIdx] ? cols[stateIdx].toUpperCase() : 'TX';
+
+        sites.push({
+          siteId: `custom-${i}-${Date.now()}`,
+          siteName,
+          county,
+          state,
+          lat,
+          lng,
+          ownershipType: 'CORPORATE_FEE_SIMPLE',
+          parkingLotAreaSqFt: 45000,
+        });
       }
 
-      const lat = parseFloat(cols[latIdx]);
-      const lng = parseFloat(cols[lngIdx]);
-      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
-        skipped++;
-        continue;
+      if (sites.length === 0) {
+        setErrorMsg('No valid coordinate rows found in CSV portfolio.');
+        return;
       }
 
-      // Deduplicate coordinates
-      const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      if (seenCoords.has(coordKey)) {
-        skipped++;
-        continue;
+      setSkippedCount(skipped);
+      setParsedSites(sites);
+      return;
+    }
+
+    // Mode 2: Address-Based Portfolio Resolution via Mireye /v1/lookup
+    if (hasAddress) {
+      setIngestionMode('ADDRESS_LOOKUP');
+      setIsResolvingAddresses(true);
+      setResolutionProgress({ current: 0, total: lines.length - 1 });
+
+      const addressItems: AddressInputItem[] = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
+        const addrText = cols[addressIdx];
+        if (!addrText) continue;
+
+        const siteName = nameIdx !== -1 && cols[nameIdx] ? cols[nameIdx] : `Property ${addrText.split(',')[0]}`;
+        const city = cityIdx !== -1 ? cols[cityIdx] : undefined;
+        const state = stateIdx !== -1 ? cols[stateIdx] : undefined;
+        const zip = zipIdx !== -1 ? cols[zipIdx] : undefined;
+        const county = countyIdx !== -1 ? cols[countyIdx] : undefined;
+
+        addressItems.push({
+          id: `addr-${i}-${Date.now()}`,
+          siteName,
+          address: addrText,
+          city,
+          state,
+          zip,
+          county,
+        });
       }
-      seenCoords.add(coordKey);
 
-      const siteName = nameIdx !== -1 && cols[nameIdx] ? cols[nameIdx] : `Uploaded Site #${i}`;
-      const county = countyIdx !== -1 && cols[countyIdx] ? cols[countyIdx] : 'Custom County';
-      const state = stateIdx !== -1 && cols[stateIdx] ? cols[stateIdx].toUpperCase() : 'TX';
+      const { resolveBatchAddresses } = await import('@/services/addressLookupService');
+      const { resolved, skippedCount: lookupSkipped } = await resolveBatchAddresses(
+        addressItems,
+        (current, total) => setResolutionProgress({ current, total })
+      );
 
-      sites.push({
-        siteId: `custom-${i}-${Date.now()}`,
-        siteName,
-        county,
-        state,
-        lat,
-        lng,
+      setIsResolvingAddresses(false);
+      setResolutionProgress(null);
+
+      if (resolved.length === 0) {
+        setErrorMsg('Could not resolve addresses to coordinates using Mireye /v1/lookup.');
+        return;
+      }
+
+      const convertedSites: CustomSiteParcel[] = resolved.map((r) => ({
+        siteId: r.siteId,
+        siteName: r.siteName,
+        county: r.county,
+        state: r.state,
+        lat: r.lat,
+        lng: r.lng,
         ownershipType: 'CORPORATE_FEE_SIMPLE',
         parkingLotAreaSqFt: 45000,
-      });
-    }
+      }));
 
-    if (sites.length === 0) {
-      setErrorMsg('No valid coordinate rows found in CSV portfolio.');
-      return;
+      setSkippedCount(lookupSkipped);
+      setParsedSites(convertedSites);
     }
-
-    setSkippedCount(skipped);
-    setParsedSites(sites);
   };
 
   const parseGeoJson = (jsonText: string) => {
@@ -249,6 +326,24 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           </button>
         </div>
 
+        {/* Dual Mode Feature Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+          <div className={`p-3 rounded-xl border transition-all ${ingestionMode === 'COORDINATES' ? 'bg-amber-500/10 border-amber-400 text-amber-300' : 'bg-slate-950/60 border-white/10 text-slate-400'}`}>
+            <div className="font-bold flex items-center justify-between text-white">
+              <span>Option A: Coordinates</span>
+              <span className="text-[10px] bg-amber-400/20 text-amber-400 px-1.5 py-0.5 rounded">⚡ Fastest</span>
+            </div>
+            <div className="text-[11px] mt-1 text-slate-400">CSV/GeoJSON containing lat, lng values for instant evaluation.</div>
+          </div>
+          <div className={`p-3 rounded-xl border transition-all ${ingestionMode === 'ADDRESS_LOOKUP' ? 'bg-amber-500/10 border-amber-400 text-amber-300' : 'bg-slate-950/60 border-white/10 text-slate-400'}`}>
+            <div className="font-bold flex items-center justify-between text-white">
+              <span>Option B: Addresses</span>
+              <span className="text-[10px] bg-emerald-400/20 text-emerald-400 px-1.5 py-0.5 rounded">Mireye Lookup</span>
+            </div>
+            <div className="text-[11px] mt-1 text-slate-400">CSV with street, city, state. Auto-resolves locations via /v1/lookup.</div>
+          </div>
+        </div>
+
         {/* Drag & Drop Zone */}
         <div
           onDragEnter={handleDrag}
@@ -256,7 +351,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-3 ${
+          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2.5 ${
             dragActive
               ? 'border-amber-400 bg-amber-500/10 scale-[1.01]'
               : 'border-white/20 hover:border-amber-500/50 bg-[#06060e]/80'
@@ -269,18 +364,34 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
             onChange={handleFileChange}
             className="hidden"
           />
-          <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-            <FileText className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+            <FileText className="w-5 h-5" />
           </div>
           <div className="space-y-1">
             <div className="text-sm font-bold text-white">
               Drag & Drop your parcel portfolio file here
             </div>
             <div className="text-xs text-slate-400 font-mono">
-              Supports <span className="text-amber-400 font-bold">.CSV</span>, <span className="text-amber-400 font-bold">.JSON</span>, or <span className="text-amber-400 font-bold">.GeoJSON</span> (lat, lng, site_name)
+              Supports <span className="text-amber-400 font-bold">.CSV</span> with coordinates OR street addresses
             </div>
           </div>
         </div>
+
+        {/* Address Resolution Progress Indicator */}
+        {isResolvingAddresses && resolutionProgress && (
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2 font-mono text-xs text-amber-300">
+            <div className="flex justify-between items-center font-bold">
+              <span>Resolving property locations via Mireye /v1/lookup...</span>
+              <span>{resolutionProgress.current} / {resolutionProgress.total} addresses resolved</span>
+            </div>
+            <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-amber-400 h-full transition-all duration-200"
+                style={{ width: `${Math.round((resolutionProgress.current / Math.max(1, resolutionProgress.total)) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Error Callout */}
         {errorMsg && (
@@ -291,16 +402,16 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
         )}
 
         {/* Parsed Sites Preview */}
-        {parsedSites.length > 0 && (
+        {parsedSites.length > 0 && !isResolvingAddresses && (
           <div className="p-4 rounded-2xl bg-[#0a0a14] border border-white/15 space-y-3 font-mono text-xs">
             <div className="flex items-center justify-between font-bold">
               <div className="flex items-center gap-2 text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>{parsedSites.length} Candidate Parcels Imported</span>
+                <span>✓ {parsedSites.length} Resolved Candidate Sites</span>
                 {skippedCount > 0 && (
                   <span className="text-amber-400 text-[11px] font-normal font-mono ml-2 inline-flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                    <span>({skippedCount} duplicate/invalid rows skipped)</span>
+                    <span>(⚠ {skippedCount} unresolved/invalid skipped)</span>
                   </span>
                 )}
               </div>
@@ -316,7 +427,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
               ))}
               {parsedSites.length > 5 && (
                 <div className="pt-2 text-[10px] text-amber-400 italic">
-                  + {parsedSites.length - 5} more candidate parcels ready for Mireye batch ingestion
+                  + {parsedSites.length - 5} more candidate parcels ready for Mireye batch evaluation
                 </div>
               )}
             </div>
@@ -334,7 +445,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           </button>
           <button
             type="button"
-            disabled={parsedSites.length === 0}
+            disabled={parsedSites.length === 0 || isResolvingAddresses}
             onClick={handleConfirm}
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all cursor-pointer disabled:opacity-40 shadow-md"
           >

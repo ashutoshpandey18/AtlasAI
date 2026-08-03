@@ -7,6 +7,7 @@ import { AskWhyModal, AskWhyData } from './AskWhyModal';
 import { ParcelUploadModal, CustomSiteParcel } from './ParcelUploadModal';
 import { ReasoningTimeline } from './ReasoningTimeline';
 import { DecisionLedger } from './DecisionLedger';
+import { SpatialCopilot } from './SpatialCopilot';
 import InteractiveMap from './InteractiveMap';
 import type { StrategyPlan } from '@/agent/planner';
 import type { LocationResult } from '@/types/atlas';
@@ -437,11 +438,13 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Rejection Ledger Stream */}
+            {/* Rejections Stream with Compact Fixed Max-Height Scroll Container */}
             <div className="space-y-3 font-sans">
-              <div className="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">
-                Explaining Rejections ({rejections.length} Sites Cut)
+              <div className="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider flex items-center justify-between">
+                <span>Explaining Rejections ({rejections.length} Sites Cut)</span>
+                <span className="text-[10px] text-slate-400 font-normal">Scroll to view all</span>
               </div>
-              <div className="space-y-2">
+              <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {rejections.map((rej, i) => (
                   <div
                     key={i}
@@ -458,7 +461,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               </div>
             </div>
 
-            {/* Approved Evaluations Stream */}
+            {/* Approved Evaluations Stream with Compact Fixed Max-Height Scroll Container */}
             <div className="space-y-3 font-sans">
               <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider flex justify-between items-center">
                 <span>Scoring Results ({evaluations.length} Evaluated)</span>
@@ -480,7 +483,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                 </div>
               )}
 
-              <div className="space-y-2">
+              <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {evaluations.map((ev, i) => (
                   <div
                     key={i}
@@ -616,8 +619,18 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
             promptStr={prompt}
             rejections={rejections}
             evaluations={evaluations}
-            winnerSite={survivors.length > 0 ? (survivors[0] as any) : null}
+            winnerSite={survivors.length > 0 ? (survivors[0] as any) : (evaluations.length > 0 ? (evaluations[0] as any) : null)}
           />
+
+          {/* Mireye /v1/ask Spatial Intelligence Copilot */}
+          {(!isRunning || evaluations.length > 0) && (
+            <SpatialCopilot
+              userPrompt={prompt}
+              winnerSite={survivors.length > 0 ? survivors[0] : evaluations[0]}
+              evaluations={evaluations}
+              rejections={rejections}
+            />
+          )}
 
         </div>
       )}

@@ -1,0 +1,501 @@
+site_name,county,state,lat,lng
+Walmart Supercenter #1001,Travis County,TX,30.562,-97.399
+Target Store #1002,Miami-Dade County,FL,27.429,-82.2554
+Home Depot Hub #1003,Cobb County,GA,31.023,-81.5016
+Costco Wholesale #1004,Forsyth County,NC,36.4043,-76.81
+Dollar General Retail #1005,Montgomery County,OH,38.8452,-82.9374
+Amazon Fulfillment #1006,Yuma County,AZ,34.2809,-112.5867
+Walmart Supercenter #1007,Williamson County,TX,26.6229,-103.8242
+Target Store #1008,Polk County,FL,26.8981,-85.0368
+Home Depot Hub #1009,Clayton County,GA,32.582,-81.9581
+Costco Wholesale #1010,Gaston County,NC,34.5399,-83.4525
+Dollar General Retail #1011,Franklin County,OH,39.2552,-81.3349
+Amazon Fulfillment #1012,Pima County,AZ,35.8297,-111.9277
+Walmart Supercenter #1013,Lubbock County,TX,29.7135,-101.9733
+Target Store #1014,Pinellas County,FL,29.9387,-83.4751
+Home Depot Hub #1015,Chatham County,GA,31.866,-82.955
+Costco Wholesale #1016,Durham County,NC,35.5304,-82.8378
+Dollar General Retail #1017,Stark County,OH,39.6379,-80.5541
+Amazon Fulfillment #1018,Cochise County,AZ,36.1819,-111.8872
+Walmart Supercenter #1019,Cameron County,TX,28.1324,-102.1993
+Target Store #1020,Volusia County,FL,28.5532,-85.9907
+Home Depot Hub #1021,Fulton County,GA,31.2895,-83.2497
+Costco Wholesale #1022,Mecklenburg County,NC,35.2221,-83.9772
+Dollar General Retail #1023,Hamilton County,OH,41.3935,-80.7204
+Amazon Fulfillment #1024,Yavapai County,AZ,34.7436,-113.4998
+Walmart Supercenter #1025,Ector County,TX,28.2904,-105.6269
+Target Store #1026,Palm Beach County,FL,26.0151,-83.2393
+Home Depot Hub #1027,Forsyth County,GA,34.7485,-83.3648
+Costco Wholesale #1028,Union County,NC,34.3426,-78.215
+Dollar General Retail #1029,Lorain County,OH,38.5391,-81.6574
+Amazon Fulfillment #1030,Apache County,AZ,31.8876,-114.3064
+Walmart Supercenter #1031,Denton County,TX,30.4757,-95.2568
+Target Store #1032,Miami-Dade County,FL,28.5355,-83.9726
+Home Depot Hub #1033,Cobb County,GA,33.5351,-84.9633
+Costco Wholesale #1034,Forsyth County,NC,35.9424,-83.0256
+Dollar General Retail #1035,Montgomery County,OH,38.5223,-82.1754
+Amazon Fulfillment #1036,Yuma County,AZ,33.2354,-109.6257
+Walmart Supercenter #1037,El Paso County,TX,28.1523,-94.3571
+Target Store #1038,Polk County,FL,30.4186,-83.8564
+Home Depot Hub #1039,Clayton County,GA,34.6537,-81.919
+Costco Wholesale #1040,Gaston County,NC,34.7466,-80.1859
+Dollar General Retail #1041,Franklin County,OH,38.8263,-84.1832
+Amazon Fulfillment #1042,Pima County,AZ,34.9484,-111.6991
+Walmart Supercenter #1043,Dallas County,TX,32.8917,-101.1189
+Target Store #1044,Pinellas County,FL,27.3581,-81.0366
+Home Depot Hub #1045,Chatham County,GA,32.4267,-84.7454
+Costco Wholesale #1046,Durham County,NC,36.2446,-76.897
+Dollar General Retail #1047,Stark County,OH,41.0212,-83.6347
+Amazon Fulfillment #1048,Cochise County,AZ,35.3432,-113.8208
+Walmart Supercenter #1049,Brazos County,TX,26.3147,-102.5276
+Target Store #1050,Volusia County,FL,28.6805,-84.9749
+Home Depot Hub #1051,Fulton County,GA,32.9253,-84.0056
+Costco Wholesale #1052,Mecklenburg County,NC,34.1678,-79.2631
+Dollar General Retail #1053,Hamilton County,OH,38.5503,-83.6093
+Amazon Fulfillment #1054,Yavapai County,AZ,31.9663,-109.4251
+Walmart Supercenter #1055,McLennan County,TX,32.6678,-97.9688
+Target Store #1056,Palm Beach County,FL,26.1931,-82.4979
+Home Depot Hub #1057,Forsyth County,GA,33.1702,-82.5452
+Costco Wholesale #1058,Union County,NC,34.9038,-76.0508
+Dollar General Retail #1059,Lorain County,OH,41.472,-81.5706
+Amazon Fulfillment #1060,Apache County,AZ,31.5193,-113.6748
+Walmart Supercenter #1061,Travis County,TX,31.2062,-97.7979
+Target Store #1062,Miami-Dade County,FL,26.479,-86.5378
+Home Depot Hub #1063,Cobb County,GA,33.8817,-85.0487
+Costco Wholesale #1064,Forsyth County,NC,35.8058,-81.9118
+Dollar General Retail #1065,Montgomery County,OH,40.0339,-82.851
+Amazon Fulfillment #1066,Yuma County,AZ,33.4834,-114.0018
+Walmart Supercenter #1067,Williamson County,TX,32.063,-99.2723
+Target Store #1068,Polk County,FL,30.3303,-80.9829
+Home Depot Hub #1069,Clayton County,GA,33.2303,-81.1582
+Costco Wholesale #1070,Gaston County,NC,35.3707,-83.1197
+Dollar General Retail #1071,Franklin County,OH,41.4133,-81.1685
+Amazon Fulfillment #1072,Pima County,AZ,36.4308,-112.0794
+Walmart Supercenter #1073,Lubbock County,TX,31.9111,-104.2124
+Target Store #1074,Pinellas County,FL,25.8026,-82.4044
+Home Depot Hub #1075,Chatham County,GA,31.6179,-81.6706
+Costco Wholesale #1076,Durham County,NC,36.1026,-83.0137
+Dollar General Retail #1077,Stark County,OH,38.7838,-84.0865
+Amazon Fulfillment #1078,Cochise County,AZ,34.7935,-109.9996
+Walmart Supercenter #1079,Cameron County,TX,28.8788,-104.4158
+Target Store #1080,Volusia County,FL,30.1764,-80.8818
+Home Depot Hub #1081,Fulton County,GA,34.0803,-81.8402
+Costco Wholesale #1082,Mecklenburg County,NC,35.0333,-78.7115
+Dollar General Retail #1083,Hamilton County,OH,39.5159,-82.2976
+Amazon Fulfillment #1084,Yavapai County,AZ,35.262,-114.0526
+Walmart Supercenter #1085,Ector County,TX,28.5541,-96.2743
+Target Store #1086,Palm Beach County,FL,27.9177,-84.625
+Home Depot Hub #1087,Forsyth County,GA,32.9826,-82.0618
+Costco Wholesale #1088,Union County,NC,36.0601,-82.9859
+Dollar General Retail #1089,Lorain County,OH,41.2901,-83.2733
+Amazon Fulfillment #1090,Apache County,AZ,36.3507,-112.5198
+Walmart Supercenter #1091,Denton County,TX,26.382,-97.5873
+Target Store #1092,Miami-Dade County,FL,26.196,-83.4812
+Home Depot Hub #1093,Cobb County,GA,32.3289,-84.4459
+Costco Wholesale #1094,Forsyth County,NC,35.5281,-82.5019
+Dollar General Retail #1095,Montgomery County,OH,39.2011,-83.6993
+Amazon Fulfillment #1096,Yuma County,AZ,32.1596,-113.8948
+Walmart Supercenter #1097,El Paso County,TX,30.3535,-98.3064
+Target Store #1098,Polk County,FL,29.6842,-84.2532
+Home Depot Hub #1099,Clayton County,GA,34.8688,-83.5978
+Costco Wholesale #1100,Gaston County,NC,34.2666,-80.1554
+Dollar General Retail #1101,Franklin County,OH,40.7686,-83.85
+Amazon Fulfillment #1102,Pima County,AZ,32.3009,-111.853
+Walmart Supercenter #1103,Dallas County,TX,26.3903,-95.4734
+Target Store #1104,Pinellas County,FL,27.0588,-84.6916
+Home Depot Hub #1105,Chatham County,GA,32.9721,-84.1506
+Costco Wholesale #1106,Durham County,NC,35.7085,-81.0494
+Dollar General Retail #1107,Stark County,OH,38.7472,-82.6481
+Amazon Fulfillment #1108,Cochise County,AZ,35.481,-111.953
+Walmart Supercenter #1109,Brazos County,TX,32.8375,-97.2779
+Target Store #1110,Volusia County,FL,27.7955,-81.7746
+Home Depot Hub #1111,Fulton County,GA,33.3395,-82.9656
+Costco Wholesale #1112,Mecklenburg County,NC,34.1918,-83.9867
+Dollar General Retail #1113,Hamilton County,OH,39.203,-81.9052
+Amazon Fulfillment #1114,Yavapai County,AZ,35.6152,-112.8277
+Walmart Supercenter #1115,McLennan County,TX,29.8524,-94.2553
+Target Store #1116,Palm Beach County,FL,26.5959,-85.6795
+Home Depot Hub #1117,Forsyth County,GA,31.8302,-82.5384
+Costco Wholesale #1118,Union County,NC,35.1702,-77.3471
+Dollar General Retail #1119,Lorain County,OH,41.376,-83.276
+Amazon Fulfillment #1120,Apache County,AZ,35.0771,-110.6026
+Walmart Supercenter #1121,Travis County,TX,27.3502,-100.6682
+Target Store #1122,Miami-Dade County,FL,26.5628,-87.3587
+Home Depot Hub #1123,Cobb County,GA,32.7938,-84.6164
+Costco Wholesale #1124,Forsyth County,NC,36.4061,-76.8947
+Dollar General Retail #1125,Montgomery County,OH,40.9313,-82.4674
+Amazon Fulfillment #1126,Yuma County,AZ,35.4438,-111.5171
+Walmart Supercenter #1127,Williamson County,TX,28.5293,-99.2548
+Target Store #1128,Polk County,FL,27.4953,-85.9566
+Home Depot Hub #1129,Clayton County,GA,31.482,-83.4753
+Costco Wholesale #1130,Gaston County,NC,34.2718,-79.7644
+Dollar General Retail #1131,Franklin County,OH,40.0097,-81.3649
+Amazon Fulfillment #1132,Pima County,AZ,33.491,-110.8048
+Walmart Supercenter #1133,Lubbock County,TX,27.386,-99.1361
+Target Store #1134,Pinellas County,FL,26.5847,-87.2816
+Home Depot Hub #1135,Chatham County,GA,33.6385,-85.2972
+Costco Wholesale #1136,Durham County,NC,36.2972,-80.373
+Dollar General Retail #1137,Stark County,OH,39.7203,-83.5868
+Amazon Fulfillment #1138,Cochise County,AZ,34.4074,-110.5463
+Walmart Supercenter #1139,Cameron County,TX,26.6428,-105.0159
+Target Store #1140,Volusia County,FL,29.4911,-81.5414
+Home Depot Hub #1141,Fulton County,GA,34.3995,-85.2289
+Costco Wholesale #1142,Mecklenburg County,NC,36.2421,-81.2363
+Dollar General Retail #1143,Hamilton County,OH,41.1147,-80.6858
+Amazon Fulfillment #1144,Yavapai County,AZ,32.3973,-111.2372
+Walmart Supercenter #1145,Ector County,TX,27.4791,-95.1377
+Target Store #1146,Palm Beach County,FL,26.8556,-83.7429
+Home Depot Hub #1147,Forsyth County,GA,32.8113,-84.4379
+Costco Wholesale #1148,Union County,NC,36.0193,-82.0105
+Dollar General Retail #1149,Lorain County,OH,39.6113,-80.6308
+Amazon Fulfillment #1150,Apache County,AZ,35.0502,-109.904
+Walmart Supercenter #1151,Denton County,TX,31.2189,-101.3837
+Target Store #1152,Miami-Dade County,FL,28.8741,-80.4873
+Home Depot Hub #1153,Cobb County,GA,31.8882,-81.47
+Costco Wholesale #1154,Forsyth County,NC,35.9249,-83.8696
+Dollar General Retail #1155,Montgomery County,OH,38.8483,-81.379
+Amazon Fulfillment #1156,Yuma County,AZ,32.687,-110.8131
+Walmart Supercenter #1157,El Paso County,TX,30.3928,-104.4164
+Target Store #1158,Polk County,FL,28.3867,-83.7718
+Home Depot Hub #1159,Clayton County,GA,33.3766,-81.7496
+Costco Wholesale #1160,Gaston County,NC,34.9692,-82.4063
+Dollar General Retail #1161,Franklin County,OH,40.5497,-83.1392
+Amazon Fulfillment #1162,Pima County,AZ,32.4101,-109.2134
+Walmart Supercenter #1163,Dallas County,TX,31.4442,-99.9661
+Target Store #1164,Pinellas County,FL,27.1526,-86.992
+Home Depot Hub #1165,Chatham County,GA,32.1427,-83.5074
+Costco Wholesale #1166,Durham County,NC,34.0336,-81.4418
+Dollar General Retail #1167,Stark County,OH,41.1532,-80.5615
+Amazon Fulfillment #1168,Cochise County,AZ,36.4683,-113.191
+Walmart Supercenter #1169,Brazos County,TX,26.4504,-101.0507
+Target Store #1170,Volusia County,FL,30.3765,-87.3785
+Home Depot Hub #1171,Fulton County,GA,31.8009,-82.9262
+Costco Wholesale #1172,Mecklenburg County,NC,36.3607,-77.7486
+Dollar General Retail #1173,Hamilton County,OH,38.5307,-82.5004
+Amazon Fulfillment #1174,Yavapai County,AZ,36.2976,-113.7366
+Walmart Supercenter #1175,McLennan County,TX,30.1892,-105.6021
+Target Store #1176,Palm Beach County,FL,25.759,-85.6001
+Home Depot Hub #1177,Forsyth County,GA,31.5095,-82.7998
+Costco Wholesale #1178,Union County,NC,35.004,-77.9981
+Dollar General Retail #1179,Lorain County,OH,41.1986,-83.7423
+Amazon Fulfillment #1180,Apache County,AZ,33.0512,-113.364
+Walmart Supercenter #1181,Travis County,TX,31.5107,-100.6999
+Target Store #1182,Miami-Dade County,FL,27.9887,-85.196
+Home Depot Hub #1183,Cobb County,GA,32.4876,-82.0227
+Costco Wholesale #1184,Forsyth County,NC,34.661,-81.6638
+Dollar General Retail #1185,Montgomery County,OH,40.7994,-83.9593
+Amazon Fulfillment #1186,Yuma County,AZ,35.5765,-113.8772
+Walmart Supercenter #1187,Williamson County,TX,28.8741,-103.0359
+Target Store #1188,Polk County,FL,25.887,-86.2664
+Home Depot Hub #1189,Clayton County,GA,34.0901,-82.7355
+Costco Wholesale #1190,Gaston County,NC,35.2257,-81.0682
+Dollar General Retail #1191,Franklin County,OH,40.2646,-82.0313
+Amazon Fulfillment #1192,Pima County,AZ,35.2523,-112.5975
+Walmart Supercenter #1193,Lubbock County,TX,30.8383,-94.1144
+Target Store #1194,Pinellas County,FL,26.8471,-85.4262
+Home Depot Hub #1195,Chatham County,GA,34.4222,-84.7201
+Costco Wholesale #1196,Durham County,NC,35.6321,-82.9343
+Dollar General Retail #1197,Stark County,OH,40.1083,-80.778
+Amazon Fulfillment #1198,Cochise County,AZ,32.7549,-114.0278
+Walmart Supercenter #1199,Cameron County,TX,30.317,-104.3747
+Target Store #1200,Volusia County,FL,25.5379,-83.8538
+Home Depot Hub #1201,Fulton County,GA,33.6131,-85.3477
+Costco Wholesale #1202,Mecklenburg County,NC,35.4792,-76.8988
+Dollar General Retail #1203,Hamilton County,OH,40.7439,-80.8425
+Amazon Fulfillment #1204,Yavapai County,AZ,36.3393,-109.9233
+Walmart Supercenter #1205,Ector County,TX,32.7416,-94.6461
+Target Store #1206,Palm Beach County,FL,28.1706,-86.4391
+Home Depot Hub #1207,Forsyth County,GA,33.4363,-83.5059
+Costco Wholesale #1208,Union County,NC,35.8948,-78.7106
+Dollar General Retail #1209,Lorain County,OH,40.2058,-84.352
+Amazon Fulfillment #1210,Apache County,AZ,34.3579,-111.0796
+Walmart Supercenter #1211,Denton County,TX,32.9947,-94.0661
+Target Store #1212,Miami-Dade County,FL,28.8544,-81.3208
+Home Depot Hub #1213,Cobb County,GA,31.9225,-81.983
+Costco Wholesale #1214,Forsyth County,NC,35.6021,-83.471
+Dollar General Retail #1215,Montgomery County,OH,40.9955,-80.5381
+Amazon Fulfillment #1216,Yuma County,AZ,34.4239,-114.4848
+Walmart Supercenter #1217,El Paso County,TX,28.1201,-101.0834
+Target Store #1218,Polk County,FL,30.3673,-85.1276
+Home Depot Hub #1219,Clayton County,GA,32.3027,-81.7621
+Costco Wholesale #1220,Gaston County,NC,34.793,-82.4692
+Dollar General Retail #1221,Franklin County,OH,40.0514,-81.979
+Amazon Fulfillment #1222,Pima County,AZ,35.4074,-109.131
+Walmart Supercenter #1223,Dallas County,TX,29.8497,-98.3029
+Target Store #1224,Pinellas County,FL,26.7187,-80.2772
+Home Depot Hub #1225,Chatham County,GA,34.4389,-82.3868
+Costco Wholesale #1226,Durham County,NC,34.6495,-83.0528
+Dollar General Retail #1227,Stark County,OH,39.9342,-83.1167
+Amazon Fulfillment #1228,Cochise County,AZ,35.2209,-110.3907
+Walmart Supercenter #1229,Brazos County,TX,28.2785,-96.2307
+Target Store #1230,Volusia County,FL,27.5062,-87.3306
+Home Depot Hub #1231,Fulton County,GA,31.6961,-83.1282
+Costco Wholesale #1232,Mecklenburg County,NC,35.5607,-76.3578
+Dollar General Retail #1233,Hamilton County,OH,41.1829,-80.8602
+Amazon Fulfillment #1234,Yavapai County,AZ,34.6184,-111.0162
+Walmart Supercenter #1235,McLennan County,TX,26.5375,-104.0088
+Target Store #1236,Palm Beach County,FL,29.4175,-80.6297
+Home Depot Hub #1237,Forsyth County,GA,33.5354,-83.3361
+Costco Wholesale #1238,Union County,NC,34.7175,-77.0194
+Dollar General Retail #1239,Lorain County,OH,41.3426,-82.7906
+Amazon Fulfillment #1240,Apache County,AZ,32.1091,-109.1677
+Walmart Supercenter #1241,Travis County,TX,27.2163,-94.7791
+Target Store #1242,Miami-Dade County,FL,27.7294,-86.6779
+Home Depot Hub #1243,Cobb County,GA,32.9455,-82.7729
+Costco Wholesale #1244,Forsyth County,NC,36.061,-78.8545
+Dollar General Retail #1245,Montgomery County,OH,41.4331,-83.6779
+Amazon Fulfillment #1246,Yuma County,AZ,36.4684,-110.8651
+Walmart Supercenter #1247,Williamson County,TX,30.6983,-95.3854
+Target Store #1248,Polk County,FL,25.5301,-85.9198
+Home Depot Hub #1249,Clayton County,GA,34.0798,-82.3708
+Costco Wholesale #1250,Gaston County,NC,34.1863,-79.0973
+Dollar General Retail #1251,Franklin County,OH,39.1371,-82.8196
+Amazon Fulfillment #1252,Pima County,AZ,36.0139,-111.3022
+Walmart Supercenter #1253,Lubbock County,TX,30.7482,-105.166
+Target Store #1254,Pinellas County,FL,26.7312,-81.2689
+Home Depot Hub #1255,Chatham County,GA,33.8271,-84.7064
+Costco Wholesale #1256,Durham County,NC,35.646,-76.8641
+Dollar General Retail #1257,Stark County,OH,39.5853,-82.4432
+Amazon Fulfillment #1258,Cochise County,AZ,33.6581,-112.1047
+Walmart Supercenter #1259,Cameron County,TX,26.0789,-98.4756
+Target Store #1260,Volusia County,FL,29.4309,-81.6078
+Home Depot Hub #1261,Fulton County,GA,32.333,-84.1946
+Costco Wholesale #1262,Mecklenburg County,NC,36.1034,-78.7281
+Dollar General Retail #1263,Hamilton County,OH,40.2541,-81.8404
+Amazon Fulfillment #1264,Yavapai County,AZ,34.7899,-111.6235
+Walmart Supercenter #1265,Ector County,TX,32.7257,-97.961
+Target Store #1266,Palm Beach County,FL,27.4508,-82.4925
+Home Depot Hub #1267,Forsyth County,GA,34.0638,-83.233
+Costco Wholesale #1268,Union County,NC,36.0929,-83.2374
+Dollar General Retail #1269,Lorain County,OH,40.6195,-80.7078
+Amazon Fulfillment #1270,Apache County,AZ,32.8171,-112.0065
+Walmart Supercenter #1271,Denton County,TX,33.0557,-97.9142
+Target Store #1272,Miami-Dade County,FL,30.0396,-85.7102
+Home Depot Hub #1273,Cobb County,GA,32.7145,-83.2886
+Costco Wholesale #1274,Forsyth County,NC,35.4485,-77.9557
+Dollar General Retail #1275,Montgomery County,OH,39.7352,-84.3421
+Amazon Fulfillment #1276,Yuma County,AZ,31.5355,-109.4012
+Walmart Supercenter #1277,El Paso County,TX,32.1976,-102.8175
+Target Store #1278,Polk County,FL,26.2123,-85.5823
+Home Depot Hub #1279,Clayton County,GA,31.9689,-82.2389
+Costco Wholesale #1280,Gaston County,NC,36.062,-81.6902
+Dollar General Retail #1281,Franklin County,OH,40.1111,-81.9661
+Amazon Fulfillment #1282,Pima County,AZ,33.6957,-114.1156
+Walmart Supercenter #1283,Dallas County,TX,28.3088,-97.6092
+Target Store #1284,Pinellas County,FL,30.3167,-81.12
+Home Depot Hub #1285,Chatham County,GA,34.7527,-81.0309
+Costco Wholesale #1286,Durham County,NC,36.2782,-79.7184
+Dollar General Retail #1287,Stark County,OH,39.2168,-84.1967
+Amazon Fulfillment #1288,Cochise County,AZ,36.3082,-112.0373
+Walmart Supercenter #1289,Brazos County,TX,26.7567,-98.0043
+Target Store #1290,Volusia County,FL,29.4266,-80.5518
+Home Depot Hub #1291,Fulton County,GA,34.4722,-83.9736
+Costco Wholesale #1292,Mecklenburg County,NC,35.9044,-77.3495
+Dollar General Retail #1293,Hamilton County,OH,39.4282,-83.6478
+Amazon Fulfillment #1294,Yavapai County,AZ,34.3477,-113.9048
+Walmart Supercenter #1295,McLennan County,TX,27.6248,-102.1639
+Target Store #1296,Palm Beach County,FL,27.2256,-86.9172
+Home Depot Hub #1297,Forsyth County,GA,31.7318,-84.1411
+Costco Wholesale #1298,Union County,NC,34.9702,-76.339
+Dollar General Retail #1299,Lorain County,OH,39.6821,-80.5584
+Amazon Fulfillment #1300,Apache County,AZ,34.9513,-112.0968
+Walmart Supercenter #1301,Travis County,TX,29.4451,-103.9353
+Target Store #1302,Miami-Dade County,FL,29.7799,-80.2351
+Home Depot Hub #1303,Cobb County,GA,31.9102,-82.7461
+Costco Wholesale #1304,Forsyth County,NC,35.4961,-77.4465
+Dollar General Retail #1305,Montgomery County,OH,40.6722,-82.4843
+Amazon Fulfillment #1306,Yuma County,AZ,34.2271,-109.2948
+Walmart Supercenter #1307,Williamson County,TX,27.5192,-94.5649
+Target Store #1308,Polk County,FL,28.4706,-80.6012
+Home Depot Hub #1309,Clayton County,GA,31.1534,-83.094
+Costco Wholesale #1310,Gaston County,NC,36.0233,-77.222
+Dollar General Retail #1311,Franklin County,OH,40.4794,-83.9358
+Amazon Fulfillment #1312,Pima County,AZ,33.2809,-113.83
+Walmart Supercenter #1313,Lubbock County,TX,27.6,-99.0853
+Target Store #1314,Pinellas County,FL,26.1851,-86.8812
+Home Depot Hub #1315,Chatham County,GA,34.815,-83.9697
+Costco Wholesale #1316,Durham County,NC,36.2083,-77.1528
+Dollar General Retail #1317,Stark County,OH,38.6744,-84.03
+Amazon Fulfillment #1318,Cochise County,AZ,36.2566,-113.4269
+Walmart Supercenter #1319,Cameron County,TX,31.7522,-105.8288
+Target Store #1320,Volusia County,FL,26.9066,-83.6546
+Home Depot Hub #1321,Fulton County,GA,34.7981,-84.083
+Costco Wholesale #1322,Mecklenburg County,NC,34.8632,-77.435
+Dollar General Retail #1323,Hamilton County,OH,40.0807,-81.1527
+Amazon Fulfillment #1324,Yavapai County,AZ,32.0592,-109.8056
+Walmart Supercenter #1325,Ector County,TX,29.9958,-105.6688
+Target Store #1326,Palm Beach County,FL,28.0666,-85.2129
+Home Depot Hub #1327,Forsyth County,GA,33.0593,-83.0461
+Costco Wholesale #1328,Union County,NC,35.653,-77.0445
+Dollar General Retail #1329,Lorain County,OH,39.6607,-82.5509
+Amazon Fulfillment #1330,Apache County,AZ,33.4711,-109.4883
+Walmart Supercenter #1331,Denton County,TX,27.0312,-98.1947
+Target Store #1332,Miami-Dade County,FL,27.1536,-85.3171
+Home Depot Hub #1333,Cobb County,GA,32.8109,-81.4717
+Costco Wholesale #1334,Forsyth County,NC,35.7614,-79.1987
+Dollar General Retail #1335,Montgomery County,OH,38.7115,-83.0259
+Amazon Fulfillment #1336,Yuma County,AZ,33.3478,-114.2614
+Walmart Supercenter #1337,El Paso County,TX,27.8439,-101.5804
+Target Store #1338,Polk County,FL,25.9395,-84.2536
+Home Depot Hub #1339,Clayton County,GA,33.7322,-82.0657
+Costco Wholesale #1340,Gaston County,NC,36.3979,-79.0272
+Dollar General Retail #1341,Franklin County,OH,40.2085,-82.0133
+Amazon Fulfillment #1342,Pima County,AZ,35.262,-110.4444
+Walmart Supercenter #1343,Dallas County,TX,33.5107,-103.6409
+Target Store #1344,Pinellas County,FL,29.9479,-84.9606
+Home Depot Hub #1345,Chatham County,GA,32.8518,-85.4451
+Costco Wholesale #1346,Durham County,NC,34.6327,-83.8093
+Dollar General Retail #1347,Stark County,OH,41.1009,-83.911
+Amazon Fulfillment #1348,Cochise County,AZ,34.0358,-111.3418
+Walmart Supercenter #1349,Brazos County,TX,29.0024,-94.7776
+Target Store #1350,Volusia County,FL,27.7446,-81.0583
+Home Depot Hub #1351,Fulton County,GA,32.3348,-83.5672
+Costco Wholesale #1352,Mecklenburg County,NC,36.1297,-81.2783
+Dollar General Retail #1353,Hamilton County,OH,41.4489,-84.3387
+Amazon Fulfillment #1354,Yavapai County,AZ,33.6582,-113.5694
+Walmart Supercenter #1355,McLennan County,TX,32.8577,-97.52
+Target Store #1356,Palm Beach County,FL,26.9528,-84.107
+Home Depot Hub #1357,Forsyth County,GA,34.1792,-84.615
+Costco Wholesale #1358,Union County,NC,35.938,-77.79
+Dollar General Retail #1359,Lorain County,OH,39.4815,-81.8156
+Amazon Fulfillment #1360,Apache County,AZ,31.7224,-110.7202
+Walmart Supercenter #1361,Travis County,TX,33.9307,-102.7207
+Target Store #1362,Miami-Dade County,FL,29.0066,-83.0413
+Home Depot Hub #1363,Cobb County,GA,32.2605,-83.7336
+Costco Wholesale #1364,Forsyth County,NC,34.0945,-82.652
+Dollar General Retail #1365,Montgomery County,OH,39.0358,-83.5155
+Amazon Fulfillment #1366,Yuma County,AZ,34.5907,-109.0338
+Walmart Supercenter #1367,Williamson County,TX,30.7871,-103.1485
+Target Store #1368,Polk County,FL,25.9562,-80.7056
+Home Depot Hub #1369,Clayton County,GA,32.5551,-82.7129
+Costco Wholesale #1370,Gaston County,NC,35.408,-80.3377
+Dollar General Retail #1371,Franklin County,OH,38.6143,-81.4836
+Amazon Fulfillment #1372,Pima County,AZ,34.9757,-112.5196
+Walmart Supercenter #1373,Lubbock County,TX,29.5115,-103.1934
+Target Store #1374,Pinellas County,FL,26.8696,-83.2771
+Home Depot Hub #1375,Chatham County,GA,32.5674,-82.3192
+Costco Wholesale #1376,Durham County,NC,35.5295,-76.9368
+Dollar General Retail #1377,Stark County,OH,41.1022,-81.7254
+Amazon Fulfillment #1378,Cochise County,AZ,35.089,-113.6919
+Walmart Supercenter #1379,Cameron County,TX,33.2082,-101.0869
+Target Store #1380,Volusia County,FL,29.2219,-83.6819
+Home Depot Hub #1381,Fulton County,GA,31.9997,-81.9521
+Costco Wholesale #1382,Mecklenburg County,NC,34.6697,-79.0488
+Dollar General Retail #1383,Hamilton County,OH,41.424,-84.1778
+Amazon Fulfillment #1384,Yavapai County,AZ,32.3141,-112.0978
+Walmart Supercenter #1385,Ector County,TX,28.8644,-103.0736
+Target Store #1386,Palm Beach County,FL,30.0934,-82.8029
+Home Depot Hub #1387,Forsyth County,GA,33.4808,-83.7674
+Costco Wholesale #1388,Union County,NC,34.794,-83.1909
+Dollar General Retail #1389,Lorain County,OH,39.9466,-81.0105
+Amazon Fulfillment #1390,Apache County,AZ,31.5074,-112.8368
+Walmart Supercenter #1391,Denton County,TX,29.3831,-98.5762
+Target Store #1392,Miami-Dade County,FL,27.0348,-83.3432
+Home Depot Hub #1393,Cobb County,GA,32.4865,-81.5494
+Costco Wholesale #1394,Forsyth County,NC,35.2896,-79.8824
+Dollar General Retail #1395,Montgomery County,OH,40.5531,-84.0942
+Amazon Fulfillment #1396,Yuma County,AZ,31.8251,-112.6934
+Walmart Supercenter #1397,El Paso County,TX,29.8384,-103.0143
+Target Store #1398,Polk County,FL,28.9407,-83.95
+Home Depot Hub #1399,Clayton County,GA,33.218,-83.5569
+Costco Wholesale #1400,Gaston County,NC,35.758,-80.5629
+Dollar General Retail #1401,Franklin County,OH,39.232,-83.1073
+Amazon Fulfillment #1402,Pima County,AZ,32.465,-110.0877
+Walmart Supercenter #1403,Dallas County,TX,28.2339,-99.6365
+Target Store #1404,Pinellas County,FL,28.3533,-84.6347
+Home Depot Hub #1405,Chatham County,GA,33.7955,-84.1539
+Costco Wholesale #1406,Durham County,NC,34.1761,-80.9778
+Dollar General Retail #1407,Stark County,OH,39.0616,-82.5741
+Amazon Fulfillment #1408,Cochise County,AZ,36.2568,-111.7232
+Walmart Supercenter #1409,Brazos County,TX,27.6304,-95.5651
+Target Store #1410,Volusia County,FL,29.6376,-80.6298
+Home Depot Hub #1411,Fulton County,GA,31.8655,-81.6603
+Costco Wholesale #1412,Mecklenburg County,NC,35.4957,-80.998
+Dollar General Retail #1413,Hamilton County,OH,41.0704,-83.4527
+Amazon Fulfillment #1414,Yavapai County,AZ,34.0333,-112.2212
+Walmart Supercenter #1415,McLennan County,TX,28.2951,-98.0816
+Target Store #1416,Palm Beach County,FL,26.3796,-87.0578
+Home Depot Hub #1417,Forsyth County,GA,34.6961,-81.9267
+Costco Wholesale #1418,Union County,NC,34.9171,-81.4092
+Dollar General Retail #1419,Lorain County,OH,38.8415,-81.0598
+Amazon Fulfillment #1420,Apache County,AZ,34.5275,-113.3349
+Walmart Supercenter #1421,Travis County,TX,32.0134,-105.3255
+Target Store #1422,Miami-Dade County,FL,27.7565,-83.2977
+Home Depot Hub #1423,Cobb County,GA,31.8246,-82.71
+Costco Wholesale #1424,Forsyth County,NC,35.1653,-82.6071
+Dollar General Retail #1425,Montgomery County,OH,40.0002,-84.3707
+Amazon Fulfillment #1426,Yuma County,AZ,34.9333,-113.3048
+Walmart Supercenter #1427,Williamson County,TX,28.5653,-100.823
+Target Store #1428,Polk County,FL,26.063,-84.1061
+Home Depot Hub #1429,Clayton County,GA,33.5461,-84.8459
+Costco Wholesale #1430,Gaston County,NC,36.4548,-83.3306
+Dollar General Retail #1431,Franklin County,OH,40.2082,-82.8299
+Amazon Fulfillment #1432,Pima County,AZ,34.6555,-113.2773
+Walmart Supercenter #1433,Lubbock County,TX,31.3407,-96.3166
+Target Store #1434,Pinellas County,FL,29.5685,-83.318
+Home Depot Hub #1435,Chatham County,GA,33.5339,-83.6083
+Costco Wholesale #1436,Durham County,NC,35.9965,-77.9125
+Dollar General Retail #1437,Stark County,OH,38.7527,-82.4341
+Amazon Fulfillment #1438,Cochise County,AZ,35.2481,-109.8824
+Walmart Supercenter #1439,Cameron County,TX,32.0692,-105.3768
+Target Store #1440,Volusia County,FL,30.2262,-85.4412
+Home Depot Hub #1441,Fulton County,GA,34.3175,-83.5273
+Costco Wholesale #1442,Mecklenburg County,NC,35.9281,-78.184
+Dollar General Retail #1443,Hamilton County,OH,39.9101,-83.0663
+Amazon Fulfillment #1444,Yavapai County,AZ,34.6945,-109.4299
+Walmart Supercenter #1445,Ector County,TX,32.9837,-94.0213
+Target Store #1446,Palm Beach County,FL,27.8691,-80.7914
+Home Depot Hub #1447,Forsyth County,GA,32.872,-83.5401
+Costco Wholesale #1448,Union County,NC,35.1588,-80.8883
+Dollar General Retail #1449,Lorain County,OH,39.7877,-83.272
+Amazon Fulfillment #1450,Apache County,AZ,32.503,-111.0972
+Walmart Supercenter #1451,Denton County,TX,30.7787,-99.485
+Target Store #1452,Miami-Dade County,FL,29.686,-85.1569
+Home Depot Hub #1453,Cobb County,GA,33.9889,-82.5896
+Costco Wholesale #1454,Forsyth County,NC,35.638,-77.0828
+Dollar General Retail #1455,Montgomery County,OH,39.5065,-82.4488
+Amazon Fulfillment #1456,Yuma County,AZ,33.5085,-111.69
+Walmart Supercenter #1457,El Paso County,TX,31.1642,-103.1851
+Target Store #1458,Polk County,FL,26.86,-81.7617
+Home Depot Hub #1459,Clayton County,GA,31.0371,-84.7865
+Costco Wholesale #1460,Gaston County,NC,35.4676,-81.2678
+Dollar General Retail #1461,Franklin County,OH,39.4266,-83.0906
+Amazon Fulfillment #1462,Pima County,AZ,33.2463,-110.896
+Walmart Supercenter #1463,Dallas County,TX,30.8929,-95.6733
+Target Store #1464,Pinellas County,FL,30.2424,-83.7825
+Home Depot Hub #1465,Chatham County,GA,33.3298,-82.0718
+Costco Wholesale #1466,Durham County,NC,36.0735,-77.2942
+Dollar General Retail #1467,Stark County,OH,39.7942,-82.3506
+Amazon Fulfillment #1468,Cochise County,AZ,35.0397,-114.3386
+Walmart Supercenter #1469,Brazos County,TX,26.8363,-98.1512
+Target Store #1470,Volusia County,FL,26.0532,-81.7244
+Home Depot Hub #1471,Fulton County,GA,32.0889,-81.2319
+Costco Wholesale #1472,Mecklenburg County,NC,36.4113,-77.7055
+Dollar General Retail #1473,Hamilton County,OH,40.1223,-83.3009
+Amazon Fulfillment #1474,Yavapai County,AZ,33.7078,-110.8931
+Walmart Supercenter #1475,McLennan County,TX,29.4113,-101.8658
+Target Store #1476,Palm Beach County,FL,26.3518,-81.5544
+Home Depot Hub #1477,Forsyth County,GA,33.7067,-84.0041
+Costco Wholesale #1478,Union County,NC,34.7253,-81.6621
+Dollar General Retail #1479,Lorain County,OH,41.4774,-84.4756
+Amazon Fulfillment #1480,Apache County,AZ,33.6795,-112.9591
+Walmart Supercenter #1481,Travis County,TX,27.6562,-95.5615
+Target Store #1482,Miami-Dade County,FL,27.8725,-80.1126
+Home Depot Hub #1483,Cobb County,GA,32.7055,-83.4018
+Costco Wholesale #1484,Forsyth County,NC,34.3221,-82.1637
+Dollar General Retail #1485,Montgomery County,OH,39.2257,-81.6359
+Amazon Fulfillment #1486,Yuma County,AZ,35.1421,-112.4508
+Walmart Supercenter #1487,Williamson County,TX,31.9239,-104.628
+Target Store #1488,Polk County,FL,27.6955,-87.157
+Home Depot Hub #1489,Clayton County,GA,33.4792,-81.3779
+Costco Wholesale #1490,Gaston County,NC,35.3549,-82.8351
+Dollar General Retail #1491,Franklin County,OH,39.8466,-83.8621
+Amazon Fulfillment #1492,Pima County,AZ,34.6816,-109.4885
+Walmart Supercenter #1493,Lubbock County,TX,33.8121,-97.231
+Target Store #1494,Pinellas County,FL,26.2395,-81.1004
+Home Depot Hub #1495,Chatham County,GA,34.751,-85.277
+Costco Wholesale #1496,Durham County,NC,35.5623,-80.0964
+Dollar General Retail #1497,Stark County,OH,39.0078,-82.4697
+Amazon Fulfillment #1498,Cochise County,AZ,31.6832,-110.0896
+Walmart Supercenter #1499,Cameron County,TX,28.0164,-101.875
+Target Store #1500,Volusia County,FL,30.1645,-86.5197

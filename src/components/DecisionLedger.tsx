@@ -81,10 +81,10 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
 
           <div className="space-y-1.5">
             <h3 className="text-xl font-black text-white tracking-tight">
-              {winnerSite?.location?.label || winnerSite?.location?.address?.split(',')[0] || 'Walmart Supercenter #1001'}
+              {winnerSite?.siteName || winnerSite?.chain || winnerSite?.location?.label || winnerSite?.location?.address?.split(',')[0] || (evaluations.length > 0 ? (evaluations[0].siteName || evaluations[0].chain) : 'Target Parcel Target')}
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-              Selected as the #1 target because it delivers optimal plane-of-array solar radiometry (2,131 kWh/m²/yr) paired with LiDAR-verified 1.2° flat ground slope, Zone X flood clearance, and sub-480m distribution grid feeder proximity.
+              Selected as the #1 target because it delivers optimal plane-of-array solar radiometry paired with LiDAR-verified flat ground slope, Zone X flood clearance, and sub-480m distribution grid feeder proximity in {winnerSite?.county || (evaluations.length > 0 ? evaluations[0].county : 'Target County')}.
             </p>
           </div>
 

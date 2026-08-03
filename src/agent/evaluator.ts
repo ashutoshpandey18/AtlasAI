@@ -55,9 +55,58 @@ export function evaluateSiteTechnicalFeasibility(
 
   const promptLower = (userPrompt || '').toLowerCase();
   const isBess = promptLower.includes('battery') || promptLower.includes('bess') || promptLower.includes('storage');
-  const isFarm = promptLower.includes('solar farm') || promptLower.includes('pv') || promptLower.includes('ground solar');
 
   const numSeed = Array.from(geoId).reduce((acc, char, idx) => acc + char.charCodeAt(0) * (idx + 1), 0);
+
+  // Dynamic Prompt Filtering Rules with Strict Word-Boundary RegEx Matching
+  const targetStates: string[] = [];
+  if (/\b(texas|tx)\b/i.test(promptLower)) targetStates.push('TX');
+  if (/\b(florida|fl)\b/i.test(promptLower)) targetStates.push('FL');
+  if (/\b(georgia|ga)\b/i.test(promptLower)) targetStates.push('GA');
+  if (/\b(north\s+carolina|nc)\b/i.test(promptLower)) targetStates.push('NC');
+  if (/\b(ohio|oh)\b/i.test(promptLower)) targetStates.push('OH');
+  if (/\b(arizona|az)\b/i.test(promptLower)) targetStates.push('AZ');
+
+  const siteState = (fields.political_region?.value as string) || 
+    (siteName.includes(', FL') ? 'FL' : siteName.includes(', GA') ? 'GA' : siteName.includes(', NC') ? 'NC' : siteName.includes(', OH') ? 'OH' : siteName.includes(', AZ') ? 'AZ' : (county.includes('County') ? 'TX' : 'TX'));
+
+  // 0. State Jurisdiction Check
+  if (targetStates.length > 0 && !targetStates.includes(siteState)) {
+    inputsChecked.push(`State Jurisdiction: ${siteState} (Outside target states: ${targetStates.join(', ')})`);
+    rulesApplied.push(`Constraint: Regional Siting Mandate restricting evaluation to ${targetStates.join(', ')}`);
+    fatalFlaws.push({
+      flawType: 'GRID_CONGESTION',
+      severity: 'FATAL',
+      description: `Jurisdiction Mismatch: Located in ${siteState}, outside requested target states (${targetStates.join(', ')}).`,
+      defensibleImpact: `Disqualified via Regional Siting Policy: Site is located in ${siteState}, which does not match requested target states (${targetStates.join(', ')}).`,
+    });
+  }
+
+  // 0b. Corporate Tenant Brand Filter
+  const requestedBrands: string[] = [];
+  if (/\bwalmarts?\b/i.test(promptLower)) requestedBrands.push('walmart');
+  if (/\b(target\s+stores?|target\s+retail|costco|amazon|home\s+depot|dollar\s+general)\b/i.test(promptLower)) {
+    if (/\btarget\s+stores?\b/i.test(promptLower)) requestedBrands.push('target');
+    if (/\bcostcos?\b/i.test(promptLower)) requestedBrands.push('costco');
+    if (/\bamazons?\b/i.test(promptLower)) requestedBrands.push('amazon');
+    if (/\bhome\s+depots?\b/i.test(promptLower)) requestedBrands.push('home depot');
+    if (/\bdollar\s+generals?\b/i.test(promptLower)) requestedBrands.push('dollar general');
+  }
+
+  if (requestedBrands.length > 0) {
+    const nameLower = siteName.toLowerCase();
+    const matchesBrand = requestedBrands.some(b => nameLower.includes(b));
+    if (!matchesBrand) {
+      inputsChecked.push(`Tenant Brand: Non-matching commercial operator (${siteName.split('#')[0].trim()})`);
+      rulesApplied.push(`Constraint: Corporate tenant mandate filtering for ${requestedBrands.join(', ')} operators`);
+      fatalFlaws.push({
+        flawType: 'GRID_CONGESTION',
+        severity: 'FATAL',
+        description: `Tenant Brand Mismatch: Operator does not match requested brands (${requestedBrands.join(', ')}).`,
+        defensibleImpact: `Disqualified via Tenant Mandate: Commercial operator does not match requested tenant brands (${requestedBrands.join(', ')}).`,
+      });
+    }
+  }
 
   // 1. Floodplain Check (Real Mireye Field)
   const inFloodplainField = getVal<boolean>(fields, 'within_floodplain_polygon');
@@ -79,16 +128,17 @@ export function evaluateSiteTechnicalFeasibility(
   // 2. Slope / Civil Grading Check (Real Mireye Field)
   const slopeField = getVal<number>(fields, 'slope_degrees');
   const slope = slopeField !== null ? slopeField : (numSeed % 17 === 0 ? 7.8 : ((numSeed * 13) % 45) * 0.1 + 0.4);
-  const gradingClass = slope > 6.0 ? 'severe slope' : 'flat terrain';
+  const maxSlopeAllowed = isBess ? 3.5 : 6.0;
+  const gradingClass = slope > maxSlopeAllowed ? 'severe slope' : 'flat terrain';
   inputsChecked.push(`Ground Slope (USGS 3DEP LiDAR): ${slope.toFixed(1)}° (${gradingClass})`);
-  if (slope > 6.0) {
+  if (slope > maxSlopeAllowed) {
     const slopeReason = isBess
-      ? `Disqualified via USGS 3DEP 1m LiDAR: Ground slope of ${slope.toFixed(1)}° exceeds BESS concrete foundation pad leveling tolerances. Earthwork cut-and-fill civil grading is estimated at +$145,000/acre, creating unacceptable CapEx overrun risk.`
+      ? `Disqualified via USGS 3DEP 1m LiDAR: Ground slope of ${slope.toFixed(1)}° exceeds BESS concrete foundation pad leveling tolerance of 3.5°. Earthwork cut-and-fill civil grading is estimated at +$145,000/acre, creating unacceptable CapEx overrun risk.`
       : `Disqualified via USGS 3DEP 1m LiDAR: Ground slope of ${slope.toFixed(1)}° exceeds single-axis tracker racking tolerances. Earthwork cut-and-fill civil grading is estimated at +$145,000/acre, creating unacceptable CapEx overrun risk.`;
     
     rulesApplied.push(isBess 
-      ? 'Constraint: Topographical terrain slope > 4.0° exceeds heavy concrete foundation pad leveling tolerances for battery storage containers'
-      : 'Constraint: Topographical terrain slope > 4.0° exceeds standard single-axis tracker racking tolerance'
+      ? 'Constraint: Topographical terrain slope > 3.5° exceeds heavy concrete foundation pad leveling tolerances for battery storage containers'
+      : 'Constraint: Topographical terrain slope > 6.0° exceeds standard single-axis tracker racking tolerance'
     );
     fatalFlaws.push({
       flawType: 'SLOPE',

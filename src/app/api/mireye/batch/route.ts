@@ -14,10 +14,7 @@ const DEFAULT_FIELDS = [
   'poa_irradiance_optimal_tilt_kwh_m2_yr',
   'slope_degrees',
   'within_floodplain_polygon',
-  'transmission_line_distance_m',
   'tree_canopy_pct',
-  'substation_distance_m',
-  'intersects_wetland',
 ];
 
 export async function POST(req: Request) {

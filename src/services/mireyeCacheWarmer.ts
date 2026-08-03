@@ -27,7 +27,6 @@ export async function warmMireyeCache(): Promise<number> {
       'poa_irradiance_optimal_tilt_kwh_m2_yr',
       'slope_degrees',
       'within_floodplain_polygon',
-      'transmission_line_distance_m',
       'tree_canopy_pct',
     ].sort().join(',');
 

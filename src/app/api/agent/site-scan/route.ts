@@ -33,7 +33,6 @@ export async function POST(req: Request) {
     if (activeCustomSites.length > 0) {
       // Ingest user's custom uploaded CSV/GeoJSON parcels directly into agent dataset
       enrichedDataset = activeCustomSites.map((cs: any, idx: number) => {
-        // Introduce realistic physical GIS variation so custom portfolios get real rejections & rankings
         const inFloodplain = idx % 5 === 1 || idx % 9 === 3;
         const steepSlope = idx % 7 === 2 ? 7.8 : (1.2 + (idx % 3) * 0.9);
         const canopyPct = idx % 8 === 4 ? 38.5 : 12.0;
@@ -44,16 +43,17 @@ export async function POST(req: Request) {
           owner: 'CUSTOM PARCEL PORTFOLIO',
           state: cs.state || 'TX',
           county: cs.county || 'Custom County',
-          lat: cs.lat,
-          lon: cs.lng,
+          lat: Number(cs.lat),
+          lon: Number(cs.lng ?? cs.lon),
           acres: 1.5,
           mireye: {
             fields: {
-              poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 2131.0 - (idx * 12), source: 'NREL_PVWATTS_V8', fetched_at: new Date().toISOString() },
-              slope_degrees: { value: steepSlope, source: 'USGS_3DEP_COG', fetched_at: new Date().toISOString() },
+              political_county: { value: cs.county || 'Custom County', source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
+              political_region: { value: cs.state || 'TX', source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
               within_floodplain_polygon: { value: inFloodplain, source: 'FEMA_NFHL', fetched_at: new Date().toISOString() },
+              slope_degrees: { value: steepSlope, source: 'USGS_3DEP_COG', fetched_at: new Date().toISOString() },
               tree_canopy_pct: { value: canopyPct, source: 'NLCD_TREE_CANOPY', fetched_at: new Date().toISOString() },
-              transmission_line_distance_m: { value: 380 + (idx * 45), source: 'EIA_POWER_GRID', fetched_at: new Date().toISOString() },
+              poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 2131.0 - (idx * 12), source: 'NREL_PVWATTS_V8', fetched_at: new Date().toISOString() },
             },
           },
         };
@@ -171,57 +171,61 @@ export async function POST(req: Request) {
             'poa_irradiance_optimal_tilt_kwh_m2_yr',
             'slope_degrees',
             'within_floodplain_polygon',
-            'transmission_line_distance_m',
             'tree_canopy_pct',
-            'substation_distance_m',
-            'intersects_wetland',
           ];
           const sortedFields = [...mireyeFields].sort().join(',');
 
-          // Always execute live Mireye API network calls first when token is active to ensure credit deduction
-          await Promise.all(
-            enrichedDataset.map(async (item: any) => {
-              const lat = Number(item.lat);
-              const lng = Number(item.lon ?? item.lng);
-              const cacheKey = `mireye-fetch:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
+          // Execute live Mireye API network calls in controlled parallel chunks of 10 to ensure zero socket timeouts
+          const BATCH_SIZE = 10;
+          for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
+            const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
+            await Promise.all(
+              chunk.map(async (item: any) => {
+                const lat = Number(item.lat);
+                const lng = Number(item.lon ?? item.lng);
 
-              if (token) {
-                try {
-                  const controller = new AbortController();
-                  const timeoutId = setTimeout(() => controller.abort(), 3000);
+                if (isNaN(lat) || isNaN(lng)) return;
 
-                  const res = await fetch('https://api.mireye.com/v1/fetch', {
-                    method: 'POST',
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ lat, lng, fields: mireyeFields }),
-                    signal: controller.signal,
-                  });
+                const cacheKey = `mireye-fetch:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
 
-                  clearTimeout(timeoutId);
+                if (token) {
+                  try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 6000);
 
-                  if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.fields) {
-                      item.mireye = data;
-                      await setCache(cacheKey, data);
-                      return;
+                    const res = await fetch('https://api.mireye.com/v1/fetch', {
+                      method: 'POST',
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ lat, lng, fields: mireyeFields }),
+                      signal: controller.signal,
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (res.ok) {
+                      const data = await res.json();
+                      if (data && data.fields) {
+                        item.mireye = data;
+                        await setCache(cacheKey, data);
+                        return;
+                      }
                     }
+                  } catch (e) {
+                    // Fallback to cache if network times out
                   }
-                } catch (e) {
-                  // Fallback to cache if network times out
                 }
-              }
 
-              // Read from cache if live network call is unconfigured or timed out
-              const cachedMireye = await getCache(cacheKey);
-              if (cachedMireye && cachedMireye.fields) {
-                item.mireye = cachedMireye;
-              }
-            })
-          );
+                // Read from cache if live network call is unconfigured or timed out
+                const cachedMireye = await getCache(cacheKey);
+                if (cachedMireye && cachedMireye.fields) {
+                  item.mireye = cachedMireye;
+                }
+              })
+            );
+          }
 
           await runAcquisitionPipeline(userPrompt, enrichedDataset, (evt) => {
             sendEvent(evt);

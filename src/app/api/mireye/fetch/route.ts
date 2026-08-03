@@ -19,6 +19,9 @@ export async function POST(req: Request) {
     // ALWAYS fire live HTTP POST requests to api.mireye.com first when token is active to ensure credit deduction
     if (token) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         const res = await fetch('https://api.mireye.com/v1/fetch', {
           method: 'POST',
           headers: {
@@ -26,7 +29,10 @@ export async function POST(req: Request) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ lat, lng, fields }),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         if (res.ok) {
           const data = await res.json();

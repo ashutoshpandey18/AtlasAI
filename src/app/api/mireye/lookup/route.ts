@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     if (token) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
 
         const res = await fetch('https://api.mireye.com/v1/lookup', {
           method: 'POST',

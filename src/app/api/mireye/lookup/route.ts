@@ -16,11 +16,11 @@ export async function POST(req: Request) {
 
     const reqState = String(body.state || '').trim().toUpperCase();
     const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
-    const cacheKey = `mireye-lookup-v2:${(address || apn).toLowerCase()}`;
+    const cacheKey = `mireye-lookup-v3:${(address || apn).toLowerCase()}`;
 
     // Check edge cache
     const cached = await getCache(cacheKey);
-    if (cached) {
+    if (cached && !cached.error && typeof cached.lat === 'number' && !isNaN(cached.lat)) {
       return NextResponse.json(cached);
     }
 

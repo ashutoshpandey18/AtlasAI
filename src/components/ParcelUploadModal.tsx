@@ -72,7 +72,8 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
       return;
     }
 
-    const rawHeaders = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
+    const delimiter = lines[0].includes(';') ? ';' : lines[0].includes('\t') ? '\t' : ',';
+    const rawHeaders = lines[0].split(delimiter).map((h) => h.trim().toLowerCase().replace(/['"]/g, ''));
     
     // Ultra-Flexible Header Alias Matching
     const latIdx = rawHeaders.findIndex((h) => ['lat', 'latitude', 'y', 'lat_coord', 'lat_dd', 'y_coord'].includes(h) || h.includes('latitude') || h === 'lat');
@@ -100,7 +101,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
       let skipped = 0;
 
       for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
+        const cols = lines[i].split(delimiter).map((c) => c.trim().replace(/['"]/g, ''));
         if (cols.length <= Math.max(latIdx, lngIdx)) {
           skipped++;
           continue;
@@ -154,7 +155,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
 
       const addressItems: AddressInputItem[] = [];
       for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map((c) => c.trim().replace(/['"]/g, ''));
+        const cols = lines[i].split(delimiter).map((c) => c.trim().replace(/['"]/g, ''));
         let addrText = addressIdx !== -1 ? cols[addressIdx] : '';
         if (!addrText) {
           const parts = [

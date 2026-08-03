@@ -4,7 +4,7 @@ import { getCache, setCache } from '@/services/db';
 export async function POST(req: Request) {
   try {
     const { lat, lng, fields } = await req.json();
-    const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN;
+    const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
 
     if (!token) {
       return NextResponse.json({ error: 'Mireye API token is not configured on the server.' }, { status: 500 });

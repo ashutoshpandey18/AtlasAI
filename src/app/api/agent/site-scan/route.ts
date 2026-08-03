@@ -200,7 +200,7 @@ export async function POST(req: Request) {
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
           // Execute genuine live Mireye API Batch Fetching for 100% of candidate items in dataset
-          const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN;
+          const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
           const mireyeFields = [
             'poa_irradiance_optimal_tilt_kwh_m2_yr',
             'slope_degrees',

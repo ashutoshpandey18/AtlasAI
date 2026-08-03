@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const lat = body.lat !== undefined ? Number(body.lat) : (winnerSite?.lat || 31.8608);
     const lng = body.lng !== undefined ? Number(body.lng) : (winnerSite?.lng || winnerSite?.lon || -102.3436);
 
-    const token = process.env.MIREYE_API_TOKEN;
+    const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
     const cacheKey = `mireye-ask-v2:${questionStr.toLowerCase()}:${winnerSite?.siteName || ''}:${survivors.length}:${rejections.length}`;
 
     // Read from Turso persistent edge cache (bypassing stale generic refusal payloads)

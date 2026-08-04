@@ -3,6 +3,7 @@
 
 import { NextResponse } from 'next/server';
 import { runAcquisitionPipeline } from '../../../../agent/orchestrator';
+import { planAcquisitionStrategyAsync } from '../../../../agent/planner';
 import { saveCampaign, getCache, setCache } from '@/services/db';
 import { fetchMireyeResilient } from '@/services/mireyeApiClient';
 import { warmMireyeCache } from '@/services/mireyeCacheWarmer';
@@ -187,11 +188,18 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
+          // 1. Formulate strategy plan & emit strategy_formulated immediately for 0ms visual feedback
+          const plan = await planAcquisitionStrategyAsync(userPrompt);
+          sendEvent({
+            eventType: 'strategy_formulated',
+            data: { plan },
+          });
+
           const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
           const mireyeFields = ['poa_irradiance_optimal_tilt_kwh_m2_yr'];
-          const sortedFields = [...mireyeFields].sort().join(',');
 
-          const BATCH_SIZE = 5;
+          // 2. Fast parallel batch fetching with Build Plan rate compliance
+          const BATCH_SIZE = 15;
           for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
             const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
             let needsNetworkCall = false;
@@ -218,10 +226,11 @@ export async function POST(req: Request) {
             );
 
             if (needsNetworkCall && i + BATCH_SIZE < enrichedDataset.length) {
-              await new Promise((resolve) => setTimeout(resolve, 1000));
+              await new Promise((resolve) => setTimeout(resolve, 350));
             }
           }
 
+          // 3. Execute evaluation pipeline and stream decision ledger results
           await runAcquisitionPipeline(userPrompt, enrichedDataset, (evt) => {
             sendEvent(evt);
           });

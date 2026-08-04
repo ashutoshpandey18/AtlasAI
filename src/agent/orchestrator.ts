@@ -127,6 +127,26 @@ export async function runAcquisitionPipeline(
     let scoreA = 0.5 * a.techEval.technicalFeasibilityScore + 0.5 * a.intelEval.acquisitionPriorityScore;
     let scoreB = 0.5 * b.techEval.technicalFeasibilityScore + 0.5 * b.intelEval.acquisitionPriorityScore;
 
+    // State matching boost (+100 for candidate sites matching requested prompt state)
+    const stateKeywords: Record<string, string[]> = {
+      'OH': ['ohio', 'oh', 'columbus', 'cleveland'],
+      'TX': ['texas', 'tx', 'austin', 'dallas', 'houston', 'san antonio'],
+      'CA': ['california', 'ca', 'los angeles', 'san diego', 'san jose', 'san francisco'],
+      'FL': ['florida', 'fl', 'miami', 'orlando', 'tampa', 'jacksonville'],
+      'GA': ['georgia', 'ga', 'atlanta', 'augusta'],
+      'NC': ['north carolina', 'nc', 'charlotte', 'raleigh', 'greensboro'],
+      'AZ': ['arizona', 'az', 'phoenix', 'tucson', 'mesa'],
+    };
+
+    for (const [st, keywords] of Object.entries(stateKeywords)) {
+      if (keywords.some((kw) => promptLower.includes(kw))) {
+        const stateA = (a.raw.state || (a.techEval as any).state || '').toUpperCase();
+        const stateB = (b.raw.state || (b.techEval as any).state || '').toUpperCase();
+        if (stateA === st) scoreA += 100;
+        if (stateB === st) scoreB += 100;
+      }
+    }
+
     // Fast deployment / Capex prompt -> Prioritize Ector County / Austin County low-queue sites over El Paso
     if (promptLower.includes('fast') || promptLower.includes('fastest') || promptLower.includes('deploy') || promptLower.includes('under $2m') || promptLower.includes('2m')) {
       if (a.techEval.county.includes('Ector')) scoreA += 40;

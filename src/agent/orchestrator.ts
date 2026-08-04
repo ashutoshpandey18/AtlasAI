@@ -185,6 +185,9 @@ export async function runAcquisitionPipeline(
     const memo = generateInvestmentMemo(rank, plan, item.techEval, item.intelEval, item.raw.mireye);
     return {
       rank,
+      siteName: item.techEval.siteName,
+      county: item.techEval.county,
+      state: (item.raw.state || (item.techEval as any).state || 'TX').toUpperCase(),
       techEval: item.techEval,
       intelEval: item.intelEval,
       memo,

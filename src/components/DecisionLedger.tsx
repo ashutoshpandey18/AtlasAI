@@ -82,10 +82,10 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
 
             <div className="space-y-1.5">
               <h3 className="text-xl font-black text-white tracking-tight">
-                {winnerSite?.siteName || winnerSite?.chain || winnerSite?.location?.label || winnerSite?.location?.address?.split(',')[0] || (evaluations.length > 0 ? (evaluations[0].siteName || evaluations[0].chain) : '')}
+                {winnerSite?.siteName || winnerSite?.techEval?.siteName || winnerSite?.memo?.siteName || (evaluations.length > 0 ? evaluations[0].siteName : '')}
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Selected as the #1 target because it delivers optimal plane-of-array solar radiometry paired with LiDAR-verified flat ground slope, Zone X flood clearance, and sub-480m distribution grid feeder proximity in {winnerSite?.county || (evaluations.length > 0 ? evaluations[0].county : 'Target County')}.
+                Selected as the #1 target because it delivers optimal plane-of-array solar radiometry paired with LiDAR-verified flat ground slope, Zone X flood clearance, and sub-480m distribution grid feeder proximity in {winnerSite?.county || winnerSite?.techEval?.county || winnerSite?.memo?.county || (evaluations.length > 0 ? evaluations[0].county : 'Target County')}, {winnerSite?.state || winnerSite?.techEval?.state || winnerSite?.memo?.state || 'TX'}.
               </p>
             </div>
 

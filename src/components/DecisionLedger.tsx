@@ -111,6 +111,19 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                 </div>
               </div>
             </div>
+
+            {evaluations.length > 1 && (
+              <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                <div className="space-y-0.5">
+                  <div className="text-[10px] text-slate-400 font-bold uppercase">#2 Runner-Up Target Alternative</div>
+                  <div className="text-xs font-bold text-white font-sans">{evaluations[1].siteName} ({evaluations[1].county})</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-emerald-400 font-bold">Feasibility {evaluations[1].techScore}/100</div>
+                  <div className="text-[10px] text-slate-400 font-sans">Viable if primary site fails title</div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="pt-4 border-t border-white/10 space-y-2 font-sans">

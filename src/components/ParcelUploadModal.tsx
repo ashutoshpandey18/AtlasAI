@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles, Zap, ArrowRight } from 'lucide-react';
+import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles, Zap, ArrowRight, Download } from 'lucide-react';
 import type { AddressInputItem } from '@/services/addressLookupService';
 
 export interface CustomSiteParcel {
@@ -388,6 +388,18 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
             </div>
             <div className="text-xs text-slate-400 font-mono">
               Supports <span className="text-amber-400 font-bold">.CSV</span> with coordinates OR street addresses
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-1 text-[11px] font-mono text-slate-400" onClick={(e) => e.stopPropagation()}>
+              <span>Or download sample test portfolio:</span>
+              <a href="/data/address_portfolio_20.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <Download className="w-3 h-3" />
+                <span>20-Site CSV</span>
+              </a>
+              <span>•</span>
+              <a href="/data/address_portfolio_500.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <Download className="w-3 h-3" />
+                <span>500-Site CSV</span>
+              </a>
             </div>
           </div>
         </div>

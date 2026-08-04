@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server';
 import { runAcquisitionPipeline } from '../../../../agent/orchestrator';
 import { saveCampaign, getCache, setCache } from '@/services/db';
+import { fetchMireyeResilient } from '@/services/mireyeApiClient';
 import { warmMireyeCache } from '@/services/mireyeCacheWarmer';
 import fs from 'fs';
 import path from 'path';
@@ -192,8 +193,8 @@ export async function POST(req: Request) {
           const mireyeFields = ['poa_irradiance_optimal_tilt_kwh_m2_yr'];
           const sortedFields = [...mireyeFields].sort().join(',');
 
-          // Execute live Mireye API network calls in controlled parallel chunks of 25 for sub-3s serverless completion
-          const BATCH_SIZE = 25;
+          // Rate-limit compliant batch fetching (Build Plan: 60 req/min compliant with adaptive pacing & 429 Retry-After)
+          const BATCH_SIZE = 15;
           for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
             const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
             await Promise.all(
@@ -203,42 +204,13 @@ export async function POST(req: Request) {
 
                 if (isNaN(lat) || isNaN(lng)) return;
 
-                const cacheKey = `mireye-fetch-v3:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
+                const resData = await fetchMireyeResilient(
+                  { lat, lng, fields: mireyeFields },
+                  token
+                );
 
-                if (token) {
-                  try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-                    const res = await fetch('https://api.mireye.com/v1/fetch', {
-                      method: 'POST',
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ lat, lng, fields: mireyeFields }),
-                      signal: controller.signal,
-                    });
-
-                    clearTimeout(timeoutId);
-
-                    if (res.ok) {
-                      const data = await res.json();
-                      if (data && data.fields) {
-                        item.mireye = data;
-                        await setCache(cacheKey, data);
-                        return;
-                      }
-                    }
-                  } catch (e) {
-                    // Fallthrough below
-                  }
-                }
-
-                // Read from edge cache if token unconfigured or network failed
-                const cachedMireye = await getCache(cacheKey);
-                if (cachedMireye && cachedMireye.fields) {
-                  item.mireye = cachedMireye;
+                if (resData && resData.fields) {
+                  item.mireye = resData;
                 }
               })
             );

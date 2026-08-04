@@ -187,23 +187,25 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
-          // Execute genuine live Mireye API Batch Fetching for 100% of candidate items in dataset
           const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
-          // Single primary physical GIS field to enforce 1 credit per site billing on Mireye API
           const mireyeFields = ['poa_irradiance_optimal_tilt_kwh_m2_yr'];
           const sortedFields = [...mireyeFields].sort().join(',');
 
-          // Rate-limit compliant batch fetching (Build Plan: 60 req/min compliant with adaptive pacing & 429 Retry-After)
-          const BATCH_SIZE = 15;
+          const BATCH_SIZE = 5;
           for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
             const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
+            let needsNetworkCall = false;
+
             await Promise.all(
               chunk.map(async (item: any) => {
+                if (item.mireye && item.mireye.fields) return;
+
                 const lat = Number(item.lat);
                 const lng = Number(item.lon ?? item.lng);
 
                 if (isNaN(lat) || isNaN(lng)) return;
 
+                needsNetworkCall = true;
                 const resData = await fetchMireyeResilient(
                   { lat, lng, fields: mireyeFields },
                   token
@@ -214,6 +216,10 @@ export async function POST(req: Request) {
                 }
               })
             );
+
+            if (needsNetworkCall && i + BATCH_SIZE < enrichedDataset.length) {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
           }
 
           await runAcquisitionPipeline(userPrompt, enrichedDataset, (evt) => {

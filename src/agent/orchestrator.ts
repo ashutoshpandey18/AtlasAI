@@ -83,9 +83,9 @@ export async function runAcquisitionPipeline(
     const rawCounty = item.county || (item.mireye?.fields?.['political_county']?.value as string);
     const county = resolveRealCounty(item.lat, item.lon, rawCounty);
     const shortId = item.geo_id ? item.geo_id.slice(-6) : '45835';
-    const siteName = item.chain && item.chain.includes('#') 
+    const siteName = (item as any).siteName || (item as any).site_name || (item as any).store_name || (item.chain && item.chain.includes('#') 
       ? item.chain 
-      : `${item.chain || 'Dollar General'} ${county} #${shortId}`;
+      : `${item.chain || 'Dollar General'} ${county} #${shortId}`);
 
     const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, county, item.mireye, userPrompt, item.state);
     const intelEval = evaluateAcquisitionIntelligence(item.geo_id, county, item.owner);

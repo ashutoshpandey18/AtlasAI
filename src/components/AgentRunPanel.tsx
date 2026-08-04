@@ -22,16 +22,19 @@ interface RejectionItem {
 interface EvaluationItem {
   siteName: string;
   county: string;
+  state?: string;
   techScore: number;
   priorityScore: number;
   inputsChecked: string[];
   rulesApplied: string[];
   conclusion: string;
+  memo?: any;
 }
 
 interface SurvivorItem {
   siteName: string;
   county: string;
+  state?: string;
   geoId?: string;
   memo: any;
 }
@@ -527,7 +530,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               return {
                 location: {
                   id: `eval-${idx}`,
-                  address: `${ev.siteName}, ${ev.county}, TX`,
+                  address: `${ev.siteName}, ${ev.county}, ${ev.state || 'TX'}`,
                   lat: coords.lat,
                   lng: coords.lng,
                   label: ev.siteName,
@@ -583,7 +586,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                   {survivors[0].siteName}
                 </h3>
                 <div className="text-xs font-mono text-slate-400">
-                  LOCATION: <span className="text-slate-200 font-bold">{survivors[0].county || survivors[0].memo?.county || 'Austin County'}, {survivors[0].memo?.state || plan?.targetState || 'TX'}</span>
+                  LOCATION: <span className="text-slate-200 font-bold">{survivors[0].county || survivors[0].memo?.county || 'Austin County'}, {survivors[0].state || survivors[0].memo?.state || 'TX'}</span>
                 </div>
               </div>
 

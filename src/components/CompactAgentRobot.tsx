@@ -27,13 +27,13 @@ export function CompactAgentRobot() {
       num: '03',
       title: 'Feasibility Scoring',
       badge: 'Multi-Criteria Engine',
-      message: 'Scoring 70 store parcels based on parking lot array area (≥2.5x) and 138kV substation tie-in distance.',
+      message: 'Scoring candidate store parcels based on parking lot array area (≥2.5x) and 138kV substation tie-in distance.',
     },
     {
       num: '04',
       title: 'Rejection Ledger',
       badge: 'Fatal Flaw Screening',
-      message: 'Cutting Nacogdoches #2 with written proof for FEMA Zone AE flood hazard (-$18,000/yr insurance penalty).',
+      message: 'Screening fatal flaw disqualifications across FEMA floodways, steep slope, and low irradiance.',
     },
     {
       num: '05',

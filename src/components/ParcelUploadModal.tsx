@@ -389,42 +389,72 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
             <div className="text-xs text-slate-400 font-mono">
               Supports <span className="text-amber-400 font-bold">.CSV</span> with coordinates OR street addresses
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-[11px] font-mono text-slate-400" onClick={(e) => e.stopPropagation()}>
-              <span>Download sample test portfolio:</span>
-              <a href="/data/address_portfolio_15.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>15 Sites</span>
-              </a>
-              <span>•</span>
-              <a href="/data/address_portfolio_20.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>20 Sites</span>
-              </a>
-              <span>•</span>
-              <a href="/data/address_portfolio_50.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>50 Sites</span>
-              </a>
-              <span>•</span>
-              <a href="/data/address_portfolio_100.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>100 Sites</span>
-              </a>
-              <span>•</span>
-              <a href="/data/coordinates_portfolio_100.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3 text-cyan-400" />
-                <span>100 Coords (Option A)</span>
-              </a>
-              <span>•</span>
-              <a href="/data/address_portfolio_300.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>300 Sites</span>
-              </a>
-              <span>•</span>
-              <a href="/data/address_portfolio_500.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
-                <Download className="w-3 h-3" />
-                <span>500 Sites</span>
-              </a>
+            <div className="space-y-2 pt-2 text-[11px] font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
+                <span className="font-bold text-cyan-400">Option A (Coordinates):</span>
+                <a href="/data/coordinates_portfolio_15.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>15 Coords</span>
+                </a>
+                <span>•</span>
+                <a href="/data/coordinates_portfolio_20.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>20 Coords</span>
+                </a>
+                <span>•</span>
+                <a href="/data/coordinates_portfolio_50.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>50 Coords</span>
+                </a>
+                <span>•</span>
+                <a href="/data/coordinates_portfolio_100.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>100 Coords</span>
+                </a>
+                <span>•</span>
+                <a href="/data/coordinates_portfolio_300.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>300 Coords</span>
+                </a>
+                <span>•</span>
+                <a href="/data/coordinates_portfolio_500.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-cyan-400" />
+                  <span>500 Coords</span>
+                </a>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
+                <span className="font-bold text-amber-400">Option B (Street Addresses):</span>
+                <a href="/data/address_portfolio_15.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>15 Sites</span>
+                </a>
+                <span>•</span>
+                <a href="/data/address_portfolio_20.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>20 Sites</span>
+                </a>
+                <span>•</span>
+                <a href="/data/address_portfolio_50.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>50 Sites</span>
+                </a>
+                <span>•</span>
+                <a href="/data/address_portfolio_100.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>100 Sites</span>
+                </a>
+                <span>•</span>
+                <a href="/data/address_portfolio_300.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>300 Sites</span>
+                </a>
+                <span>•</span>
+                <a href="/data/address_portfolio_500.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                  <Download className="w-3 h-3 text-amber-400" />
+                  <span>500 Sites</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

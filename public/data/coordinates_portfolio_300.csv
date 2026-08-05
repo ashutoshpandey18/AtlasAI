@@ -1,0 +1,301 @@
+geo_id,chain,latitude,longitude,city,state
+FRESH-COORD-TX-0001,Dallas Solar Freight Hub #1,32.76953,-96.72102,Dallas,TX
+FRESH-COORD-TX-0002,Austin Solar Freight Hub #2,30.34579,-97.72324,Austin,TX
+FRESH-COORD-TX-0003,San Antonio Solar Freight Hub #3,29.34825,-98.42124,San Antonio,TX
+FRESH-COORD-TX-0004,Fort Worth Solar Freight Hub #4,32.77721,-97.29856,Fort Worth,TX
+FRESH-COORD-CA-0005,Los Angeles Solar Freight Hub #5,34.10736,-118.32839,Los Angeles,CA
+FRESH-COORD-CA-0006,Ontario Solar Freight Hub #6,34.12045,-117.65394,Ontario,CA
+FRESH-COORD-CA-0007,Fremont Solar Freight Hub #7,37.61324,-122.04913,Fremont,CA
+FRESH-COORD-CA-0008,Stockton Solar Freight Hub #8,37.99743,-121.30842,Stockton,CA
+FRESH-COORD-CA-0009,San Diego Solar Freight Hub #9,32.67269,-117.10755,San Diego,CA
+FRESH-COORD-FL-0010,Miami Solar Freight Hub #10,25.68534,-80.20909,Miami,FL
+FRESH-COORD-FL-0011,Orlando Solar Freight Hub #11,28.48334,-81.44855,Orlando,FL
+FRESH-COORD-FL-0012,Jacksonville Solar Freight Hub #12,30.25791,-81.61557,Jacksonville,FL
+FRESH-COORD-FL-0013,Tampa Solar Freight Hub #13,27.98552,-82.41974,Tampa,FL
+FRESH-COORD-FL-0014,Lakeland Solar Freight Hub #14,27.96112,-81.88537,Lakeland,FL
+FRESH-COORD-GA-0015,Atlanta Solar Freight Hub #15,33.81161,-84.31888,Atlanta,GA
+FRESH-COORD-GA-0016,Savannah Solar Freight Hub #16,32.08338,-81.05161,Savannah,GA
+FRESH-COORD-AZ-0017,Phoenix Solar Freight Hub #17,33.46973,-112.06037,Phoenix,AZ
+FRESH-COORD-AZ-0018,Tucson Solar Freight Hub #18,32.16843,-110.91423,Tucson,AZ
+FRESH-COORD-AZ-0019,Goodyear Solar Freight Hub #19,33.34661,-112.31333,Goodyear,AZ
+FRESH-COORD-OH-0020,Columbus Solar Freight Hub #20,40.02445,-83.06872,Columbus,OH
+FRESH-COORD-OH-0021,Cincinnati Solar Freight Hub #21,39.13169,-84.47798,Cincinnati,OH
+FRESH-COORD-OH-0022,Cleveland Solar Freight Hub #22,41.5383,-81.62069,Cleveland,OH
+FRESH-COORD-NC-0023,Charlotte Solar Freight Hub #23,35.25638,-80.85893,Charlotte,NC
+FRESH-COORD-NC-0024,Raleigh Solar Freight Hub #24,35.7735,-78.65949,Raleigh,NC
+FRESH-COORD-IL-0025,Chicago Solar Freight Hub #25,41.95281,-87.58485,Chicago,IL
+FRESH-COORD-IL-0026,Joliet Solar Freight Hub #26,41.53009,-88.09788,Joliet,IL
+FRESH-COORD-CO-0027,Denver Solar Freight Hub #27,39.78126,-104.93671,Denver,CO
+FRESH-COORD-WA-0028,Seattle Solar Freight Hub #28,47.61644,-122.35871,Seattle,WA
+FRESH-COORD-NV-0029,Las Vegas Solar Freight Hub #29,36.12414,-115.19501,Las Vegas,NV
+FRESH-COORD-TX-0030,Houston Solar Freight Hub #30,29.70586,-95.35667,Houston,TX
+FRESH-COORD-TX-0031,Dallas Solar Freight Hub #31,32.83691,-96.81772,Dallas,TX
+FRESH-COORD-TX-0032,Austin Solar Freight Hub #32,30.18948,-97.72132,Austin,TX
+FRESH-COORD-TX-0033,San Antonio Solar Freight Hub #33,29.4672,-98.41006,San Antonio,TX
+FRESH-COORD-TX-0034,Fort Worth Solar Freight Hub #34,32.6675,-97.3609,Fort Worth,TX
+FRESH-COORD-CA-0035,Los Angeles Solar Freight Hub #35,33.98734,-118.2162,Los Angeles,CA
+FRESH-COORD-CA-0036,Ontario Solar Freight Hub #36,33.97657,-117.71138,Ontario,CA
+FRESH-COORD-CA-0037,Fremont Solar Freight Hub #37,37.52191,-122.00406,Fremont,CA
+FRESH-COORD-CA-0038,Stockton Solar Freight Hub #38,38.01165,-121.22828,Stockton,CA
+FRESH-COORD-CA-0039,San Diego Solar Freight Hub #39,32.6696,-117.10471,San Diego,CA
+FRESH-COORD-FL-0040,Miami Solar Freight Hub #40,25.83746,-80.20142,Miami,FL
+FRESH-COORD-FL-0041,Orlando Solar Freight Hub #41,28.59186,-81.35185,Orlando,FL
+FRESH-COORD-FL-0042,Jacksonville Solar Freight Hub #42,30.3624,-81.57406,Jacksonville,FL
+FRESH-COORD-FL-0043,Tampa Solar Freight Hub #43,27.97695,-82.53206,Tampa,FL
+FRESH-COORD-FL-0044,Lakeland Solar Freight Hub #44,28.04638,-82.01074,Lakeland,FL
+FRESH-COORD-GA-0045,Atlanta Solar Freight Hub #45,33.76103,-84.38562,Atlanta,GA
+FRESH-COORD-GA-0046,Savannah Solar Freight Hub #46,32.16164,-81.12372,Savannah,GA
+FRESH-COORD-AZ-0047,Phoenix Solar Freight Hub #47,33.41048,-112.15121,Phoenix,AZ
+FRESH-COORD-AZ-0048,Tucson Solar Freight Hub #48,32.25673,-111.04292,Tucson,AZ
+FRESH-COORD-AZ-0049,Goodyear Solar Freight Hub #49,33.36511,-112.39165,Goodyear,AZ
+FRESH-COORD-OH-0050,Columbus Solar Freight Hub #50,39.99969,-82.91322,Columbus,OH
+FRESH-COORD-OH-0051,Cincinnati Solar Freight Hub #51,39.05138,-84.45507,Cincinnati,OH
+FRESH-COORD-OH-0052,Cleveland Solar Freight Hub #52,41.52451,-81.67926,Cleveland,OH
+FRESH-COORD-NC-0053,Charlotte Solar Freight Hub #53,35.17725,-80.79225,Charlotte,NC
+FRESH-COORD-NC-0054,Raleigh Solar Freight Hub #54,35.80169,-78.63951,Raleigh,NC
+FRESH-COORD-IL-0055,Chicago Solar Freight Hub #55,41.79291,-87.65002,Chicago,IL
+FRESH-COORD-IL-0056,Joliet Solar Freight Hub #56,41.49193,-88.06787,Joliet,IL
+FRESH-COORD-CO-0057,Denver Solar Freight Hub #57,39.72705,-105.02019,Denver,CO
+FRESH-COORD-WA-0058,Seattle Solar Freight Hub #58,47.65994,-122.34194,Seattle,WA
+FRESH-COORD-NV-0059,Las Vegas Solar Freight Hub #59,36.11044,-115.14694,Las Vegas,NV
+FRESH-COORD-TX-0060,Houston Solar Freight Hub #60,29.70968,-95.40432,Houston,TX
+FRESH-COORD-TX-0061,Dallas Solar Freight Hub #61,32.82233,-96.71101,Dallas,TX
+FRESH-COORD-TX-0062,Austin Solar Freight Hub #62,30.29231,-97.74327,Austin,TX
+FRESH-COORD-TX-0063,San Antonio Solar Freight Hub #63,29.40329,-98.43692,San Antonio,TX
+FRESH-COORD-TX-0064,Fort Worth Solar Freight Hub #64,32.80579,-97.30805,Fort Worth,TX
+FRESH-COORD-CA-0065,Los Angeles Solar Freight Hub #65,34.05417,-118.15761,Los Angeles,CA
+FRESH-COORD-CA-0066,Ontario Solar Freight Hub #66,34.07838,-117.64804,Ontario,CA
+FRESH-COORD-CA-0067,Fremont Solar Freight Hub #67,37.52351,-121.99335,Fremont,CA
+FRESH-COORD-CA-0068,Stockton Solar Freight Hub #68,38.00518,-121.31213,Stockton,CA
+FRESH-COORD-CA-0069,San Diego Solar Freight Hub #69,32.71619,-117.08707,San Diego,CA
+FRESH-COORD-FL-0070,Miami Solar Freight Hub #70,25.77376,-80.21733,Miami,FL
+FRESH-COORD-FL-0071,Orlando Solar Freight Hub #71,28.45366,-81.43609,Orlando,FL
+FRESH-COORD-FL-0072,Jacksonville Solar Freight Hub #72,30.38656,-81.66407,Jacksonville,FL
+FRESH-COORD-FL-0073,Tampa Solar Freight Hub #73,27.99997,-82.51929,Tampa,FL
+FRESH-COORD-FL-0074,Lakeland Solar Freight Hub #74,28.10783,-82.0307,Lakeland,FL
+FRESH-COORD-GA-0075,Atlanta Solar Freight Hub #75,33.80903,-84.37395,Atlanta,GA
+FRESH-COORD-GA-0076,Savannah Solar Freight Hub #76,32.16006,-81.17351,Savannah,GA
+FRESH-COORD-AZ-0077,Phoenix Solar Freight Hub #77,33.49809,-112.15557,Phoenix,AZ
+FRESH-COORD-AZ-0078,Tucson Solar Freight Hub #78,32.25758,-110.98048,Tucson,AZ
+FRESH-COORD-AZ-0079,Goodyear Solar Freight Hub #79,33.44429,-112.43653,Goodyear,AZ
+FRESH-COORD-OH-0080,Columbus Solar Freight Hub #80,39.88263,-82.92473,Columbus,OH
+FRESH-COORD-OH-0081,Cincinnati Solar Freight Hub #81,39.02996,-84.56857,Cincinnati,OH
+FRESH-COORD-OH-0082,Cleveland Solar Freight Hub #82,41.45982,-81.68878,Cleveland,OH
+FRESH-COORD-NC-0083,Charlotte Solar Freight Hub #83,35.29182,-80.87609,Charlotte,NC
+FRESH-COORD-NC-0084,Raleigh Solar Freight Hub #84,35.8579,-78.69764,Raleigh,NC
+FRESH-COORD-IL-0085,Chicago Solar Freight Hub #85,41.83788,-87.71954,Chicago,IL
+FRESH-COORD-IL-0086,Joliet Solar Freight Hub #86,41.46217,-88.0175,Joliet,IL
+FRESH-COORD-CO-0087,Denver Solar Freight Hub #87,39.67741,-105.03371,Denver,CO
+FRESH-COORD-WA-0088,Seattle Solar Freight Hub #88,47.57,-122.24402,Seattle,WA
+FRESH-COORD-NV-0089,Las Vegas Solar Freight Hub #89,36.16087,-115.22881,Las Vegas,NV
+FRESH-COORD-TX-0090,Houston Solar Freight Hub #90,29.78092,-95.32587,Houston,TX
+FRESH-COORD-TX-0091,Dallas Solar Freight Hub #91,32.75056,-96.86336,Dallas,TX
+FRESH-COORD-TX-0092,Austin Solar Freight Hub #92,30.27463,-97.70475,Austin,TX
+FRESH-COORD-TX-0093,San Antonio Solar Freight Hub #93,29.41531,-98.44853,San Antonio,TX
+FRESH-COORD-TX-0094,Fort Worth Solar Freight Hub #94,32.83195,-97.31201,Fort Worth,TX
+FRESH-COORD-CA-0095,Los Angeles Solar Freight Hub #95,34.07227,-118.15831,Los Angeles,CA
+FRESH-COORD-CA-0096,Ontario Solar Freight Hub #96,34.08953,-117.6808,Ontario,CA
+FRESH-COORD-CA-0097,Fremont Solar Freight Hub #97,37.60686,-122.0054,Fremont,CA
+FRESH-COORD-CA-0098,Stockton Solar Freight Hub #98,37.92404,-121.31947,Stockton,CA
+FRESH-COORD-CA-0099,San Diego Solar Freight Hub #99,32.63102,-117.14814,San Diego,CA
+FRESH-COORD-FL-0100,Miami Solar Freight Hub #100,25.71458,-80.22847,Miami,FL
+FRESH-COORD-FL-0101,Orlando Solar Freight Hub #101,28.53825,-81.35094,Orlando,FL
+FRESH-COORD-FL-0102,Jacksonville Solar Freight Hub #102,30.27069,-81.63421,Jacksonville,FL
+FRESH-COORD-FL-0103,Tampa Solar Freight Hub #103,28.02315,-82.50314,Tampa,FL
+FRESH-COORD-FL-0104,Lakeland Solar Freight Hub #104,28.11262,-81.98616,Lakeland,FL
+FRESH-COORD-GA-0105,Atlanta Solar Freight Hub #105,33.8256,-84.39518,Atlanta,GA
+FRESH-COORD-GA-0106,Savannah Solar Freight Hub #106,32.01784,-81.09987,Savannah,GA
+FRESH-COORD-AZ-0107,Phoenix Solar Freight Hub #107,33.50769,-111.99499,Phoenix,AZ
+FRESH-COORD-AZ-0108,Tucson Solar Freight Hub #108,32.24159,-110.88972,Tucson,AZ
+FRESH-COORD-AZ-0109,Goodyear Solar Freight Hub #109,33.51344,-112.39463,Goodyear,AZ
+FRESH-COORD-OH-0110,Columbus Solar Freight Hub #110,39.98685,-82.92429,Columbus,OH
+FRESH-COORD-OH-0111,Cincinnati Solar Freight Hub #111,39.02647,-84.58181,Cincinnati,OH
+FRESH-COORD-OH-0112,Cleveland Solar Freight Hub #112,41.50532,-81.76118,Cleveland,OH
+FRESH-COORD-NC-0113,Charlotte Solar Freight Hub #113,35.18675,-80.78073,Charlotte,NC
+FRESH-COORD-NC-0114,Raleigh Solar Freight Hub #114,35.72817,-78.63949,Raleigh,NC
+FRESH-COORD-IL-0115,Chicago Solar Freight Hub #115,41.9229,-87.62033,Chicago,IL
+FRESH-COORD-IL-0116,Joliet Solar Freight Hub #116,41.61187,-88.05407,Joliet,IL
+FRESH-COORD-CO-0117,Denver Solar Freight Hub #117,39.69796,-105.07871,Denver,CO
+FRESH-COORD-WA-0118,Seattle Solar Freight Hub #118,47.6756,-122.27671,Seattle,WA
+FRESH-COORD-NV-0119,Las Vegas Solar Freight Hub #119,36.22851,-115.15722,Las Vegas,NV
+FRESH-COORD-TX-0120,Houston Solar Freight Hub #120,29.77016,-95.29765,Houston,TX
+FRESH-COORD-TX-0121,Dallas Solar Freight Hub #121,32.70305,-96.71975,Dallas,TX
+FRESH-COORD-TX-0122,Austin Solar Freight Hub #122,30.35633,-97.81495,Austin,TX
+FRESH-COORD-TX-0123,San Antonio Solar Freight Hub #123,29.47371,-98.41049,San Antonio,TX
+FRESH-COORD-TX-0124,Fort Worth Solar Freight Hub #124,32.72901,-97.29352,Fort Worth,TX
+FRESH-COORD-CA-0125,Los Angeles Solar Freight Hub #125,34.03716,-118.19983,Los Angeles,CA
+FRESH-COORD-CA-0126,Ontario Solar Freight Hub #126,34.05105,-117.64629,Ontario,CA
+FRESH-COORD-CA-0127,Fremont Solar Freight Hub #127,37.51386,-121.98644,Fremont,CA
+FRESH-COORD-CA-0128,Stockton Solar Freight Hub #128,37.92327,-121.27164,Stockton,CA
+FRESH-COORD-CA-0129,San Diego Solar Freight Hub #129,32.675,-117.22832,San Diego,CA
+FRESH-COORD-FL-0130,Miami Solar Freight Hub #130,25.76254,-80.16227,Miami,FL
+FRESH-COORD-FL-0131,Orlando Solar Freight Hub #131,28.53613,-81.46805,Orlando,FL
+FRESH-COORD-FL-0132,Jacksonville Solar Freight Hub #132,30.39258,-81.6533,Jacksonville,FL
+FRESH-COORD-FL-0133,Tampa Solar Freight Hub #133,27.9648,-82.45783,Tampa,FL
+FRESH-COORD-FL-0134,Lakeland Solar Freight Hub #134,27.97639,-81.89341,Lakeland,FL
+FRESH-COORD-GA-0135,Atlanta Solar Freight Hub #135,33.69012,-84.40933,Atlanta,GA
+FRESH-COORD-GA-0136,Savannah Solar Freight Hub #136,32.0514,-81.03855,Savannah,GA
+FRESH-COORD-AZ-0137,Phoenix Solar Freight Hub #137,33.37793,-112.1533,Phoenix,AZ
+FRESH-COORD-AZ-0138,Tucson Solar Freight Hub #138,32.15891,-110.98225,Tucson,AZ
+FRESH-COORD-AZ-0139,Goodyear Solar Freight Hub #139,33.39299,-112.43627,Goodyear,AZ
+FRESH-COORD-OH-0140,Columbus Solar Freight Hub #140,40.05066,-82.90896,Columbus,OH
+FRESH-COORD-OH-0141,Cincinnati Solar Freight Hub #141,39.05203,-84.59192,Cincinnati,OH
+FRESH-COORD-OH-0142,Cleveland Solar Freight Hub #142,41.55659,-81.77834,Cleveland,OH
+FRESH-COORD-NC-0143,Charlotte Solar Freight Hub #143,35.1669,-80.76245,Charlotte,NC
+FRESH-COORD-NC-0144,Raleigh Solar Freight Hub #144,35.73494,-78.64633,Raleigh,NC
+FRESH-COORD-IL-0145,Chicago Solar Freight Hub #145,41.85558,-87.71304,Chicago,IL
+FRESH-COORD-IL-0146,Joliet Solar Freight Hub #146,41.47647,-88.14728,Joliet,IL
+FRESH-COORD-CO-0147,Denver Solar Freight Hub #147,39.82438,-105.03311,Denver,CO
+FRESH-COORD-WA-0148,Seattle Solar Freight Hub #148,47.66949,-122.40455,Seattle,WA
+FRESH-COORD-NV-0149,Las Vegas Solar Freight Hub #149,36.25723,-115.0972,Las Vegas,NV
+FRESH-COORD-TX-0150,Houston Solar Freight Hub #150,29.67504,-95.34608,Houston,TX
+FRESH-COORD-TX-0151,Dallas Solar Freight Hub #151,32.70324,-96.86408,Dallas,TX
+FRESH-COORD-TX-0152,Austin Solar Freight Hub #152,30.34777,-97.82239,Austin,TX
+FRESH-COORD-TX-0153,San Antonio Solar Freight Hub #153,29.3728,-98.40816,San Antonio,TX
+FRESH-COORD-TX-0154,Fort Worth Solar Freight Hub #154,32.83775,-97.2551,Fort Worth,TX
+FRESH-COORD-CA-0155,Los Angeles Solar Freight Hub #155,34.09875,-118.1674,Los Angeles,CA
+FRESH-COORD-CA-0156,Ontario Solar Freight Hub #156,34.14594,-117.6701,Ontario,CA
+FRESH-COORD-CA-0157,Fremont Solar Freight Hub #157,37.50816,-121.98653,Fremont,CA
+FRESH-COORD-CA-0158,Stockton Solar Freight Hub #158,37.90367,-121.21366,Stockton,CA
+FRESH-COORD-CA-0159,San Diego Solar Freight Hub #159,32.78571,-117.16023,San Diego,CA
+FRESH-COORD-FL-0160,Miami Solar Freight Hub #160,25.84296,-80.16384,Miami,FL
+FRESH-COORD-FL-0161,Orlando Solar Freight Hub #161,28.54676,-81.42305,Orlando,FL
+FRESH-COORD-FL-0162,Jacksonville Solar Freight Hub #162,30.25751,-81.65914,Jacksonville,FL
+FRESH-COORD-FL-0163,Tampa Solar Freight Hub #163,27.91186,-82.43244,Tampa,FL
+FRESH-COORD-FL-0164,Lakeland Solar Freight Hub #164,27.96595,-81.98747,Lakeland,FL
+FRESH-COORD-GA-0165,Atlanta Solar Freight Hub #165,33.69321,-84.30369,Atlanta,GA
+FRESH-COORD-GA-0166,Savannah Solar Freight Hub #166,32.0494,-81.17715,Savannah,GA
+FRESH-COORD-AZ-0167,Phoenix Solar Freight Hub #167,33.53213,-112.15958,Phoenix,AZ
+FRESH-COORD-AZ-0168,Tucson Solar Freight Hub #168,32.2666,-111.01487,Tucson,AZ
+FRESH-COORD-AZ-0169,Goodyear Solar Freight Hub #169,33.39671,-112.37205,Goodyear,AZ
+FRESH-COORD-OH-0170,Columbus Solar Freight Hub #170,39.95182,-83.00667,Columbus,OH
+FRESH-COORD-OH-0171,Cincinnati Solar Freight Hub #171,39.01617,-84.43238,Cincinnati,OH
+FRESH-COORD-OH-0172,Cleveland Solar Freight Hub #172,41.53462,-81.6783,Cleveland,OH
+FRESH-COORD-NC-0173,Charlotte Solar Freight Hub #173,35.20808,-80.79074,Charlotte,NC
+FRESH-COORD-NC-0174,Raleigh Solar Freight Hub #174,35.77771,-78.6484,Raleigh,NC
+FRESH-COORD-IL-0175,Chicago Solar Freight Hub #175,41.94724,-87.7012,Chicago,IL
+FRESH-COORD-IL-0176,Joliet Solar Freight Hub #176,41.56269,-88.04876,Joliet,IL
+FRESH-COORD-CO-0177,Denver Solar Freight Hub #177,39.70042,-105.05565,Denver,CO
+FRESH-COORD-WA-0178,Seattle Solar Freight Hub #178,47.60992,-122.32278,Seattle,WA
+FRESH-COORD-NV-0179,Las Vegas Solar Freight Hub #179,36.13153,-115.11899,Las Vegas,NV
+FRESH-COORD-TX-0180,Houston Solar Freight Hub #180,29.8083,-95.3598,Houston,TX
+FRESH-COORD-TX-0181,Dallas Solar Freight Hub #181,32.73156,-96.81993,Dallas,TX
+FRESH-COORD-TX-0182,Austin Solar Freight Hub #182,30.22162,-97.76576,Austin,TX
+FRESH-COORD-TX-0183,San Antonio Solar Freight Hub #183,29.336,-98.46105,San Antonio,TX
+FRESH-COORD-TX-0184,Fort Worth Solar Freight Hub #184,32.7727,-97.33586,Fort Worth,TX
+FRESH-COORD-CA-0185,Los Angeles Solar Freight Hub #185,34.11088,-118.27427,Los Angeles,CA
+FRESH-COORD-CA-0186,Ontario Solar Freight Hub #186,34.05761,-117.70685,Ontario,CA
+FRESH-COORD-CA-0187,Fremont Solar Freight Hub #187,37.63759,-122.04481,Fremont,CA
+FRESH-COORD-CA-0188,Stockton Solar Freight Hub #188,37.93551,-121.2341,Stockton,CA
+FRESH-COORD-CA-0189,San Diego Solar Freight Hub #189,32.6326,-117.09354,San Diego,CA
+FRESH-COORD-FL-0190,Miami Solar Freight Hub #190,25.75312,-80.11919,Miami,FL
+FRESH-COORD-FL-0191,Orlando Solar Freight Hub #191,28.60439,-81.46476,Orlando,FL
+FRESH-COORD-FL-0192,Jacksonville Solar Freight Hub #192,30.38929,-81.65524,Jacksonville,FL
+FRESH-COORD-FL-0193,Tampa Solar Freight Hub #193,28.0091,-82.4024,Tampa,FL
+FRESH-COORD-FL-0194,Lakeland Solar Freight Hub #194,27.96224,-81.95455,Lakeland,FL
+FRESH-COORD-GA-0195,Atlanta Solar Freight Hub #195,33.83542,-84.35385,Atlanta,GA
+FRESH-COORD-GA-0196,Savannah Solar Freight Hub #196,32.13879,-81.03991,Savannah,GA
+FRESH-COORD-AZ-0197,Phoenix Solar Freight Hub #197,33.42309,-111.992,Phoenix,AZ
+FRESH-COORD-AZ-0198,Tucson Solar Freight Hub #198,32.23437,-110.98911,Tucson,AZ
+FRESH-COORD-AZ-0199,Goodyear Solar Freight Hub #199,33.45006,-112.29596,Goodyear,AZ
+FRESH-COORD-OH-0200,Columbus Solar Freight Hub #200,40.03654,-83.04686,Columbus,OH
+FRESH-COORD-OH-0201,Cincinnati Solar Freight Hub #201,39.12368,-84.55724,Cincinnati,OH
+FRESH-COORD-OH-0202,Cleveland Solar Freight Hub #202,41.42776,-81.63204,Cleveland,OH
+FRESH-COORD-NC-0203,Charlotte Solar Freight Hub #203,35.2629,-80.80474,Charlotte,NC
+FRESH-COORD-NC-0204,Raleigh Solar Freight Hub #204,35.83653,-78.64752,Raleigh,NC
+FRESH-COORD-IL-0205,Chicago Solar Freight Hub #205,41.82958,-87.70144,Chicago,IL
+FRESH-COORD-IL-0206,Joliet Solar Freight Hub #206,41.61365,-88.07122,Joliet,IL
+FRESH-COORD-CO-0207,Denver Solar Freight Hub #207,39.75656,-104.99739,Denver,CO
+FRESH-COORD-WA-0208,Seattle Solar Freight Hub #208,47.56434,-122.39662,Seattle,WA
+FRESH-COORD-NV-0209,Las Vegas Solar Freight Hub #209,36.10983,-115.13514,Las Vegas,NV
+FRESH-COORD-TX-0210,Houston Solar Freight Hub #210,29.73308,-95.29667,Houston,TX
+FRESH-COORD-TX-0211,Dallas Solar Freight Hub #211,32.77819,-96.83778,Dallas,TX
+FRESH-COORD-TX-0212,Austin Solar Freight Hub #212,30.35318,-97.7858,Austin,TX
+FRESH-COORD-TX-0213,San Antonio Solar Freight Hub #213,29.42596,-98.49675,San Antonio,TX
+FRESH-COORD-TX-0214,Fort Worth Solar Freight Hub #214,32.69033,-97.31276,Fort Worth,TX
+FRESH-COORD-CA-0215,Los Angeles Solar Freight Hub #215,33.96358,-118.1883,Los Angeles,CA
+FRESH-COORD-CA-0216,Ontario Solar Freight Hub #216,34.05499,-117.62513,Ontario,CA
+FRESH-COORD-CA-0217,Fremont Solar Freight Hub #217,37.58078,-122.05421,Fremont,CA
+FRESH-COORD-CA-0218,Stockton Solar Freight Hub #218,37.99286,-121.28594,Stockton,CA
+FRESH-COORD-CA-0219,San Diego Solar Freight Hub #219,32.75407,-117.20117,San Diego,CA
+FRESH-COORD-FL-0220,Miami Solar Freight Hub #220,25.78787,-80.22429,Miami,FL
+FRESH-COORD-FL-0221,Orlando Solar Freight Hub #221,28.45126,-81.45335,Orlando,FL
+FRESH-COORD-FL-0222,Jacksonville Solar Freight Hub #222,30.24855,-81.69724,Jacksonville,FL
+FRESH-COORD-FL-0223,Tampa Solar Freight Hub #223,28.03294,-82.42599,Tampa,FL
+FRESH-COORD-FL-0224,Lakeland Solar Freight Hub #224,27.98731,-82.00993,Lakeland,FL
+FRESH-COORD-GA-0225,Atlanta Solar Freight Hub #225,33.70274,-84.46802,Atlanta,GA
+FRESH-COORD-GA-0226,Savannah Solar Freight Hub #226,32.04482,-81.1489,Savannah,GA
+FRESH-COORD-AZ-0227,Phoenix Solar Freight Hub #227,33.37137,-112.09004,Phoenix,AZ
+FRESH-COORD-AZ-0228,Tucson Solar Freight Hub #228,32.19304,-110.98955,Tucson,AZ
+FRESH-COORD-AZ-0229,Goodyear Solar Freight Hub #229,33.37207,-112.40497,Goodyear,AZ
+FRESH-COORD-OH-0230,Columbus Solar Freight Hub #230,40.04225,-83.08519,Columbus,OH
+FRESH-COORD-OH-0231,Cincinnati Solar Freight Hub #231,39.04073,-84.51905,Cincinnati,OH
+FRESH-COORD-OH-0232,Cleveland Solar Freight Hub #232,41.42019,-81.67557,Cleveland,OH
+FRESH-COORD-NC-0233,Charlotte Solar Freight Hub #233,35.19681,-80.86645,Charlotte,NC
+FRESH-COORD-NC-0234,Raleigh Solar Freight Hub #234,35.769,-78.69661,Raleigh,NC
+FRESH-COORD-IL-0235,Chicago Solar Freight Hub #235,41.82404,-87.54538,Chicago,IL
+FRESH-COORD-IL-0236,Joliet Solar Freight Hub #236,41.59244,-88.06627,Joliet,IL
+FRESH-COORD-CO-0237,Denver Solar Freight Hub #237,39.77671,-104.95404,Denver,CO
+FRESH-COORD-WA-0238,Seattle Solar Freight Hub #238,47.53036,-122.36672,Seattle,WA
+FRESH-COORD-NV-0239,Las Vegas Solar Freight Hub #239,36.14441,-115.11826,Las Vegas,NV
+FRESH-COORD-TX-0240,Houston Solar Freight Hub #240,29.76647,-95.32673,Houston,TX
+FRESH-COORD-TX-0241,Dallas Solar Freight Hub #241,32.72509,-96.82574,Dallas,TX
+FRESH-COORD-TX-0242,Austin Solar Freight Hub #242,30.31684,-97.7245,Austin,TX
+FRESH-COORD-TX-0243,San Antonio Solar Freight Hub #243,29.33681,-98.54615,San Antonio,TX
+FRESH-COORD-TX-0244,Fort Worth Solar Freight Hub #244,32.78525,-97.24336,Fort Worth,TX
+FRESH-COORD-CA-0245,Los Angeles Solar Freight Hub #245,34.04442,-118.2435,Los Angeles,CA
+FRESH-COORD-CA-0246,Ontario Solar Freight Hub #246,34.07105,-117.64867,Ontario,CA
+FRESH-COORD-CA-0247,Fremont Solar Freight Hub #247,37.56273,-122.04427,Fremont,CA
+FRESH-COORD-CA-0248,Stockton Solar Freight Hub #248,37.90282,-121.24273,Stockton,CA
+FRESH-COORD-CA-0249,San Diego Solar Freight Hub #249,32.78643,-117.11399,San Diego,CA
+FRESH-COORD-FL-0250,Miami Solar Freight Hub #250,25.7713,-80.15581,Miami,FL
+FRESH-COORD-FL-0251,Orlando Solar Freight Hub #251,28.49115,-81.3407,Orlando,FL
+FRESH-COORD-FL-0252,Jacksonville Solar Freight Hub #252,30.40889,-81.73071,Jacksonville,FL
+FRESH-COORD-FL-0253,Tampa Solar Freight Hub #253,28.00821,-82.46017,Tampa,FL
+FRESH-COORD-FL-0254,Lakeland Solar Freight Hub #254,28.10713,-81.90525,Lakeland,FL
+FRESH-COORD-GA-0255,Atlanta Solar Freight Hub #255,33.82433,-84.33558,Atlanta,GA
+FRESH-COORD-GA-0256,Savannah Solar Freight Hub #256,32.11682,-81.15976,Savannah,GA
+FRESH-COORD-AZ-0257,Phoenix Solar Freight Hub #257,33.40207,-112.09648,Phoenix,AZ
+FRESH-COORD-AZ-0258,Tucson Solar Freight Hub #258,32.26341,-110.95993,Tucson,AZ
+FRESH-COORD-AZ-0259,Goodyear Solar Freight Hub #259,33.5219,-112.41461,Goodyear,AZ
+FRESH-COORD-OH-0260,Columbus Solar Freight Hub #260,39.9776,-83.00698,Columbus,OH
+FRESH-COORD-OH-0261,Cincinnati Solar Freight Hub #261,39.08763,-84.43234,Cincinnati,OH
+FRESH-COORD-OH-0262,Cleveland Solar Freight Hub #262,41.49858,-81.67714,Cleveland,OH
+FRESH-COORD-NC-0263,Charlotte Solar Freight Hub #263,35.1643,-80.89098,Charlotte,NC
+FRESH-COORD-NC-0264,Raleigh Solar Freight Hub #264,35.77301,-78.62538,Raleigh,NC
+FRESH-COORD-IL-0265,Chicago Solar Freight Hub #265,41.90666,-87.6498,Chicago,IL
+FRESH-COORD-IL-0266,Joliet Solar Freight Hub #266,41.47935,-88.09851,Joliet,IL
+FRESH-COORD-CO-0267,Denver Solar Freight Hub #267,39.7141,-105.01459,Denver,CO
+FRESH-COORD-WA-0268,Seattle Solar Freight Hub #268,47.66532,-122.33058,Seattle,WA
+FRESH-COORD-NV-0269,Las Vegas Solar Freight Hub #269,36.08905,-115.0507,Las Vegas,NV
+FRESH-COORD-TX-0270,Houston Solar Freight Hub #270,29.72063,-95.36584,Houston,TX
+FRESH-COORD-TX-0271,Dallas Solar Freight Hub #271,32.68986,-96.82313,Dallas,TX
+FRESH-COORD-TX-0272,Austin Solar Freight Hub #272,30.22588,-97.65788,Austin,TX
+FRESH-COORD-TX-0273,San Antonio Solar Freight Hub #273,29.37856,-98.52588,San Antonio,TX
+FRESH-COORD-TX-0274,Fort Worth Solar Freight Hub #274,32.69779,-97.37024,Fort Worth,TX
+FRESH-COORD-CA-0275,Los Angeles Solar Freight Hub #275,33.98086,-118.32433,Los Angeles,CA
+FRESH-COORD-CA-0276,Ontario Solar Freight Hub #276,34.1422,-117.73445,Ontario,CA
+FRESH-COORD-CA-0277,Fremont Solar Freight Hub #277,37.47909,-121.98614,Fremont,CA
+FRESH-COORD-CA-0278,Stockton Solar Freight Hub #278,37.95523,-121.23661,Stockton,CA
+FRESH-COORD-CA-0279,San Diego Solar Freight Hub #279,32.79006,-117.09742,San Diego,CA
+FRESH-COORD-FL-0280,Miami Solar Freight Hub #280,25.75938,-80.14045,Miami,FL
+FRESH-COORD-FL-0281,Orlando Solar Freight Hub #281,28.46985,-81.30873,Orlando,FL
+FRESH-COORD-FL-0282,Jacksonville Solar Freight Hub #282,30.3625,-81.59275,Jacksonville,FL
+FRESH-COORD-FL-0283,Tampa Solar Freight Hub #283,27.95733,-82.43606,Tampa,FL
+FRESH-COORD-FL-0284,Lakeland Solar Freight Hub #284,27.98134,-81.89155,Lakeland,FL
+FRESH-COORD-GA-0285,Atlanta Solar Freight Hub #285,33.80282,-84.37569,Atlanta,GA
+FRESH-COORD-GA-0286,Savannah Solar Freight Hub #286,32.0251,-81.06759,Savannah,GA
+FRESH-COORD-AZ-0287,Phoenix Solar Freight Hub #287,33.52915,-111.99404,Phoenix,AZ
+FRESH-COORD-AZ-0288,Tucson Solar Freight Hub #288,32.22858,-110.92942,Tucson,AZ
+FRESH-COORD-AZ-0289,Goodyear Solar Freight Hub #289,33.39436,-112.40037,Goodyear,AZ
+FRESH-COORD-OH-0290,Columbus Solar Freight Hub #290,40.02643,-83.04634,Columbus,OH
+FRESH-COORD-OH-0291,Cincinnati Solar Freight Hub #291,39.12695,-84.57221,Cincinnati,OH
+FRESH-COORD-OH-0292,Cleveland Solar Freight Hub #292,41.53722,-81.7375,Cleveland,OH
+FRESH-COORD-NC-0293,Charlotte Solar Freight Hub #293,35.19207,-80.91667,Charlotte,NC
+FRESH-COORD-NC-0294,Raleigh Solar Freight Hub #294,35.70323,-78.68223,Raleigh,NC
+FRESH-COORD-IL-0295,Chicago Solar Freight Hub #295,41.7995,-87.61941,Chicago,IL
+FRESH-COORD-IL-0296,Joliet Solar Freight Hub #296,41.53059,-88.04464,Joliet,IL
+FRESH-COORD-CO-0297,Denver Solar Freight Hub #297,39.80742,-104.96943,Denver,CO
+FRESH-COORD-WA-0298,Seattle Solar Freight Hub #298,47.52093,-122.38476,Seattle,WA
+FRESH-COORD-NV-0299,Las Vegas Solar Freight Hub #299,36.09809,-115.09438,Las Vegas,NV
+FRESH-COORD-TX-0300,Houston Solar Freight Hub #300,29.71489,-95.44321,Houston,TX

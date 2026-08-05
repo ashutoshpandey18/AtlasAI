@@ -7,6 +7,7 @@ export interface MireyeFetchParams {
   lat: number;
   lng: number;
   fields: string[];
+  bypassCache?: boolean;
 }
 
 /**
@@ -18,7 +19,7 @@ export async function fetchMireyeResilient(
   params: MireyeFetchParams,
   token?: string
 ): Promise<any> {
-  const { lat, lng, fields } = params;
+  const { lat, lng, fields, bypassCache } = params;
   const sortedFields = [...fields].sort().join(',');
   const cacheKey = `mireye-fetch-v3:${lat.toFixed(4)},${lng.toFixed(4)},${sortedFields}`;
 
@@ -29,10 +30,13 @@ export async function fetchMireyeResilient(
 
   const fetchPromise = (async () => {
     try {
-      // 2. Check edge database cache first
-      const cached = await getCache(cacheKey);
-      if (cached && cached.fields) {
-        return cached;
+      // 2. Check edge database cache first (bypassed in LIVE_DEMO_MODE)
+      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || Boolean(bypassCache);
+      if (!isLiveDemo) {
+        const cached = await getCache(cacheKey);
+        if (cached && cached.fields) {
+          return cached;
+        }
       }
 
       if (!token) {
@@ -108,6 +112,7 @@ export interface MireyeProximityParams {
   destLat: number;
   destLng: number;
   mode?: 'drive_time' | 'geodesic';
+  bypassCache?: boolean;
 }
 
 /**
@@ -118,7 +123,7 @@ export async function fetchMireyeProximityResilient(
   params: MireyeProximityParams,
   token?: string
 ): Promise<any> {
-  const { originLat, originLng, destLat, destLng, mode = 'drive_time' } = params;
+  const { originLat, originLng, destLat, destLng, mode = 'drive_time', bypassCache } = params;
   const cacheKey = `mireye-proximity-v1:${originLat.toFixed(4)},${originLng.toFixed(4)}:${destLat.toFixed(4)},${destLng.toFixed(4)}:${mode}`;
 
   if (inFlightRequests.has(cacheKey)) {
@@ -127,9 +132,12 @@ export async function fetchMireyeProximityResilient(
 
   const proxPromise = (async () => {
     try {
-      const cached = await getCache(cacheKey);
-      if (cached && (cached.matrix || cached.duration_seconds || cached.driveTimeMinutes)) {
-        return cached;
+      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || Boolean(bypassCache);
+      if (!isLiveDemo) {
+        const cached = await getCache(cacheKey);
+        if (cached && (cached.matrix || cached.duration_seconds || cached.driveTimeMinutes)) {
+          return cached;
+        }
       }
 
       if (!token) return null;

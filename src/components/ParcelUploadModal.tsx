@@ -411,6 +411,11 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
                 <span>100 Sites</span>
               </a>
               <span>•</span>
+              <a href="/data/coordinates_portfolio_100.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <Download className="w-3 h-3 text-cyan-400" />
+                <span>100 Coords (Option A)</span>
+              </a>
+              <span>•</span>
               <a href="/data/address_portfolio_300.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
                 <Download className="w-3 h-3" />
                 <span>300 Sites</span>

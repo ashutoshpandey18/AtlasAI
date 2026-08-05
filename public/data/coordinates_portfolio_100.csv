@@ -1,0 +1,101 @@
+geo_id,chain,latitude,longitude,city,state
+COORD-US-TX-0001,Austin Solar Logistics Hub,30.2241,-97.7715,Austin,TX
+COORD-US-TX-0002,Houston Energy Corridor Site A,29.7892,-95.6412,Houston,TX
+COORD-US-TX-0003,Dallas Freight Logistics Hub,32.7481,-96.8812,Dallas,TX
+COORD-US-TX-0004,San Antonio Solar Yard B,29.4182,-98.5312,San Antonio,TX
+COORD-US-TX-0005,Fort Worth Industrial Park C,32.6841,-97.3114,Fort Worth,TX
+COORD-US-TX-0006,Arlington Commercial Hub D,32.6981,-97.1412,Arlington,TX
+COORD-US-TX-0007,Plano Tech Center E,33.0514,-96.7412,Plano,TX
+COORD-US-TX-0008,Garland Distribution Center F,32.9114,-96.6114,Garland,TX
+COORD-US-TX-0009,Irving Freight Yard G,32.8814,-96.9814,Irving,TX
+COORD-US-TX-0010,Frisco Logistics Center H,33.1814,-96.8114,Frisco,TX
+COORD-US-TX-0011,McKinney Industrial Site I,33.2114,-96.6314,McKinney,TX
+COORD-US-TX-0012,Lubbock Solar Corridor J,33.5914,-101.8914,Lubbock,TX
+COORD-US-TX-0013,Corpus Christi Freight Hub K,27.7814,-97.4314,Corpus Christi,TX
+COORD-US-TX-0014,Laredo Cross-Border Yard L,27.5314,-99.4814,Laredo,TX
+COORD-US-TX-0015,El Paso Industrial Yard M,31.7814,-106.4114,El Paso,TX
+COORD-US-CA-0016,Ontario Logistics Mega Park,34.0512,-117.5814,Ontario,CA
+COORD-US-CA-0017,Fremont Tech Manufacturing Hub,37.5114,-121.9481,Fremont,CA
+COORD-US-CA-0018,Los Angeles Port Logistics Yard,33.7814,-118.2412,Los Angeles,CA
+COORD-US-CA-0019,Stockton Central Freight Hub,37.9314,-121.2814,Stockton,CA
+COORD-US-CA-0020,San Diego Otay Mesa Solar Yard,32.5814,-116.9614,San Diego,CA
+COORD-US-CA-0021,Rancho Cucamonga Depot A,34.1214,-117.5614,Rancho Cucamonga,CA
+COORD-US-CA-0022,Riverside Freight Logistics B,33.9514,-117.3814,Riverside,CA
+COORD-US-CA-0023,Bakersfield Industrial Park C,35.3414,-119.0114,Bakersfield,CA
+COORD-US-CA-0024,Fresno Commercial Yard D,36.7214,-119.7814,Fresno,CA
+COORD-US-CA-0025,Sacramento Supply Hub E,38.5614,-121.4814,Sacramento,CA
+COORD-US-CA-0026,San Jose Tech Park F,37.3114,-121.8814,San Jose,CA
+COORD-US-CA-0027,Santa Clarita Commercial Yard G,34.4114,-118.5314,Santa Clarita,CA
+COORD-US-CA-0028,Chino Industrial Logistics H,34.0114,-117.6814,Chino,CA
+COORD-US-CA-0029,Fontana Freight Hub I,34.0814,-117.4414,Fontana,CA
+COORD-US-CA-0030,Moreno Valley Supply Hub J,33.9114,-117.2214,Moreno Valley,CA
+COORD-US-FL-0031,Lakeland Central Logistics Yard,28.0214,-81.9814,Lakeland,FL
+COORD-US-FL-0032,Miami International Freight Hub,25.8114,-80.3414,Miami,FL
+COORD-US-FL-0033,Orlando Commerce Center A,28.5214,-81.4214,Orlando,FL
+COORD-US-FL-0034,Jacksonville Logistics Hub B,30.3814,-81.6814,Jacksonville,FL
+COORD-US-FL-0035,Tampa Bay Freight Yard C,27.9614,-82.4414,Tampa,FL
+COORD-US-FL-0036,Hialeah Commercial Site D,25.8414,-80.3114,Hialeah,FL
+COORD-US-FL-0037,Fort Lauderdale Freight Hub E,26.1114,-80.1714,Fort Lauderdale,FL
+COORD-US-FL-0038,Port St Lucie Commercial Yard F,27.2814,-80.3614,Port St Lucie,FL
+COORD-US-FL-0039,Cape Coral Solar Site G,26.6314,-81.9714,Cape Coral,FL
+COORD-US-FL-0040,Tallahassee Industrial Site H,30.4314,-84.2814,Tallahassee,FL
+COORD-US-GA-0041,Atlanta South Tradeport Yard,33.6314,-84.4114,Atlanta,GA
+COORD-US-GA-0042,Savannah Port Logistics Hub,32.0814,-81.1214,Savannah,GA
+COORD-US-GA-0043,Macon Central Industrial Park,32.8114,-83.6414,Macon,GA
+COORD-US-GA-0044,Augusta Freight Terminal A,33.4514,-81.9814,Augusta,GA
+COORD-US-GA-0045,Columbus Commercial Yard B,32.4814,-84.9714,Columbus,GA
+COORD-US-GA-0046,Marietta Supply Hub C,33.9414,-84.5314,Marietta,GA
+COORD-US-GA-0047,Alpharetta Tech Center D,34.0614,-84.2714,Alpharetta,GA
+COORD-US-GA-0048,Lawrenceville Commercial Yard E,33.9414,-84.0114,Lawrenceville,GA
+COORD-US-GA-0049,Duluth Logistics Center F,34.0114,-84.1414,Duluth,GA
+COORD-US-GA-0050,Kennesaw Industrial Yard G,34.0314,-84.6114,Kennesaw,GA
+COORD-US-AZ-0051,Phoenix West Industrial Park,33.4614,-112.1814,Phoenix,AZ
+COORD-US-AZ-0052,Goodyear Solar Logistics Hub,33.4214,-112.3814,Goodyear,AZ
+COORD-US-AZ-0053,Tucson Commercial Freight Yard,32.2114,-110.9614,Tucson,AZ
+COORD-US-AZ-0054,Mesa Industrial Park A,33.4114,-111.8114,Mesa,AZ
+COORD-US-AZ-0055,Chandler Semiconductor Yard B,33.2814,-111.8814,Chandler,AZ
+COORD-US-AZ-0056,Gilbert Commercial Site C,33.3414,-111.7814,Gilbert,AZ
+COORD-US-AZ-0057,Glendale Supply Hub D,33.5214,-112.1814,Glendale,AZ
+COORD-US-AZ-0058,Scottsdale Tech Park E,33.6114,-111.9114,Scottsdale,AZ
+COORD-US-AZ-0059,Tempe Logistics Hub F,33.4114,-111.9314,Tempe,AZ
+COORD-US-AZ-0060,Surprise Industrial Yard G,33.6214,-112.3614,Surprise,AZ
+COORD-US-OH-0061,Columbus Groveport Mega Hub,39.8714,-82.9314,Columbus,OH
+COORD-US-OH-0062,Cincinnati Freight Terminal A,39.1114,-84.5114,Cincinnati,OH
+COORD-US-OH-0063,Cleveland Lakefront Yard B,41.4814,-81.6814,Cleveland,OH
+COORD-US-OH-0064,Akron Industrial Center C,41.0714,-81.5114,Akron,OH
+COORD-US-OH-0065,Toledo Commercial Site D,41.6414,-83.5414,Toledo,OH
+COORD-US-OH-0066,Dayton Parcel Logistics E,39.7714,-84.1814,Dayton,OH
+COORD-US-OH-0067,Dublin Tech Park F,40.1114,-83.1214,Dublin,OH
+COORD-US-OH-0068,Westerville Supply Hub G,40.1214,-82.9114,Westerville,OH
+COORD-US-OH-0069,Canton Freight Yard H,40.7814,-81.3614,Canton,OH
+COORD-US-OH-0070,Youngstown Industrial Site I,41.0914,-80.6414,Youngstown,OH
+COORD-US-NC-0071,Charlotte Airport Freight Yard,35.2114,-80.9214,Charlotte,NC
+COORD-US-NC-0072,Raleigh Tech Triangle Hub,35.8414,-78.6814,Raleigh,NC
+COORD-US-NC-0073,Greensboro Logistics Center A,36.0814,-79.8214,Greensboro,NC
+COORD-US-NC-0074,Durham BioTech Park B,35.9814,-78.8914,Durham,NC
+COORD-US-NC-0075,Winston-Salem Freight Hub C,36.0814,-80.2414,Winston-Salem,NC
+COORD-US-NC-0076,Fayetteville Industrial Site D,35.0414,-78.8814,Fayetteville,NC
+COORD-US-NC-0077,Cary Commercial Yard E,35.7714,-78.7814,Cary,NC
+COORD-US-NC-0078,Wilmington Port Logistics F,34.2114,-77.9414,Wilmington,NC
+COORD-US-NC-0079,High Point Commercial Yard G,35.9514,-79.9914,High Point,NC
+COORD-US-NC-0080,Asheville Commercial Hub H,35.5814,-82.5414,Asheville,NC
+COORD-US-IL-0081,Joliet Inland Port Mega Hub,41.4914,-88.0814,Joliet,IL
+COORD-US-IL-0082,Elk Grove Industrial Park A,41.9914,-87.9714,Elk Grove Village,IL
+COORD-US-IL-0083,Bedford Park Freight Depot B,41.7714,-87.7714,Bedford Park,IL
+COORD-US-IL-0084,Naperville Commercial Site C,41.7614,-88.1414,Naperville,IL
+COORD-US-IL-0085,Aurora Logistics Hub D,41.7414,-88.2914,Aurora,IL
+COORD-US-IL-0086,Rockford Freight Terminal E,42.2514,-89.0814,Rockford,IL
+COORD-US-IL-0087,Peoria Industrial Yard F,40.6814,-89.5814,Peoria,IL
+COORD-US-IL-0088,Springfield Commercial Hub G,39.7714,-89.6414,Springfield,IL
+COORD-US-IL-0089,Champaign Tech Park H,40.1114,-88.2314,Champaign,IL
+COORD-US-IL-0090,Elgin Supply Hub I,42.0214,-88.2714,Elgin,IL
+COORD-US-CO-0091,Denver Airport Industrial Hub,39.8114,-104.7814,Denver,CO
+COORD-US-CO-0092,Aurora Commerce Center A,39.7314,-104.7214,Aurora,CO
+COORD-US-CO-0093,Colorado Springs Solar Yard B,38.8214,-104.7814,Colorado Springs,CO
+COORD-US-CO-0094,Fort Collins Tech Park C,40.5714,-105.0614,Fort Collins,CO
+COORD-US-CO-0095,Pueblo Industrial Yard D,38.2514,-104.6014,Pueblo,CO
+COORD-US-NV-0096,Reno Tahoe Industrial Mega Yard,39.5214,-119.5814,Reno,NV
+COORD-US-NV-0097,Las Vegas North Logistics Hub A,36.2314,-115.0914,Las Vegas,NV
+COORD-US-NV-0098,Henderson Commercial Yard B,36.0214,-114.9714,Henderson,NV
+COORD-US-NV-0099,Sparks Freight Terminal C,39.5414,-119.7214,Sparks,NV
+COORD-US-NV-0100,Carson City Solar Hub D,39.1514,-119.7414,Carson City,NV

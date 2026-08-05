@@ -1,0 +1,101 @@
+geo_id,chain,address,city,state,zip,lat,lon,size_sqft,property_type
+US-TX-0001,Kroger Supermarket,12600 Westheimer Rd,Houston,TX,77077,29.7365,-95.6032,65000,Retail Supermarket
+US-TX-0002,Target Center,8500 Westgate Blvd,Austin,TX,78745,30.2014,-97.8012,125000,Big Box Retail
+US-TX-0003,Home Depot Logistics,2500 N Stemmons Fwy,Dallas,TX,75207,32.8015,-96.8341,180000,Distribution Center
+US-TX-0004,Walmart Supercenter,5555 De Zavala Rd,San Antonio,TX,78249,29.5621,-98.6015,210000,Retail Center
+US-TX-0005,Best Buy Plaza,1400 Hulen St,Fort Worth,TX,76107,32.721,-97.3912,55000,Commercial Retail
+US-TX-0006,Costco Wholesale,600 W Arbrook Blvd,Arlington,TX,76014,32.6781,-97.1125,160000,Big Box Warehouse
+US-TX-0007,Lowe's Home Improvement,2000 Preston Rd,Plano,TX,75093,33.0289,-96.7942,140000,Commercial Center
+US-TX-0008,Sam's Club,5300 N Garland Ave,Garland,TX,75044,32.9641,-96.6348,150000,Retail Warehouse
+US-TX-0009,Whole Foods Market,7700 N MacArthur Blvd,Irving,TX,75063,32.9152,-96.9589,48000,Supermarket
+US-TX-0010,IKEA Retail Store,7171 Frisco Square Blvd,Frisco,TX,75034,33.1508,-96.8236,310000,Big Box Flagship
+US-TX-0011,Academy Sports,3800 S Central Expressway,McKinney,TX,75070,33.1784,-96.6415,72000,Retail Center
+US-TX-0012,HEB Grocery Store,4400 Texas Ave,Bryan,TX,77802,30.6512,-96.3481,95000,Regional Grocery
+US-TX-0013,WinCo Foods,2850 Southwest Pkwy,Wichita Falls,TX,76308,33.8741,-98.5321,85000,Commercial Grocery
+US-TX-0014,Tractor Supply Co,1500 Loop 289,Lubbock,TX,79404,33.5684,-101.8492,42000,Agricultural Retail
+US-TX-0015,Trader Joe's,1400 S College Ave,College Station,TX,77840,30.6125,-96.3214,28000,Retail Grocery
+US-CA-0016,Tesla Megapack Hub,3500 Deer Creek Rd,Palo Alto,CA,94304,37.3984,-122.1481,120000,Industrial BESS
+US-CA-0017,Amazon Fulfillment Center,2125 Washington Blvd,Los Angeles,CA,90021,34.0215,-118.2314,450000,Logistics Logistics Hub
+US-CA-0018,Prologis Park West,1800 Ontario Mills Pkwy,Ontario,CA,91764,34.0721,-117.5512,380000,Industrial Logistics
+US-CA-0019,Target Distribution,5400 E Foothill Blvd,Rancho Cucamonga,CA,91730,34.1072,-117.5814,290000,Commercial Distribution
+US-CA-0020,FEDEX Freight Depot,8800 Otay Mesa Rd,San Diego,CA,92154,32.5714,-116.9412,220000,Freight Logistics
+US-CA-0021,Walmart Logistics Hub,3600 S Airport Way,Stockton,CA,95206,37.9102,-121.2681,520000,Distribution Center
+US-CA-0022,Home Depot Supply,4200 Brea Canyon Rd,Diamond Bar,CA,91765,34.0084,-117.8214,175000,Industrial Supply
+US-CA-0023,Sysco Food Logistics,1390 Ensell Rd,Fremont,CA,94539,37.5214,-121.9314,240000,Cold Storage Logistics
+US-CA-0024,Costco Depot,2200 E 8th St,National City,CA,91950,32.6714,-117.1012,195000,Big Box Warehouse
+US-CA-0025,Apple Supply Chain Hub,1000 Kifer Rd,Sunnyvale,CA,94086,37.3712,-121.9984,160000,Tech Manufacturing
+US-CA-0026,Google Logistics Yard,800 N Rengstorff Ave,Mountain View,CA,94043,37.4102,-122.0914,140000,Commercial Fleet Yard
+US-CA-0027,UPS Sorting Hub,3300 E Ana St,Compton,CA,90221,33.8714,-118.2114,310000,Parcel Freight Hub
+US-CA-0028,DHL Supply Chain,1500 E Francis St,Ontario,CA,91761,34.0214,-117.6112,260000,Freight Terminal
+US-CA-0029,Kroger Foods Depot,1200 S Harbor Blvd,La Habra,CA,90631,33.9184,-117.9412,210000,Commercial Grocery Hub
+US-CA-0030,Safeway Supply Hub,4500 Rosewood Dr,Pleasanton,CA,94588,37.6914,-121.8814,280000,Food Distribution
+US-FL-0031,Publix Distribution,3300 Publix Blvd,Lakeland,FL,33811,27.9984,-81.9912,420000,Grocery Distribution
+US-FL-0032,Home Depot Logistics,1400 NW 110th Ave,Miami,FL,33172,25.7861,-80.3741,230000,Distribution Hub
+US-FL-0033,Target Supercenter,3200 Orange Blossom Trail,Orlando,FL,32804,28.5714,-81.3984,175000,Big Box Retail
+US-FL-0034,Amazon Hub FL,12200 Jacksonville Blvd,Jacksonville,FL,32218,30.4512,-81.6514,510000,Fulfillment Hub
+US-FL-0035,Walmart Store,4300 Hillsborough Ave,Tampa,FL,33614,27.9981,-82.5014,195000,Retail Center
+US-FL-0036,Winn-Dixie Depot,5000 Florida Mining Blvd,Jacksonville,FL,32257,30.1714,-81.6114,260000,Commercial Grocery
+US-FL-0037,Costco Warehouse,14501 Pines Blvd,Pembroke Pines,FL,33027,26.0071,-80.3384,165000,Big Box Warehouse
+US-FL-0038,Sam's Club FL,5135 S Lakeland Dr,Lakeland,FL,33813,27.9714,-81.9584,145000,Retail Club
+US-FL-0039,Lowe's Home Center,4000 US Hwy 19,New Port Richey,FL,34652,28.2414,-82.7214,135000,Commercial Retail
+US-FL-0040,Aldi Distribution Center,2200 State Rd 60,Haines City,FL,33844,28.1114,-81.6114,310000,Food Logistics
+US-GA-0041,Home Depot HQ Hub,2455 Paces Ferry Rd,Atlanta,GA,30339,33.8681,-84.4812,380000,Corporate Logistics
+US-GA-0042,Kroger Foods Depot,2000 Forest Pkwy,Forest Park,GA,30297,33.6214,-84.3684,290000,Food Distribution
+US-GA-0043,UPS Global Logistics,55 Glenlake Pkwy,Atlanta,GA,30328,33.9314,-84.3614,410000,Global Freight Hub
+US-GA-0044,Target Fulfillment,1500 Anvil Block Rd,Ellenwood,GA,30294,33.6014,-84.2984,470000,Distribution Hub
+US-GA-0045,Walmart Hub GA,5000 GA Highway 42,Locust Grove,GA,30248,33.3414,-84.1114,530000,Fulfillment Center
+US-GA-0046,Costco Warehouse,2900 N Druid Hills Rd,Atlanta,GA,30329,33.8281,-84.3314,155000,Big Box Retail
+US-GA-0047,FEDEX Ground Hub,4000 Fulton Industrial Blvd,Atlanta,GA,30336,33.7414,-84.5514,340000,Parcel Freight
+US-GA-0048,Prologis Park GA,1000 Tradeport Blvd,Atlanta,GA,30354,33.6514,-84.3984,280000,Industrial Park
+US-GA-0049,Sysco Atlanta Depot,2251 Sylvan Rd,East Point,GA,30344,33.6781,-84.4284,260000,Cold Storage
+US-GA-0050,Trader Joe's Hub,3180 Peachtree Rd,Atlanta,GA,30305,33.8414,-84.3784,35000,Commercial Grocery
+US-AZ-0051,First Solar Park,2810 S 37th Ave,Phoenix,AZ,85009,33.4214,-112.1384,250000,Industrial Solar Hub
+US-AZ-0052,Amazon Hub AZ,500 S 143rd Ave,Goodyear,AZ,85338,33.4414,-112.3684,600000,Mega Fulfillment
+US-AZ-0053,Walmart Distribution,7000 W Buckeye Rd,Phoenix,AZ,85043,33.4351,-112.2114,480000,Distribution Hub
+US-AZ-0054,Target Logistics,3000 S Cotton Ln,Surprise,AZ,85388,33.5814,-112.4284,390000,Fulfillment Hub
+US-AZ-0055,Home Depot Yard,4800 W Van Buren St,Phoenix,AZ,85043,33.4514,-112.1614,190000,Industrial Retail
+US-AZ-0056,Kroger Foods AZ,5000 W Baseline Rd,Laveen,AZ,85339,33.3781,-112.1684,110000,Commercial Grocery
+US-AZ-0057,Costco Warehouse,2450 E Beardsley Rd,Phoenix,AZ,85024,33.6681,-112.0284,160000,Big Box Warehouse
+US-AZ-0058,TSMC Fab Supply Hub,4000 W TSMC Pkwy,Phoenix,AZ,85083,33.7781,-112.1514,750000,Semiconductor Fab Yard
+US-AZ-0059,Intel Logistics Depot,5000 S Chandler Blvd,Chandler,AZ,85226,33.3051,-111.9284,420000,Tech Manufacturing
+US-AZ-0060,Prologis Park AZ,4000 W Washington St,Phoenix,AZ,85034,33.4481,-112.1484,270000,Industrial Logistics
+US-OH-0061,Kroger Supermarket,1500 W 5th Ave,Columbus,OH,43212,39.9881,-83.0384,88000,Supermarket Winner Target
+US-OH-0062,Amazon Hub OH,6000 Opus Dr,Groveport,OH,43125,39.8514,-82.9114,520000,Mega Fulfillment
+US-OH-0063,Walmart Distribution,2900 S Hamilton Rd,Columbus,OH,43232,39.9214,-82.8814,390000,Distribution Hub
+US-OH-0064,Target Supercenter,4199 Polaris Pkwy,Columbus,OH,43082,40.1481,-82.9714,175000,Big Box Retail
+US-OH-0065,Home Depot Supply,3500 Westerville Rd,Columbus,OH,43224,40.0381,-82.9484,145000,Commercial Hardware
+US-OH-0066,Costco Warehouse,1500 Gemini Pl,Columbus,OH,43240,40.1414,-82.9684,160000,Big Box Warehouse
+US-OH-0067,Meijer Supercenter,6175 Sawmill Rd,Dublin,OH,43017,40.0981,-83.0914,195000,Regional Supercenter
+US-OH-0068,FEDEX Freight Depot,4500 International St,Columbus,OH,43217,39.8814,-82.9384,280000,Freight Terminal
+US-OH-0069,DHL Supply Chain OH,3600 Airway Rd,Dayton,OH,45431,39.7514,-84.1114,320000,Parcel Freight
+US-OH-0070,Giant Eagle Market,2800 Hayden Run Rd,Columbus,OH,43235,40.0614,-83.1114,75000,Grocery Store
+US-NC-0071,Lowe's Corporate Hub,1000 Lowe's Blvd,Mooresville,NC,28117,35.5481,-80.8514,410000,Corporate Logistics
+US-NC-0072,Amazon Hub NC,8000 Tuckaseegee Rd,Charlotte,NC,28214,35.2514,-80.9384,490000,Fulfillment Hub
+US-NC-0073,Walmart Logistics,3900 Westinghouse Blvd,Charlotte,NC,28273,35.1214,-80.9414,360000,Distribution Center
+US-NC-0074,Target Supercenter,8120 University City Blvd,Charlotte,NC,28213,35.3081,-80.7384,170000,Big Box Retail
+US-NC-0075,Home Depot Yard,3200 South Blvd,Charlotte,NC,28209,35.1981,-80.8684,140000,Commercial Hardware
+US-NC-0076,Harris Teeter Foods,2100 Ashley Park Ln,Gastonia,NC,28054,35.2614,-81.1484,65000,Regional Grocery
+US-NC-0077,Costco Warehouse,500 Tyvola Rd,Charlotte,NC,28217,35.1614,-80.8884,155000,Big Box Warehouse
+US-NC-0078,Food Lion Depot,2110 Executive Dr,Salisbury,NC,28147,35.6681,-80.4914,290000,Grocery Distribution
+US-NC-0079,FEDEX Ground NC,4200 Cargo Rd,Greensboro,NC,27410,36.0981,-79.9384,310000,Freight Terminal
+US-NC-0080,Trader Joe's Center,1800 Midtown Ave,Raleigh,NC,27609,35.8214,-78.6384,32000,Retail Grocery
+US-IL-0081,Walgreens HQ Hub,200 Wilmot Rd,Deerfield,IL,60015,42.1681,-87.8784,310000,Corporate Logistics
+US-IL-0082,Amazon Hub IL,3800 Rock Creek Rd,Joliet,IL,60431,41.5114,-88.1684,540000,Fulfillment Hub
+US-IL-0083,Walmart Distribution,2400 E Laraway Rd,Joliet,IL,60433,41.4881,-88.0484,420000,Distribution Hub
+US-IL-0084,Target Supercenter,2656 N Elston Ave,Chicago,IL,60647,41.9298,-87.6784,180000,Urban Big Box
+US-IL-0085,Home Depot Supply,1232 W North Ave,Chicago,IL,60642,41.9102,-87.6598,135000,Commercial Hardware
+US-IL-0086,Costco Warehouse,1430 S Ashland Ave,Chicago,IL,60608,41.8631,-87.6651,160000,Big Box Warehouse
+US-IL-0087,Aldi Distribution IL,1200 N Kirk Rd,Batavia,IL,60510,41.8681,-88.2784,330000,Grocery Logistics
+US-IL-0088,Jewel-Osco Foods,1500 S Park Ave,Streamwood,IL,60107,42.0181,-88.1784,85000,Supermarket Retail
+US-IL-0089,FEDEX Hub Chicago,6900 W 73rd St,Bedford Park,IL,60638,41.7581,-87.7914,390000,Freight Logistics
+US-IL-0090,Prologis Park IL,1100 Busse Rd,Elk Grove Village,IL,60007,42.0081,-87.9584,290000,Industrial Park
+US-CO-0091,Ball Corp Hub,9200 E 104th Ave,Henderson,CO,80640,39.8881,-104.8714,280000,Industrial Manufacturing
+US-CO-0092,Amazon Hub CO,19799 E 36th Dr,Aurora,CO,80011,39.7681,-104.7584,480000,Fulfillment Hub
+US-CO-0093,Walmart Distribution,1000 E 120th Ave,Thornton,CO,80233,39.9141,-104.9714,340000,Distribution Center
+US-CO-0094,Target Supercenter,7777 E Hampden Ave,Denver,CO,80231,39.6531,-104.8984,170000,Big Box Retail
+US-CO-0095,King Soopers Foods,275 S Logan St,Denver,CO,80209,39.7121,-104.9821,78000,Supermarket Retail
+US-WA-0096,Amazon HQ Yard,410 Terry Ave N,Seattle,WA,98109,47.6221,-122.3381,320000,Corporate Logistics
+US-WA-0097,Costco HQ Hub,999 Lake Drive,Issaquah,WA,98027,47.5451,-122.0421,380000,Global Headquarters
+US-WA-0098,Paccar Supply Chain,777 106th Ave NE,Bellevue,WA,98004,47.6181,-122.1981,240000,Industrial Freight
+US-WA-0099,Target Supercenter,1401 2nd Ave,Seattle,WA,98101,47.6081,-122.3381,145000,Urban Big Box
+US-WA-0100,Fred Meyer Market,14300 SE Division St,Vancouver,WA,98683,45.6281,-122.5314,115000,Regional Supercenter

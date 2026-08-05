@@ -6,6 +6,7 @@ import { runAcquisitionPipeline } from '../../../../agent/orchestrator';
 import { planAcquisitionStrategyAsync } from '../../../../agent/planner';
 import { saveCampaign, getCache, setCache } from '@/services/db';
 import { fetchMireyeResilient } from '@/services/mireyeApiClient';
+import { evaluateHeavyConstructionLogistics } from '@/services/mireyeProximityService';
 import { warmMireyeCache } from '@/services/mireyeCacheWarmer';
 import fs from 'fs';
 import path from 'path';
@@ -214,13 +215,17 @@ export async function POST(req: Request) {
                 if (isNaN(lat) || isNaN(lng)) return;
 
                 needsNetworkCall = true;
-                const resData = await fetchMireyeResilient(
-                  { lat, lng, fields: mireyeFields },
-                  token
-                );
+                const [resData, proxEval] = await Promise.all([
+                  fetchMireyeResilient({ lat, lng, fields: mireyeFields }, token),
+                  evaluateHeavyConstructionLogistics(item.geo_id, item.chain || 'Target Site', lat, lng, token),
+                ]);
 
                 if (resData && resData.fields) {
                   item.mireye = resData;
+                }
+                if (proxEval) {
+                  item.proximityEval = proxEval;
+                  item.driveTimeMinutes = proxEval.driveTimeMinutes;
                 }
               })
             );

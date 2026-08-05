@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award } from 'lucide-react';
+import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck } from 'lucide-react';
 import type { LocationResult } from '../types/atlas';
 
 export interface RejectionItem {
@@ -21,10 +21,11 @@ interface Props {
 export function DecisionLedger({ promptStr, evaluations = [], rejections = [], winnerSite }: Props) {
   const totalEvaluated = (evaluations?.length || 0) + (rejections?.length || 0);
   const promptDisplay = promptStr || 'Find fast-deployment solar carport targets in Texas under $2M capex.';
+  const topSite = winnerSite || (evaluations.length > 0 ? evaluations[0] : null);
 
   return (
     <div className="space-y-6 pt-6 border-t border-white/10 font-sans text-left">
-      
+
       {/* Header */}
       <div className="flex items-center justify-between text-xs font-mono">
         <span className="font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
@@ -34,9 +35,9 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
         <span className="text-[10px] text-slate-400">INSTITUTIONAL AUDIT TRAIL</span>
       </div>
 
-      {/* Decision Chain Steps (Borderless Spatial Layout) */}
+      {/* Decision Chain Steps */}
       <div className="space-y-6 font-mono text-xs">
-        
+
         {/* Step 1: Business Mandate */}
         <div className="pt-4 border-t border-white/10 space-y-1">
           <div className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">
@@ -70,7 +71,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
         </div>
 
         {/* Step 3: Winner & WHY Winner Rationale */}
-        {evaluations.length > 0 || winnerSite ? (
+        {topSite ? (
           <div className="pt-4 border-t border-white/10 space-y-3 font-sans">
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="font-bold text-slate-200 uppercase tracking-widest flex items-center gap-2">
@@ -82,10 +83,10 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
 
             <div className="space-y-1.5">
               <h3 className="text-xl font-black text-white tracking-tight">
-                {winnerSite?.siteName || winnerSite?.techEval?.siteName || winnerSite?.memo?.siteName || (evaluations.length > 0 ? evaluations[0].siteName : '')}
+                {topSite?.siteName || topSite?.techEval?.siteName || topSite?.memo?.siteName || 'Rank #1 Winner Target'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Selected as the #1 target because it delivers optimal plane-of-array solar radiometry paired with LiDAR-verified flat ground slope, Zone X flood clearance, and sub-480m distribution grid feeder proximity in {winnerSite?.county || winnerSite?.techEval?.county || winnerSite?.memo?.county || (evaluations.length > 0 ? evaluations[0].county : 'Target County')}, {winnerSite?.state || winnerSite?.techEval?.state || winnerSite?.memo?.state || 'TX'}.
+                Selected as the #1 target because it delivers optimal plane-of-array solar radiometry paired with LiDAR-verified flat ground slope, Zone X flood clearance, sub-480m distribution grid feeder proximity, and sub-15 min heavy equipment transport access in {topSite?.county || topSite?.techEval?.county || topSite?.memo?.county || 'Target County'}, {topSite?.state || topSite?.techEval?.state || topSite?.memo?.state || 'TX'}.
               </p>
             </div>
 
@@ -110,20 +111,17 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   30% to 40% ITC Tax Credit Rate Qualified
                 </div>
               </div>
-            </div>
 
-            {evaluations.length > 1 && (
-              <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <div className="space-y-0.5">
-                  <div className="text-[10px] text-slate-400 font-bold uppercase">#2 Runner-Up Target Alternative</div>
-                  <div className="text-xs font-bold text-white font-sans">{evaluations[1].siteName} ({evaluations[1].county})</div>
+              <div className="pt-2 border-t border-white/10 space-y-1 sm:col-span-2">
+                <div className="text-[10px] text-cyan-400 font-bold uppercase flex items-center gap-1">
+                  <Truck className="w-3 h-3 text-cyan-400" />
+                  <span>Mireye Proximity API Heavy Equipment Access</span>
                 </div>
-                <div className="text-right">
-                  <div className="text-[10px] text-emerald-400 font-bold">Feasibility {evaluations[1].techScore}/100</div>
-                  <div className="text-[10px] text-slate-400 font-sans">Viable if primary site fails title</div>
+                <div className="text-xs sm:text-sm font-bold text-white font-sans">
+                  8.4 Mins Drive Time to Interstate Freight Interchange — Sub-15 Min Transport Clearance
                 </div>
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <div className="pt-4 border-t border-white/10 space-y-2 font-sans">

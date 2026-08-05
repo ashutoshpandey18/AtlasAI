@@ -2,7 +2,7 @@
 
 An autonomous land acquisition agent for commercial renewable energy development.
 
-Atlas ingests candidate site portfolios, evaluates physical GIS constraints, disqualifies unviable parcels, and generates institutional investment memos with land option agreements.
+Atlas ingests candidate site portfolios, evaluates physical GIS constraints using Mireye and public data layers, disqualifies unviable parcels, and generates institutional investment memos with land option agreements.
 
 ---
 
@@ -14,13 +14,23 @@ When a developer acquires land containing hidden steep terrain, floodways, or re
 
 ---
 
-## The Solution
+## Who Pays
 
-Atlas automates early-stage land screening and underwriting into a single execution workflow. It ingests parcel portfolios, queries physical GIS data from Mireye and public datasets, applies multi-criteria technical scoring, and produces defensible site control recommendations.
+| Buyer | Customer Pain | Atlas Outcome |
+| :--- | :--- | :--- |
+| **VP of Land Acquisition** | Weeks spent manually screening candidate sites across 50 map layers | Reduces early-stage site screening and prioritization to minutes |
+| **Commercial Solar Developer** | High engineering budgets wasted on sites killed years later | Engineering due diligence spent only on tier-1 viable sites |
+| **Clean Tech Real Estate Fund** | High ground lease transaction friction and slow deal velocity | Automated institutional underwriting & LOI contracts |
 
 ---
 
-## Demo
+## Why Atlas Exists
+
+Atlas replaces manual site screening with an autonomous execution pipeline. It ingests parcel portfolios, queries physical GIS data from Mireye and public datasets, applies multi-criteria technical scoring, and produces defensible site control recommendations.
+
+---
+
+## Live Demo
 
 - **Live Production**: [https://atlas-ai-pi-one.vercel.app](https://atlas-ai-pi-one.vercel.app)
 - **Repository**: [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
@@ -29,7 +39,7 @@ Atlas automates early-stage land screening and underwriting into a single execut
 
 ---
 
-## Features
+## What Atlas Does
 
 - Ingests parcel portfolios via CSV (street addresses or geographic coordinates)
 - Resolves parcel geocodes and boundary locations via Mireye `/v1/lookup`
@@ -42,7 +52,30 @@ Atlas automates early-stage land screening and underwriting into a single execut
 
 ---
 
-## How Atlas Works
+## Why Mireye
+
+Mireye is the physical location intelligence backbone of Atlas. Without Mireye, Atlas cannot resolve street addresses or evaluate ground slope, solar yield, flood clearance, or heavy equipment transport drive times.
+
+- **`/v1/lookup`**: Resolves candidate street addresses into precise latitude/longitude coordinates and county boundaries.
+- **`/v1/fetch`**: Queries physical GIS data layers including NREL PVWatts v8 solar yield, USGS 3DEP 1.2° slope LiDAR, and FEMA NFHL flood clearance.
+- **`/v1/proximity`**: Calculates heavy equipment transport drive-time routing to Interstate freight interchanges, verifying sub-15 minute access for 50-ton transformer deliveries.
+- **`/v1/ask`**: Powers the Spatial Copilot, synthesizing natural language due diligence answers with cited physical radiometry metrics.
+
+---
+
+## What Atlas Combines Mireye With
+
+Atlas pairs Mireye physical location intelligence with public datasets and property intelligence signals:
+
+- **NREL PVWatts v8**: Plane-of-Array (POA) solar irradiance (`kwh/m2/yr`) to project annual energy generation.
+- **USGS 3DEP LiDAR**: Elevation data used to calculate ground slope and identify grading cost overruns.
+- **FEMA NFHL**: Floodplain boundaries used to disqualify Zone AE floodways and verify Zone X clearance.
+- **Texas CAD Tax Delinquency Rolls**: County Appraisal District property tax records used to identify tax-delinquent properties ($28,400 overdue back taxes) for motivated seller scoring.
+- **EIA Substation Data**: Electric Information Administration distribution grid dataset used to measure feeder distance to 138kV substations.
+
+---
+
+## Agent Workflow
 
 ```mermaid
 graph TD
@@ -61,47 +94,47 @@ graph TD
 
 ## Product Walkthrough
 
-### 1. Portfolio Ingestion & Pipeline Status
+### Upload Portfolio
 
-Upload portfolio CSV files with street addresses or coordinates. Atlas processes candidate parcels in parallel while displaying real-time execution pipeline status.
+Upload portfolio CSV files containing street addresses or geographic coordinates for batch ingestion.
 
-![Siting Pipeline Status](public/images/01_siting_pipeline_status.png)
+![Pipeline Status](public/images/01_siting_pipeline_status.png)
 
 ---
 
-### 2. Live Map Tiles & Reverse Geocode Inspector
+### Run Agent
 
-Inspect parcel placement, coordinates, and reverse-geocoded address records on interactive vector OpenStreetMap tiles.
+Atlas executes parallel GIS queries across candidate parcels and streams real-time evaluation pipeline progress.
 
 ![Live Map Inspector](public/images/02_live_map_inspector.png)
 
 ---
 
-### 3. Winner Selection & Replayable Trace
+### Decision Ledger
 
-Atlas identifies top candidates, ranks the #1 winning site, and logs a 10-stage millisecond audit trail for investment committee verification.
+Review why the winning parcel was chosen over rejected alternatives and inspect Mireye Proximity heavy transport drive-time metrics.
 
-![Winner Selection & Execution Trace](public/images/03_replayable_ai_trace.png)
-
----
-
-### 4. Decision Ledger & Spatial Copilot
-
-Review why the winning parcel was selected over rejected alternatives, verify Mireye Proximity heavy transport clearance, and ask due diligence questions.
-
-![Decision Ledger & Copilot](public/images/04_decision_ledger_copilot.png)
+![Decision Ledger](public/images/04_decision_ledger_copilot.png)
 
 ---
 
-### 5. Investment Committee Memo & LOI Contract
+### Spatial Copilot
 
-Export a downloadable 3-page Executive Investment Committee Memo detailing technical feasibility scores, CapEx savings, IRA §48 tax credit bonuses, and land option agreements.
+Ask natural language due diligence questions about site trade-offs and receive answers backed by cited physical radiometry data.
+
+![Spatial Copilot](public/images/03_replayable_ai_trace.png)
+
+---
+
+### Investment Memo
+
+Export a 3-page Executive Investment Committee Memo featuring technical feasibility scores, CapEx savings, IRA §48 tax credit bonuses, and land option agreements.
 
 ![Investment Memo](public/images/05_investment_memo.png)
 
 ---
 
-## Mireye Integration
+## API Integration
 
 | Endpoint | Purpose | Where Atlas Uses It |
 | :--- | :--- | :--- |
@@ -109,16 +142,6 @@ Export a downloadable 3-page Executive Investment Committee Memo detailing techn
 | `POST /v1/fetch` | Extracts NREL POA solar yield, USGS 3DEP 1.2° slope, and FEMA flood clearance | Physical GIS evaluation (`src/services/mireyeApiClient.ts`) |
 | `POST /v1/proximity` | Calculates heavy equipment transport drive times from Interstate freight corridors | Transport clearance scoring (`src/services/mireyeProximityService.ts`) |
 | `POST /v1/ask` | Synthesizes natural language due diligence answers with comparative trade-off reasoning | Spatial Copilot interface (`/api/mireye/ask`) |
-
----
-
-## External Data
-
-- **NREL PVWatts v8**: Plane-of-Array (POA) solar irradiance (`kwh/m2/yr`) to project annual energy generation.
-- **USGS 3DEP LiDAR**: Elevation data used to calculate ground slope and identify grading cost overruns.
-- **FEMA NFHL**: Floodplain boundaries used to disqualify Zone AE floodways and verify Zone X clearance.
-- **Texas CAD Tax Delinquency Rolls**: County Appraisal District records used to identify tax-delinquent properties for motivated seller scoring.
-- **EIA Substation Data**: Electric Information Administration distribution grid dataset used to measure feeder distance to 138kV substations.
 
 ---
 
@@ -212,7 +235,7 @@ Atlas/
 
 ---
 
-## Local Setup
+## Running Locally
 
 ```bash
 git clone https://github.com/ashutoshpandey18/AtlasAI.git

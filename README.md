@@ -7,7 +7,7 @@
 
 ---
 
-![Atlas Siting Agent Pipeline Status](public/images/siting_pipeline_status.png)
+![Atlas Siting Agent Pipeline Status](public/images/01_siting_pipeline_status.png)
 
 ---
 
@@ -68,40 +68,40 @@ Recommended Target + Rejection Proofs + Investment Memo & LOI
 
 ---
 
-## 4. Visual Workflow & Product Demonstrations
+## 4. Visual Product Workflow & UI Architecture
 
-### Step 1: Automated Mireye GIS Pipeline & Batch Portfolio Ingestion
-Atlas ingests multi-state candidate parcel portfolios (CSV or GeoJSON) and queries Mireye `/v1/lookup` and `/v1/fetch` APIs in parallel, evaluating plane-of-array solar radiometry, USGS 3DEP LiDAR slope, and FEMA NFHL flood zone clearance.
+### Step 1: Siting Pipeline Status & Portfolio Ingestion
+Atlas ingests multi-state candidate parcel portfolios (CSV or GeoJSON) and queries Mireye `/v1/lookup` and `/v1/fetch` APIs in parallel, evaluating NREL solar radiometry (2,131 kWh/m²), USGS 3DEP 3D slope LiDAR, and FEMA flood maps.
 
-![Atlas Siting Agent Pipeline Status](public/images/siting_pipeline_status.png)
+![Atlas Siting Agent Pipeline Status](public/images/01_siting_pipeline_status.png)
 
 ---
 
 ### Step 2: Live Geospatial Map Tiles & Reverse Geocode Inspector
 Interactive vector and satellite map layers plot candidate parcels, boundaries, and grid interconnection lines while reverse-geocoding coordinates in real time.
 
-![Live Geospatial Map Tiles Inspector](public/images/live_map_inspector.png)
+![Live Geospatial Map Tiles Inspector](public/images/02_live_map_inspector.png)
 
 ---
 
-### Step 3: Executive Decision Ledger & Spatial Copilot Q&A
+### Step 3: Rank #1 Candidate Target & 10-Stage Replayable AI Execution Trace
+Atlas ranks top candidates, selecting the Rank #1 Target (`FedEx Express Terminal Custom County #995580` - Technical Feasibility Score: 87/100) and recording a 10-stage millisecond replayable AI execution trace timeline.
+
+![Rank #1 Candidate Target & 10-Stage Replayable AI Execution Trace](public/images/03_replayable_ai_trace.png)
+
+---
+
+### Step 4: Executive Decision Ledger & Spatial Copilot Q&A
 The Decision Ledger displays why the #1 winning site was chosen over candidate alternatives, featuring the **Mireye Proximity API Heavy Equipment Access Card** (sub-15 min heavy transport clearance avoiding $120k route escort fees) and Spatial Copilot Q&A (`/v1/ask`).
 
-![Executive Decision Ledger & Spatial Copilot](public/images/decision_ledger_copilot.png)
+![Executive Decision Ledger & Spatial Copilot Q&A](public/images/04_decision_ledger_copilot.png)
 
 ---
 
-### Step 4: Replayable 10-Stage AI Execution Trace Timeline
-Every decision step is recorded in an audit trail with exact millisecond timings, proving 100% replayable AI reasoning for institutional investment committees.
+### Step 5: 3-Page Executive Investment Committee Memo & LOI Contract
+Atlas automatically generates a downloadable 3-page Executive Investment Committee Memo featuring CapEx savings breakdowns, IRA §48 tax credit bonus qualifications (30% to 40% ITC), and customized LOI option agreements.
 
-![Replayable 10-Stage AI Execution Trace Timeline](public/images/replayable_ai_trace.png)
-
----
-
-### Step 5: 3-Page Executive Investment Memo & LOI Contract
-Atlas automatically generates a downloadable 3-page Executive Investment Committee Memo featuring CapEx savings breakdowns, IRA §48 tax credit bonus qualifications, and customized LOI option agreements.
-
-![3-Page Executive Investment Memo Modal](public/images/investment_memo.png)
+![3-Page Executive Investment Committee Memo Modal](public/images/05_investment_memo.png)
 
 ---
 
@@ -138,14 +138,14 @@ Atlas provides ready-to-test sample CSV datasets inside the web upload modal win
 
 ---
 
-## 7. Insomnia & Postman API Verification
+## 7. Insomnia & Postman API Verification Suite
 
 All production API routes can be tested directly via Insomnia or Postman against the live production server `https://atlas-ai-pi-one.vercel.app`.
 
-### 1. Mireye Physical GIS Layer Intelligence (`/v1/fetch`)
+### 1. Mireye Physical GIS Layer Intelligence (`POST /v1/fetch`)
 Queries real NREL solar yield, USGS 3DEP 1.2° LiDAR slope, and FEMA NFHL flood clearance.
 
-![Insomnia Mireye Physical GIS Fetch Test](public/images/insomnia_fetch.png)
+![Insomnia Mireye Physical GIS Fetch Test](public/images/insomnia_01_fetch.png)
 
 ```bash
 curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/fetch \
@@ -155,53 +155,53 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/fetch \
 
 ---
 
-### 2. Spatial Copilot Q&A & Proximity Reasoning (`/v1/ask`)
-Executes comparative trade-off reasoning and cites Mireye Proximity heavy equipment transport drive-time metrics.
+### 2. Save Acquisition Campaign (`POST /api/campaigns`)
+Persists acquisition campaign strategy plans and site evaluations to Turso Edge SQLite storage.
 
-![Insomnia Spatial Copilot Q&A Test](public/images/insomnia_ask.png)
+![Insomnia Save Campaign POST Test](public/images/insomnia_04_campaigns_post.png)
 
 ```bash
-curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/ask \
+curl -X POST https://atlas-ai-pi-one.vercel.app/api/campaigns \
   -H "Content-Type: application/json" \
-  -d '{"question":"Which site has the lowest construction and transport risk?","evaluations":[{"siteName":"Kroger Supermarket","county":"Franklin County","state":"OH"}]}'
+  -d '{"id":"ashutoshAtlas","name":"Acquisition: Fast deployment solar in Texas under $2M capex","useCaseId":"solar-carport","requirements":{"targetState":"TX","capexLimitUsd":2000000},"locations":[]}'
 ```
 
 ---
 
-### 3. Live Agent SSE Site Scan Pipeline (`/api/agent/site-scan`)
+### 3. Retrieve Saved Acquisition Campaigns (`GET /api/campaigns`)
+Retrieves saved acquisition campaigns for executive due diligence review.
+
+![Insomnia Retrieve Campaigns GET Test](public/images/insomnia_05_campaigns_get.png)
+
+```bash
+curl -X GET https://atlas-ai-pi-one.vercel.app/api/campaigns
+```
+
+---
+
+### 4. Spatial Copilot Q&A & Proximity Reasoning (`POST /v1/ask`)
+Executes comparative trade-off reasoning and cites Mireye Proximity heavy equipment transport drive-time metrics.
+
+![Insomnia Spatial Copilot Q&A Test](public/images/insomnia_02_ask.png)
+
+```bash
+curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"Which site has the lowest construction and heavy transport risk?","promptStr":"Find commercial solar targets in Ohio under $2M capex","evaluations":[{"siteName":"Kroger Supermarket","county":"Franklin County","state":"OH","techScore":94}],"rejections":[]}'
+```
+
+---
+
+### 5. Live Agent SSE Site Scan Pipeline (`POST /api/agent/site-scan`)
 Streams Server-Sent Events (SSE) progress in real time across candidate parcel portfolios.
 
-![Insomnia Live Agent SSE Site Scan Test](public/images/insomnia_site_scan.png)
+![Insomnia Live Agent SSE Site Scan Test](public/images/insomnia_03_site_scan.png)
 
 ```bash
 curl -X POST https://atlas-ai-pi-one.vercel.app/api/agent/site-scan \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
-  -d '{"prompt":"Find commercial solar carports in Texas under $2M capex.","dataset":[{"geo_id":"US-TX-0001","chain":"Kroger Supermarket","lat":29.7365,"lon":-95.6032}]}'
-```
-
----
-
-### 4. Save Acquisition Campaign (`/api/campaigns`)
-Persists acquisition campaign strategy plans and site evaluations to Turso Edge SQLite storage.
-
-![Insomnia Save Campaign POST Test](public/images/insomnia_campaigns_post.png)
-
-```bash
-curl -X POST https://atlas-ai-pi-one.vercel.app/api/campaigns \
-  -H "Content-Type: application/json" \
-  -d '{"id":"camp-001","name":"Texas Commercial Solar","useCaseId":"solar-carport","requirements":{},"locations":[]}'
-```
-
----
-
-### 5. Retrieve Saved Acquisition Campaigns (`/api/campaigns`)
-Retrieves saved acquisition campaigns for executive due diligence review.
-
-![Insomnia Retrieve Campaigns GET Test](public/images/insomnia_campaigns_get.png)
-
-```bash
-curl -X GET https://atlas-ai-pi-one.vercel.app/api/campaigns
+  -d '{"prompt":"Find commercial solar carports in Texas under $2M capex.","dataset":[{"geo_id":"US-TX-0001","chain":"Kroger Supermarket","address":"12600 Westheimer Rd","city":"Houston","state":"TX","zip":"77077","lat":29.7365,"lon":-95.6032}]}'
 ```
 
 ---

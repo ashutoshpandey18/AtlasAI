@@ -120,20 +120,22 @@ export interface MireyeProximityParams {
   originLng: number;
   destLat: number;
   destLng: number;
-  mode?: 'drive_time' | 'geodesic';
+  mode?: 'driving' | 'straightline';
+  units?: 'miles' | 'km';
   bypassCache?: boolean;
 }
 
 /**
  * Resilient Mireye Proximity API Client
- * Executes HTTP POST to https://api.mireye.com/v1/proximity with caching, deduplication, and 429 retry backoff.
+ * Executes HTTP POST to https://api.mireye.com/v1/proximity with official schema:
+ * { op: "distance", origins: ["lat,lng"], destinations: ["lat,lng"], mode: "driving", units: "miles" }
  */
 export async function fetchMireyeProximityResilient(
   params: MireyeProximityParams,
   token?: string
 ): Promise<any> {
-  const { originLat, originLng, destLat, destLng, mode = 'drive_time', bypassCache } = params;
-  const cacheKey = `mireye-proximity-v1:${originLat.toFixed(4)},${originLng.toFixed(4)}:${destLat.toFixed(4)},${destLng.toFixed(4)}:${mode}`;
+  const { originLat, originLng, destLat, destLng, mode = 'driving', units = 'miles', bypassCache } = params;
+  const cacheKey = `mireye-proximity-v2:${originLat.toFixed(4)},${originLng.toFixed(4)}:${destLat.toFixed(4)},${destLng.toFixed(4)}:${mode}:${units}`;
 
   if (inFlightRequests.has(cacheKey)) {
     return inFlightRequests.get(cacheKey)!;
@@ -145,7 +147,7 @@ export async function fetchMireyeProximityResilient(
       const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || isForceLive;
       if (!isLiveDemo) {
         const cached = await getCache(cacheKey);
-        if (cached && (cached.matrix || cached.duration_seconds || cached.driveTimeMinutes)) {
+        if (cached && (cached.legs || cached.matrix || cached.duration_seconds || cached.driveTimeMinutes)) {
           console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
           console.log(`[PROXIMITY]\nOrigin: ${originLat}, ${originLng}\nDestination: ${destLat}, ${destLng}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
           return { ...cached, _cacheHit: true };
@@ -173,10 +175,11 @@ export async function fetchMireyeProximityResilient(
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              origins: [{ lat: originLat, lng: originLng }],
-              destinations: [{ lat: destLat, lng: destLng }],
+              op: 'distance',
+              origins: [`${originLat},${originLng}`],
+              destinations: [`${destLat},${destLng}`],
               mode,
-              units: 'meters',
+              units,
             }),
             signal: controller.signal,
           });
@@ -191,6 +194,9 @@ export async function fetchMireyeProximityResilient(
               await setCache(cacheKey, data);
               return { ...data, _cacheHit: false };
             }
+          } else if (res.status === 422) {
+            console.error(`❌ MIREYE API HTTP 422: Invalid proximity request schema`);
+            return { error: 'invalid_request', message: 'Invalid proximity request', status: 422 };
           } else if (res.status === 429) {
             const retryAfterHeader = res.headers.get('retry-after');
             let delayMs = backoffDelays[attempt] || 2000;

@@ -8,8 +8,8 @@ import { fetchMireyeProximityResilient } from './mireyeApiClient';
 export interface ProximityEvaluationResult {
   geoId: string;
   siteName: string;
-  driveTimeMinutes: number;
-  distanceMeters: number;
+  driveTimeMinutes: number | null;
+  distanceMeters: number | null;
   logisticsScore: number; // 0-100
   logisticsCategory: 'OPTIMAL' | 'ACCEPTABLE' | 'ELEVATED_COST' | 'CONSTRAINED';
   defensibleImpact: string;
@@ -43,10 +43,8 @@ export async function evaluateHeavyConstructionLogistics(
   const destLat = Number((lat + 0.08).toFixed(4));
   const destLng = Number((lng + 0.06).toFixed(4));
 
-  // Compute unique coordinate-based transport drive time per parcel to prevent static fallback overlap
-  const coordHash = Math.abs(Math.sin(lat * 12.9898 + lng * 78.233) * 43758.5453) % 1;
-  let driveTimeMinutes = Number((5.8 + coordHash * 12.6).toFixed(1)); // Realistic 5.8 to 18.4 mins range per parcel
-  let distanceMeters = Math.round(driveTimeMinutes * 950);
+  let driveTimeMinutes: number | null = null;
+  let distanceMeters: number | null = null;
 
   if (token) {
     try {
@@ -56,45 +54,50 @@ export async function evaluateHeavyConstructionLogistics(
           originLng: lng,
           destLat,
           destLng,
-          mode: 'drive_time',
+          mode: 'driving',
+          units: 'miles',
           bypassCache: isForceLive,
         },
         token
       );
 
-      if (apiData) {
-        if (apiData.matrix && apiData.matrix[0] && apiData.matrix[0][0]) {
-          const item = apiData.matrix[0][0];
-          if (item.distance_meters) distanceMeters = item.distance_meters;
-          if (item.duration_seconds) {
-            driveTimeMinutes = Number((item.duration_seconds / 60).toFixed(1));
-          } else if (item.driveTimeMinutes) {
-            driveTimeMinutes = Number(item.driveTimeMinutes.toFixed(1));
-          }
-        } else if (apiData.duration_seconds) {
-          if (apiData.distance_meters) distanceMeters = apiData.distance_meters;
-          driveTimeMinutes = Number((apiData.duration_seconds / 60).toFixed(1));
-        } else if (apiData.driveTimeMinutes) {
-          driveTimeMinutes = Number(apiData.driveTimeMinutes.toFixed(1));
+      if (apiData && apiData.legs && apiData.legs[0]) {
+        const leg = apiData.legs[0];
+        if (leg.duration_minutes != null) {
+          driveTimeMinutes = Number(leg.duration_minutes.toFixed(1));
+        } else if (leg.duration_seconds != null) {
+          driveTimeMinutes = Number((leg.duration_seconds / 60).toFixed(1));
+        }
+        if (leg.distance_miles != null) {
+          distanceMeters = Math.round(leg.distance_miles * 1609.34);
+        } else if (leg.distance_km != null) {
+          distanceMeters = Math.round(leg.distance_km * 1000);
         }
       }
     } catch (err) {
-      console.warn('Mireye Proximity API call fallback:', err);
+      console.warn('Mireye Proximity API execution error:', err);
     }
   }
 
   let logisticsScore = 95;
   let logisticsCategory: ProximityEvaluationResult['logisticsCategory'] = 'OPTIMAL';
-  let defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to Interstate corridor. Sub-15 min clearance avoids $120k specialized route escort fees.`;
+  let defensibleImpact = driveTimeMinutes != null 
+    ? `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to Interstate corridor.` 
+    : 'Drive time unavailable (No response from Mireye /v1/proximity)';
 
-  if (driveTimeMinutes > 15) {
-    logisticsScore = 68;
-    logisticsCategory = 'ELEVATED_COST';
-    defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight corridor. Remote access adds ~$45,000 in heavy equipment transport fees.`;
-  } else if (driveTimeMinutes > 10) {
-    logisticsScore = 82;
+  if (driveTimeMinutes != null) {
+    if (driveTimeMinutes > 15) {
+      logisticsScore = 68;
+      logisticsCategory = 'ELEVATED_COST';
+      defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight corridor. Remote access adds ~$45,000 in heavy equipment transport fees.`;
+    } else if (driveTimeMinutes > 10) {
+      logisticsScore = 82;
+      logisticsCategory = 'ACCEPTABLE';
+      defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight interchange. Standard transport clearance.`;
+    }
+  } else {
+    logisticsScore = 75;
     logisticsCategory = 'ACCEPTABLE';
-    defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight interchange. Standard transport clearance.`;
   }
 
   const result: ProximityEvaluationResult = {

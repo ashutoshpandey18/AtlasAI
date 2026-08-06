@@ -191,6 +191,43 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/fetch \
 </details>
 
 <details>
+<summary>2. Heavy Equipment Transport Proximity Routing (POST /v1/proximity)</summary>
+
+Calculates heavy equipment transport drive times and freight corridor clearance routes.
+
+```bash
+curl -X POST https://api.mireye.com/v1/proximity \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_MIREYE_TOKEN" \
+  -d '{
+    "op": "distance",
+    "origins": ["29.7758,-96.1664"],
+    "destinations": ["29.8558,-96.1064"],
+    "mode": "driving",
+    "units": "miles"
+  }'
+```
+
+**Sample JSON Response Payload**:
+```json
+{
+  "op": "distance",
+  "legs": [
+    {
+      "origin_index": 0,
+      "destination_index": 0,
+      "distance_miles": 10.2,
+      "distance_km": 16.4,
+      "duration_seconds": 1627,
+      "duration_minutes": 27.11
+    }
+  ],
+  "credits_charged": 12
+}
+```
+</details>
+
+<details>
 <summary>2. Save Acquisition Campaign (POST /api/campaigns)</summary>
 
 Persists evaluated acquisition campaigns to Turso SQLite storage.

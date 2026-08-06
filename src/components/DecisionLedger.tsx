@@ -216,7 +216,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                 <div className="text-sm font-black text-white">
                   {(() => {
                     const dt = topSite?.driveTimeMinutes ?? topSite?.proximityEval?.driveTimeMinutes;
-                    if (dt == null) return 'Mireye Route Feasibility Evaluated';
+                    if (dt == null) return 'Drive time unavailable';
                     const ratingStr = dt < 5 ? 'Sub-5 Min Freight Clearance'
                       : dt < 10 ? 'Sub-10 Min Freight Clearance'
                       : dt <= 15 ? 'Sub-15 Min Freight Clearance'

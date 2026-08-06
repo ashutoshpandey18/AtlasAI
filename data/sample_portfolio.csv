@@ -1,6 +1,11 @@
-site_name,county,state,lat,lng
-"Walmart Supercenter #1042","Travis County","TX",30.2672,-97.7431
-"Target Distribution Center #88","Bexar County","TX",29.4241,-98.4936
-"Home Depot Logistics Hub #19","Dallas County","TX",32.7767,-96.7970
-"Costco Wholesale #410","Harris County","TX",29.7604,-95.3698
-"Dollar General Retail #9901","Ector County","TX",31.8608,-102.3436
+site_name,street_address,city,state,zip_code
+Dollar General #14321,1002 N University Dr,Nacogdoches,TX,75961
+Dollar General #18492,702 Highway 90 W,Sealy,TX,77474
+Dollar General #21043,4300 E 42nd St,Odessa,TX,79762
+Dollar General #11930,1501 S Georgetown St,Round Rock,TX,78664
+Dollar General #15402,8500 Texas 242,Conroe,TX,77385
+Dollar General #17830,1200 N Bryan Ave,Bryan,TX,77803
+Dollar General #19201,2101 S General Bruce Dr,Temple,TX,76504
+Dollar General #16540,540 Backhaus Rd,New Braunfels,TX,78130
+Dollar General #13890,3200 S FM 51,Weatherford,TX,76087
+Dollar General #22104,110 S Loop 336 W,Conroe,TX,77304

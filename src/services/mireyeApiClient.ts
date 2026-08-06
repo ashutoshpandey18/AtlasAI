@@ -30,18 +30,25 @@ export async function fetchMireyeResilient(
 
   const fetchPromise = (async () => {
     try {
-      // 2. Check edge database cache first (bypassed in LIVE_DEMO_MODE)
-      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || Boolean(bypassCache);
+      // 2. Check edge database cache first (bypassed in LIVE_DEMO_MODE or FORCE_LIVE_MIREYE / Live Verification Mode)
+      const isForceLive = Boolean(bypassCache) || process.env.FORCE_LIVE_MIREYE === 'true' || process.env.NEXT_PUBLIC_FORCE_LIVE_MIREYE === 'true';
+      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || isForceLive;
       if (!isLiveDemo) {
         const cached = await getCache(cacheKey);
         if (cached && cached.fields) {
-          return cached;
+          console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
+          console.log(`[FETCH]\nCoordinates: ${lat}, ${lng}\nFields: ${sortedFields}\nCache Key: ${cacheKey}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
+          return { ...cached, _cacheHit: true };
         }
       }
 
       if (!token) {
         return null;
       }
+
+      console.log(`[FETCH]\nCoordinates: ${lat}, ${lng}\nFields: ${sortedFields}\nCache Key: ${cacheKey}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
+      console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/fetch\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+      const startTime = Date.now();
 
       // 3. Execute with Exponential Backoff & 429 Retry-After compliance
       const backoffDelays = [250, 500, 1000, 2000];
@@ -67,8 +74,10 @@ export async function fetchMireyeResilient(
           if (res.ok) {
             const data = await res.json();
             if (data && data.fields) {
+              console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
+              console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
               await setCache(cacheKey, data);
-              return data;
+              return { ...data, _cacheHit: false };
             }
           } else if (res.status === 429) {
             // Respect Mireye HTTP 429 Retry-After header if present
@@ -132,15 +141,22 @@ export async function fetchMireyeProximityResilient(
 
   const proxPromise = (async () => {
     try {
-      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || Boolean(bypassCache);
+      const isForceLive = Boolean(bypassCache) || process.env.FORCE_LIVE_MIREYE === 'true' || process.env.NEXT_PUBLIC_FORCE_LIVE_MIREYE === 'true';
+      const isLiveDemo = process.env.LIVE_DEMO_MODE === 'true' || isForceLive;
       if (!isLiveDemo) {
         const cached = await getCache(cacheKey);
         if (cached && (cached.matrix || cached.duration_seconds || cached.driveTimeMinutes)) {
-          return cached;
+          console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
+          console.log(`[PROXIMITY]\nOrigin: ${originLat}, ${originLng}\nDestination: ${destLat}, ${destLng}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
+          return { ...cached, _cacheHit: true };
         }
       }
 
       if (!token) return null;
+
+      console.log(`[PROXIMITY]\nOrigin: ${originLat}, ${originLng}\nDestination: ${destLat}, ${destLng}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
+      console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/proximity\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+      const startTime = Date.now();
 
       const backoffDelays = [250, 500, 1000, 2000];
       let attempt = 0;
@@ -170,8 +186,10 @@ export async function fetchMireyeProximityResilient(
           if (res.ok) {
             const data = await res.json();
             if (data) {
+              console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
+              console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
               await setCache(cacheKey, data);
-              return data;
+              return { ...data, _cacheHit: false };
             }
           } else if (res.status === 429) {
             const retryAfterHeader = res.headers.get('retry-after');

@@ -4,6 +4,8 @@
 import { NextResponse } from 'next/server';
 import { runAcquisitionPipeline } from '../../../../agent/orchestrator';
 import { planAcquisitionStrategyAsync } from '../../../../agent/planner';
+import { evaluateSiteTechnicalFeasibility } from '../../../../agent/evaluator';
+import { evaluateAcquisitionIntelligence } from '../../../../agent/intelligence';
 import { saveCampaign, getCache, setCache } from '@/services/db';
 import { fetchMireyeResilient } from '@/services/mireyeApiClient';
 import { evaluateHeavyConstructionLogistics } from '@/services/mireyeProximityService';
@@ -14,9 +16,10 @@ import path from 'path';
 export async function POST(req: Request) {
   try {
     // Trigger in-memory RAM cache warming asynchronously
-    warmMireyeCache().catch(() => {});
+    warmMireyeCache().catch(() => { });
 
     const body = await req.json();
+    const forceLive = Boolean(body.forceLive) || process.env.FORCE_LIVE_MIREYE === 'true' || process.env.NEXT_PUBLIC_FORCE_LIVE_MIREYE === 'true';
     const userPrompt = body.prompt || 'Find commercial solar opportunities in Texas';
     const customSites = body.customSites;
 
@@ -68,7 +71,7 @@ export async function POST(req: Request) {
         };
       });
     } else {
-      // Load default pre-enriched dataset and dynamically adapt to prompt target state
+      // Load default Cached Mireye API Results and dynamically adapt to prompt target state
       let datasetPath = path.join(process.cwd(), 'data/tx_statewide_matches_enriched.json');
       if (!fs.existsSync(datasetPath)) {
         datasetPath = path.join(process.cwd(), '../dollar-general-solar/data/tx_statewide_matches_enriched.json');
@@ -129,10 +132,8 @@ export async function POST(req: Request) {
         const shortId = item.geo_id ? item.geo_id.slice(-6) : `${idx + 101}`;
         const siteName = `Dollar General ${county} #${shortId}`;
 
-        // Ensure physical GIS field variations
+        // Use Cached Mireye API Results fields as-is; only update political labels for target state/county
         const existingFields = item.mireye?.fields || {};
-        const isFlood = idx % 9 === 3;
-        const isSteep = idx % 7 === 1;
 
         return {
           ...item,
@@ -143,12 +144,13 @@ export async function POST(req: Request) {
           lat,
           lon,
           mireye: {
+            ...item.mireye,
             fields: {
               ...existingFields,
+              // Update political labels to match the target prompt state/county
               political_county: { value: county, source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
               political_region: { value: targetState, source: 'OVERTURE_DIVISIONS', fetched_at: new Date().toISOString() },
-              within_floodplain_polygon: { value: isFlood ? true : (existingFields.within_floodplain_polygon?.value ?? false), source: 'FEMA_NFHL', fetched_at: new Date().toISOString() },
-              slope_degrees: { value: isSteep ? 8.4 : (existingFields.slope_degrees?.value ?? 1.2), source: 'USGS_3DEP_COG', fetched_at: new Date().toISOString() },
+              // within_floodplain_polygon and slope_degrees come from Cached Mireye API Results (real FEMA_NFHL / USGS_3DEP_COG responses)
             },
           },
         };
@@ -189,55 +191,123 @@ export async function POST(req: Request) {
             createdAt: new Date().toISOString(),
           }).catch((err) => console.error('Failed to auto-save campaign:', err));
 
-          // 1. Formulate strategy plan & emit strategy_formulated immediately for 0ms visual feedback
+          // 1. Formulate strategy plan & emit strategy_plan immediately for instant visual feedback
           const plan = await planAcquisitionStrategyAsync(userPrompt);
           sendEvent({
-            eventType: 'strategy_formulated',
-            data: { plan },
+            eventType: 'strategy_plan',
+            data: plan,
           });
 
           const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
           const mireyeFields = ['poa_irradiance_optimal_tilt_kwh_m2_yr'];
 
-          // 2. Fast parallel batch fetching with Build Plan rate compliance
-          const BATCH_SIZE = 15;
-          for (let i = 0; i < enrichedDataset.length; i += BATCH_SIZE) {
-            const chunk = enrichedDataset.slice(i, i + BATCH_SIZE);
-            let needsNetworkCall = false;
+          // Cap scan candidates to top 30 parcels for fast, responsive live evaluation (or process all custom uploaded sites)
+          const targetParcels = activeCustomSites.length > 0 ? enrichedDataset : enrichedDataset.slice(0, 30);
+
+          let liveFetches = 0;
+          let cacheHits = 0;
+          const demoRecords = activeCustomSites.length === 0 ? 30 : 0;
+
+          // 2. Fast parallel batch fetching with real-time SSE progress & candidate evaluation events
+          const BATCH_SIZE = 10;
+          for (let i = 0; i < targetParcels.length; i += BATCH_SIZE) {
+            const chunk = targetParcels.slice(i, i + BATCH_SIZE);
+            const currentRangeEnd = Math.min(i + BATCH_SIZE, targetParcels.length);
+
+            sendEvent({
+              eventType: 'batch_progress',
+              message: `Step 2 of 4: Querying Mireye GIS & Underwriting Parcels ${i + 1}-${currentRangeEnd} of ${targetParcels.length}...`,
+            });
 
             await Promise.all(
               chunk.map(async (item: any) => {
-                if (item.mireye && item.mireye.fields) return;
-
                 const lat = Number(item.lat);
                 const lng = Number(item.lon ?? item.lng);
 
                 if (isNaN(lat) || isNaN(lng)) return;
 
-                needsNetworkCall = true;
+                const rawCounty = item.county || (item.mireye?.fields?.['political_county']?.value as string);
+                const shortId = item.geo_id ? item.geo_id.slice(-6) : '45835';
+                const siteName = item.siteName || item.site_name || item.store_name || (item.chain && item.chain.includes('#') 
+                  ? item.chain 
+                  : `${item.chain || 'Dollar General'} Target #${shortId}`);
+
                 const [resData, proxEval] = await Promise.all([
-                  fetchMireyeResilient({ lat, lng, fields: mireyeFields }, token),
-                  evaluateHeavyConstructionLogistics(item.geo_id, item.chain || 'Target Site', lat, lng, token),
+                  fetchMireyeResilient({ lat, lng, fields: mireyeFields, bypassCache: forceLive }, token),
+                  evaluateHeavyConstructionLogistics(item.geo_id, siteName, lat, lng, token, forceLive),
                 ]);
 
                 if (resData && resData.fields) {
                   item.mireye = resData;
+                  item.isFreshMireye = resData._cacheHit === false;
+                  if (resData._cacheHit === false) liveFetches++;
+                  else if (resData._cacheHit === true) cacheHits++;
                 }
                 if (proxEval) {
                   item.proximityEval = proxEval;
                   item.driveTimeMinutes = proxEval.driveTimeMinutes;
+                  item.isFreshProximity = (proxEval as any)._cacheHit === false;
+                }
+
+                // Immediately evaluate parcel technical feasibility and emit live SSE event
+                const techEval = evaluateSiteTechnicalFeasibility(item.geo_id, siteName, rawCounty || 'Target County', item.mireye, userPrompt, item.state);
+                const intelEval = evaluateAcquisitionIntelligence(item.geo_id, rawCounty || 'Target County', item.owner);
+
+                item.techEval = techEval;
+                item.intelEval = intelEval;
+
+                if (techEval.hasDealKiller) {
+                  const reason = techEval.fatalFlaws[0]?.defensibleImpact || 'Failed technical due diligence.';
+                  sendEvent({
+                    eventType: 'site_rejected',
+                    data: {
+                      siteName,
+                      county: rawCounty || 'Target County',
+                      reason,
+                      alternative: techEval.alternativeSuggestion,
+                      inputsChecked: techEval.decisionLedger.inputsChecked,
+                      rulesApplied: techEval.decisionLedger.rulesApplied,
+                      conclusion: techEval.decisionLedger.conclusion,
+                    },
+                  });
+                } else {
+                  sendEvent({
+                    eventType: 'site_evaluated',
+                    data: {
+                      siteName,
+                      county: rawCounty || 'Target County',
+                      techScore: techEval.technicalFeasibilityScore,
+                      priorityScore: intelEval.acquisitionPriorityScore,
+                      inputsChecked: techEval.decisionLedger.inputsChecked,
+                      rulesApplied: techEval.decisionLedger.rulesApplied,
+                      conclusion: techEval.decisionLedger.conclusion,
+                    },
+                  });
                 }
               })
             );
 
-            if (needsNetworkCall && i + BATCH_SIZE < enrichedDataset.length) {
-              await new Promise((resolve) => setTimeout(resolve, 350));
+            if (i + BATCH_SIZE < targetParcels.length) {
+              await new Promise((resolve) => setTimeout(resolve, 150));
             }
           }
 
-          // 3. Execute evaluation pipeline and stream decision ledger results
-          await runAcquisitionPipeline(userPrompt, enrichedDataset, (evt) => {
-            sendEvent(evt);
+          const executionMode = liveFetches > 0 ? 'LIVE' : cacheHits > 0 ? 'CACHE' : activeCustomSites.length === 0 ? 'DEMO' : 'UNKNOWN';
+          const executionSummary = {
+            liveFetches,
+            cacheHits,
+            demoRecords,
+            executionMode,
+          };
+
+          // 3. Execute final ranking, memo generation, and emit final_result
+          await runAcquisitionPipeline(userPrompt, targetParcels, (evt) => {
+            if (evt.eventType === 'final_result') {
+              sendEvent({
+                ...evt,
+                executionSummary,
+              });
+            }
           });
         } catch (err: any) {
           sendEvent({ eventType: 'error', error: err.message || 'Pipeline execution error' });

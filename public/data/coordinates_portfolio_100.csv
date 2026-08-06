@@ -1,101 +1,101 @@
-geo_id,chain,latitude,longitude,city,state
-FRESH-COORD-TX-0001,Dallas Solar Freight Hub #1,32.76953,-96.72102,Dallas,TX
-FRESH-COORD-TX-0002,Austin Solar Freight Hub #2,30.34579,-97.72324,Austin,TX
-FRESH-COORD-TX-0003,San Antonio Solar Freight Hub #3,29.34825,-98.42124,San Antonio,TX
-FRESH-COORD-TX-0004,Fort Worth Solar Freight Hub #4,32.77721,-97.29856,Fort Worth,TX
-FRESH-COORD-CA-0005,Los Angeles Solar Freight Hub #5,34.10736,-118.32839,Los Angeles,CA
-FRESH-COORD-CA-0006,Ontario Solar Freight Hub #6,34.12045,-117.65394,Ontario,CA
-FRESH-COORD-CA-0007,Fremont Solar Freight Hub #7,37.61324,-122.04913,Fremont,CA
-FRESH-COORD-CA-0008,Stockton Solar Freight Hub #8,37.99743,-121.30842,Stockton,CA
-FRESH-COORD-CA-0009,San Diego Solar Freight Hub #9,32.67269,-117.10755,San Diego,CA
-FRESH-COORD-FL-0010,Miami Solar Freight Hub #10,25.68534,-80.20909,Miami,FL
-FRESH-COORD-FL-0011,Orlando Solar Freight Hub #11,28.48334,-81.44855,Orlando,FL
-FRESH-COORD-FL-0012,Jacksonville Solar Freight Hub #12,30.25791,-81.61557,Jacksonville,FL
-FRESH-COORD-FL-0013,Tampa Solar Freight Hub #13,27.98552,-82.41974,Tampa,FL
-FRESH-COORD-FL-0014,Lakeland Solar Freight Hub #14,27.96112,-81.88537,Lakeland,FL
-FRESH-COORD-GA-0015,Atlanta Solar Freight Hub #15,33.81161,-84.31888,Atlanta,GA
-FRESH-COORD-GA-0016,Savannah Solar Freight Hub #16,32.08338,-81.05161,Savannah,GA
-FRESH-COORD-AZ-0017,Phoenix Solar Freight Hub #17,33.46973,-112.06037,Phoenix,AZ
-FRESH-COORD-AZ-0018,Tucson Solar Freight Hub #18,32.16843,-110.91423,Tucson,AZ
-FRESH-COORD-AZ-0019,Goodyear Solar Freight Hub #19,33.34661,-112.31333,Goodyear,AZ
-FRESH-COORD-OH-0020,Columbus Solar Freight Hub #20,40.02445,-83.06872,Columbus,OH
-FRESH-COORD-OH-0021,Cincinnati Solar Freight Hub #21,39.13169,-84.47798,Cincinnati,OH
-FRESH-COORD-OH-0022,Cleveland Solar Freight Hub #22,41.5383,-81.62069,Cleveland,OH
-FRESH-COORD-NC-0023,Charlotte Solar Freight Hub #23,35.25638,-80.85893,Charlotte,NC
-FRESH-COORD-NC-0024,Raleigh Solar Freight Hub #24,35.7735,-78.65949,Raleigh,NC
-FRESH-COORD-IL-0025,Chicago Solar Freight Hub #25,41.95281,-87.58485,Chicago,IL
-FRESH-COORD-IL-0026,Joliet Solar Freight Hub #26,41.53009,-88.09788,Joliet,IL
-FRESH-COORD-CO-0027,Denver Solar Freight Hub #27,39.78126,-104.93671,Denver,CO
-FRESH-COORD-WA-0028,Seattle Solar Freight Hub #28,47.61644,-122.35871,Seattle,WA
-FRESH-COORD-NV-0029,Las Vegas Solar Freight Hub #29,36.12414,-115.19501,Las Vegas,NV
-FRESH-COORD-TX-0030,Houston Solar Freight Hub #30,29.70586,-95.35667,Houston,TX
-FRESH-COORD-TX-0031,Dallas Solar Freight Hub #31,32.83691,-96.81772,Dallas,TX
-FRESH-COORD-TX-0032,Austin Solar Freight Hub #32,30.18948,-97.72132,Austin,TX
-FRESH-COORD-TX-0033,San Antonio Solar Freight Hub #33,29.4672,-98.41006,San Antonio,TX
-FRESH-COORD-TX-0034,Fort Worth Solar Freight Hub #34,32.6675,-97.3609,Fort Worth,TX
-FRESH-COORD-CA-0035,Los Angeles Solar Freight Hub #35,33.98734,-118.2162,Los Angeles,CA
-FRESH-COORD-CA-0036,Ontario Solar Freight Hub #36,33.97657,-117.71138,Ontario,CA
-FRESH-COORD-CA-0037,Fremont Solar Freight Hub #37,37.52191,-122.00406,Fremont,CA
-FRESH-COORD-CA-0038,Stockton Solar Freight Hub #38,38.01165,-121.22828,Stockton,CA
-FRESH-COORD-CA-0039,San Diego Solar Freight Hub #39,32.6696,-117.10471,San Diego,CA
-FRESH-COORD-FL-0040,Miami Solar Freight Hub #40,25.83746,-80.20142,Miami,FL
-FRESH-COORD-FL-0041,Orlando Solar Freight Hub #41,28.59186,-81.35185,Orlando,FL
-FRESH-COORD-FL-0042,Jacksonville Solar Freight Hub #42,30.3624,-81.57406,Jacksonville,FL
-FRESH-COORD-FL-0043,Tampa Solar Freight Hub #43,27.97695,-82.53206,Tampa,FL
-FRESH-COORD-FL-0044,Lakeland Solar Freight Hub #44,28.04638,-82.01074,Lakeland,FL
-FRESH-COORD-GA-0045,Atlanta Solar Freight Hub #45,33.76103,-84.38562,Atlanta,GA
-FRESH-COORD-GA-0046,Savannah Solar Freight Hub #46,32.16164,-81.12372,Savannah,GA
-FRESH-COORD-AZ-0047,Phoenix Solar Freight Hub #47,33.41048,-112.15121,Phoenix,AZ
-FRESH-COORD-AZ-0048,Tucson Solar Freight Hub #48,32.25673,-111.04292,Tucson,AZ
-FRESH-COORD-AZ-0049,Goodyear Solar Freight Hub #49,33.36511,-112.39165,Goodyear,AZ
-FRESH-COORD-OH-0050,Columbus Solar Freight Hub #50,39.99969,-82.91322,Columbus,OH
-FRESH-COORD-OH-0051,Cincinnati Solar Freight Hub #51,39.05138,-84.45507,Cincinnati,OH
-FRESH-COORD-OH-0052,Cleveland Solar Freight Hub #52,41.52451,-81.67926,Cleveland,OH
-FRESH-COORD-NC-0053,Charlotte Solar Freight Hub #53,35.17725,-80.79225,Charlotte,NC
-FRESH-COORD-NC-0054,Raleigh Solar Freight Hub #54,35.80169,-78.63951,Raleigh,NC
-FRESH-COORD-IL-0055,Chicago Solar Freight Hub #55,41.79291,-87.65002,Chicago,IL
-FRESH-COORD-IL-0056,Joliet Solar Freight Hub #56,41.49193,-88.06787,Joliet,IL
-FRESH-COORD-CO-0057,Denver Solar Freight Hub #57,39.72705,-105.02019,Denver,CO
-FRESH-COORD-WA-0058,Seattle Solar Freight Hub #58,47.65994,-122.34194,Seattle,WA
-FRESH-COORD-NV-0059,Las Vegas Solar Freight Hub #59,36.11044,-115.14694,Las Vegas,NV
-FRESH-COORD-TX-0060,Houston Solar Freight Hub #60,29.70968,-95.40432,Houston,TX
-FRESH-COORD-TX-0061,Dallas Solar Freight Hub #61,32.82233,-96.71101,Dallas,TX
-FRESH-COORD-TX-0062,Austin Solar Freight Hub #62,30.29231,-97.74327,Austin,TX
-FRESH-COORD-TX-0063,San Antonio Solar Freight Hub #63,29.40329,-98.43692,San Antonio,TX
-FRESH-COORD-TX-0064,Fort Worth Solar Freight Hub #64,32.80579,-97.30805,Fort Worth,TX
-FRESH-COORD-CA-0065,Los Angeles Solar Freight Hub #65,34.05417,-118.15761,Los Angeles,CA
-FRESH-COORD-CA-0066,Ontario Solar Freight Hub #66,34.07838,-117.64804,Ontario,CA
-FRESH-COORD-CA-0067,Fremont Solar Freight Hub #67,37.52351,-121.99335,Fremont,CA
-FRESH-COORD-CA-0068,Stockton Solar Freight Hub #68,38.00518,-121.31213,Stockton,CA
-FRESH-COORD-CA-0069,San Diego Solar Freight Hub #69,32.71619,-117.08707,San Diego,CA
-FRESH-COORD-FL-0070,Miami Solar Freight Hub #70,25.77376,-80.21733,Miami,FL
-FRESH-COORD-FL-0071,Orlando Solar Freight Hub #71,28.45366,-81.43609,Orlando,FL
-FRESH-COORD-FL-0072,Jacksonville Solar Freight Hub #72,30.38656,-81.66407,Jacksonville,FL
-FRESH-COORD-FL-0073,Tampa Solar Freight Hub #73,27.99997,-82.51929,Tampa,FL
-FRESH-COORD-FL-0074,Lakeland Solar Freight Hub #74,28.10783,-82.0307,Lakeland,FL
-FRESH-COORD-GA-0075,Atlanta Solar Freight Hub #75,33.80903,-84.37395,Atlanta,GA
-FRESH-COORD-GA-0076,Savannah Solar Freight Hub #76,32.16006,-81.17351,Savannah,GA
-FRESH-COORD-AZ-0077,Phoenix Solar Freight Hub #77,33.49809,-112.15557,Phoenix,AZ
-FRESH-COORD-AZ-0078,Tucson Solar Freight Hub #78,32.25758,-110.98048,Tucson,AZ
-FRESH-COORD-AZ-0079,Goodyear Solar Freight Hub #79,33.44429,-112.43653,Goodyear,AZ
-FRESH-COORD-OH-0080,Columbus Solar Freight Hub #80,39.88263,-82.92473,Columbus,OH
-FRESH-COORD-OH-0081,Cincinnati Solar Freight Hub #81,39.02996,-84.56857,Cincinnati,OH
-FRESH-COORD-OH-0082,Cleveland Solar Freight Hub #82,41.45982,-81.68878,Cleveland,OH
-FRESH-COORD-NC-0083,Charlotte Solar Freight Hub #83,35.29182,-80.87609,Charlotte,NC
-FRESH-COORD-NC-0084,Raleigh Solar Freight Hub #84,35.8579,-78.69764,Raleigh,NC
-FRESH-COORD-IL-0085,Chicago Solar Freight Hub #85,41.83788,-87.71954,Chicago,IL
-FRESH-COORD-IL-0086,Joliet Solar Freight Hub #86,41.46217,-88.0175,Joliet,IL
-FRESH-COORD-CO-0087,Denver Solar Freight Hub #87,39.67741,-105.03371,Denver,CO
-FRESH-COORD-WA-0088,Seattle Solar Freight Hub #88,47.57,-122.24402,Seattle,WA
-FRESH-COORD-NV-0089,Las Vegas Solar Freight Hub #89,36.16087,-115.22881,Las Vegas,NV
-FRESH-COORD-TX-0090,Houston Solar Freight Hub #90,29.78092,-95.32587,Houston,TX
-FRESH-COORD-TX-0091,Dallas Solar Freight Hub #91,32.75056,-96.86336,Dallas,TX
-FRESH-COORD-TX-0092,Austin Solar Freight Hub #92,30.27463,-97.70475,Austin,TX
-FRESH-COORD-TX-0093,San Antonio Solar Freight Hub #93,29.41531,-98.44853,San Antonio,TX
-FRESH-COORD-TX-0094,Fort Worth Solar Freight Hub #94,32.83195,-97.31201,Fort Worth,TX
-FRESH-COORD-CA-0095,Los Angeles Solar Freight Hub #95,34.07227,-118.15831,Los Angeles,CA
-FRESH-COORD-CA-0096,Ontario Solar Freight Hub #96,34.08953,-117.6808,Ontario,CA
-FRESH-COORD-CA-0097,Fremont Solar Freight Hub #97,37.60686,-122.0054,Fremont,CA
-FRESH-COORD-CA-0098,Stockton Solar Freight Hub #98,37.92404,-121.31947,Stockton,CA
-FRESH-COORD-CA-0099,San Diego Solar Freight Hub #99,32.63102,-117.14814,San Diego,CA
-FRESH-COORD-FL-0100,Miami Solar Freight Hub #100,25.71458,-80.22847,Miami,FL
+site_id,site_name,latitude,longitude,county,state
+dg-tx-14321,Dollar General #14321,31.6198,-94.6512,Nacogdoches County,TX
+dg-tx-18492,Dollar General #18492,29.7758,-96.1664,Austin County,TX
+dg-tx-21043,Dollar General #21043,31.8841,-102.3291,Ector County,TX
+dg-tx-11930,Dollar General #11930,30.5012,-97.6743,Williamson County,TX
+dg-tx-15402,Dollar General #15402,30.2014,-95.4215,Montgomery County,TX
+dg-tx-17830,Dollar General #17830,30.6804,-96.3741,Brazos County,TX
+dg-tx-19201,Dollar General #19201,31.0842,-97.3512,Bell County,TX
+dg-tx-16540,Dollar General #16540,29.7121,-98.0845,Comal County,TX
+dg-tx-13890,Dollar General #13890,32.7214,-97.8012,Parker County,TX
+dg-tx-22104,Dollar General #22104,30.2912,-95.4741,Montgomery County,TX
+dg-fl-16740,Dollar General #16740,28.6678,-81.5034,Orange County,FL
+dg-fl-18920,Dollar General #18920,27.9789,-82.4214,Hillsborough County,FL
+dg-fl-14502,Dollar General #14502,30.3989,-81.7145,Duval County,FL
+dg-fl-20310,Dollar General #20310,25.8032,-80.2412,Miami-Dade County,FL
+dg-fl-15890,Dollar General #15890,27.8102,-82.6790,Pinellas County,FL
+dg-fl-17420,Dollar General #17420,28.0514,-81.9421,Polk County,FL
+dg-ga-15930,Dollar General #15930,33.7178,-84.3490,Fulton County,GA
+dg-ga-18204,Dollar General #18204,33.4512,-81.9801,Richmond County,GA
+dg-ga-13940,Dollar General #13940,32.4289,-84.9612,Muscogee County,GA
+dg-ga-19402,Dollar General #19402,32.0621,-81.1245,Chatham County,GA
+dg-ga-17210,Dollar General #17210,32.8104,-83.6641,Bibb County,GA
+dg-az-16240,Dollar General #16240,33.4658,-112.0214,Maricopa County,AZ
+dg-az-19830,Dollar General #19830,32.1812,-110.9678,Pima County,AZ
+dg-az-14920,Dollar General #14920,32.8790,-111.7345,Pinal County,AZ
+dg-az-17890,Dollar General #17890,35.2014,-114.0210,Mohave County,AZ
+dg-ca-18402,Dollar General #18402,34.0289,-118.2456,Los Angeles County,CA
+dg-ca-16930,Dollar General #16930,32.7045,-117.1301,San Diego County,CA
+dg-ca-19204,Dollar General #19204,33.9512,-117.3890,Riverside County,CA
+dg-ca-15401,Dollar General #15401,38.6301,-121.4402,Sacramento County,CA
+dg-nc-17320,Dollar General #17320,35.7890,-78.5801,Wake County,NC
+dg-nc-19405,Dollar General #19405,35.2401,-80.8790,Mecklenburg County,NC
+dg-nc-15820,Dollar General #15820,36.0812,-79.7701,Guilford County,NC
+dg-oh-16940,Dollar General #16940,39.9578,-82.9589,Franklin County,OH
+dg-oh-18310,Dollar General #18310,41.5189,-81.6601,Cuyahoga County,OH
+dg-oh-14830,Dollar General #14830,39.7545,-84.2201,Montgomery County,OH
+dg-tx-14421,Dollar General #14421,31.6248,-94.6462,Nacogdoches County,TX
+dg-tx-18592,Dollar General #18592,29.7808,-96.1614,Austin County,TX
+dg-tx-21143,Dollar General #21143,31.8891,-102.3241,Ector County,TX
+dg-tx-12030,Dollar General #12030,30.5062,-97.6693,Williamson County,TX
+dg-tx-15502,Dollar General #15502,30.2064,-95.4165,Montgomery County,TX
+dg-tx-17930,Dollar General #17930,30.6854,-96.3691,Brazos County,TX
+dg-tx-19301,Dollar General #19301,31.0892,-97.3462,Bell County,TX
+dg-tx-16640,Dollar General #16640,29.7171,-98.0795,Comal County,TX
+dg-tx-13990,Dollar General #13990,32.7264,-97.7962,Parker County,TX
+dg-tx-22204,Dollar General #22204,30.2962,-95.4691,Montgomery County,TX
+dg-fl-16840,Dollar General #16840,28.6728,-81.4984,Orange County,FL
+dg-fl-19020,Dollar General #19020,27.9839,-82.4164,Hillsborough County,FL
+dg-fl-14602,Dollar General #14602,30.4039,-81.7095,Duval County,FL
+dg-fl-20410,Dollar General #20410,25.8082,-80.2362,Miami-Dade County,FL
+dg-fl-15990,Dollar General #15990,27.8152,-82.6740,Pinellas County,FL
+dg-fl-17520,Dollar General #17520,28.0564,-81.9371,Polk County,FL
+dg-ga-16030,Dollar General #16030,33.7228,-84.3440,Fulton County,GA
+dg-ga-18304,Dollar General #18304,33.4562,-81.9751,Richmond County,GA
+dg-ga-14040,Dollar General #14040,32.4339,-84.9562,Muscogee County,GA
+dg-ga-19502,Dollar General #19502,32.0671,-81.1195,Chatham County,GA
+dg-ga-17310,Dollar General #17310,32.8154,-83.6591,Bibb County,GA
+dg-az-16340,Dollar General #16340,33.4708,-112.0164,Maricopa County,AZ
+dg-az-19930,Dollar General #19930,32.1862,-110.9628,Pima County,AZ
+dg-az-15020,Dollar General #15020,32.8840,-111.7295,Pinal County,AZ
+dg-az-17990,Dollar General #17990,35.2064,-114.0160,Mohave County,AZ
+dg-ca-18502,Dollar General #18502,34.0339,-118.2406,Los Angeles County,CA
+dg-ca-17030,Dollar General #17030,32.7095,-117.1251,San Diego County,CA
+dg-ca-19304,Dollar General #19304,33.9562,-117.3840,Riverside County,CA
+dg-ca-15501,Dollar General #15501,38.6351,-121.4352,Sacramento County,CA
+dg-nc-17420,Dollar General #17420,35.7940,-78.5751,Wake County,NC
+dg-nc-19505,Dollar General #19505,35.2451,-80.8740,Mecklenburg County,NC
+dg-nc-15920,Dollar General #15920,36.0862,-79.7651,Guilford County,NC
+dg-oh-17040,Dollar General #17040,39.9628,-82.9539,Franklin County,OH
+dg-oh-18410,Dollar General #18410,41.5239,-81.6551,Cuyahoga County,OH
+dg-oh-14930,Dollar General #14930,39.7595,-84.2151,Montgomery County,OH
+dg-tx-14521,Dollar General #14521,31.6298,-94.6412,Nacogdoches County,TX
+dg-tx-18692,Dollar General #18692,29.7858,-96.1564,Austin County,TX
+dg-tx-21243,Dollar General #21243,31.8941,-102.3191,Ector County,TX
+dg-tx-12130,Dollar General #12130,30.5112,-97.6643,Williamson County,TX
+dg-tx-15602,Dollar General #15602,30.2114,-95.4115,Montgomery County,TX
+dg-tx-18030,Dollar General #18030,30.6904,-96.3641,Brazos County,TX
+dg-tx-19401,Dollar General #19401,31.0942,-97.3412,Bell County,TX
+dg-tx-16740,Dollar General #16740,29.7221,-98.0745,Comal County,TX
+dg-tx-14090,Dollar General #14090,32.7314,-97.7912,Parker County,TX
+dg-tx-22304,Dollar General #22304,30.3012,-95.4641,Montgomery County,TX
+dg-fl-16940,Dollar General #16940,28.6778,-81.4934,Orange County,FL
+dg-fl-19120,Dollar General #19120,27.9889,-82.4114,Hillsborough County,FL
+dg-fl-14702,Dollar General #14702,30.4089,-81.7045,Duval County,FL
+dg-fl-20510,Dollar General #20510,25.8132,-80.2312,Miami-Dade County,FL
+dg-fl-16090,Dollar General #16090,27.8202,-82.6690,Pinellas County,FL
+dg-fl-17620,Dollar General #17620,28.0614,-81.9321,Polk County,FL
+dg-ga-16130,Dollar General #16130,33.7278,-84.3390,Fulton County,GA
+dg-ga-18404,Dollar General #18404,33.4612,-81.9701,Richmond County,GA
+dg-ga-14140,Dollar General #14140,32.4389,-84.9512,Muscogee County,GA
+dg-ga-19602,Dollar General #19602,32.0721,-81.1145,Chatham County,GA
+dg-ga-17410,Dollar General #17410,32.8204,-83.6541,Bibb County,GA
+dg-az-16440,Dollar General #16440,33.4758,-112.0114,Maricopa County,AZ
+dg-az-20030,Dollar General #20030,32.1912,-110.9578,Pima County,AZ
+dg-az-15120,Dollar General #15120,32.8890,-111.7245,Pinal County,AZ
+dg-az-18090,Dollar General #18090,35.2114,-114.0110,Mohave County,AZ
+dg-ca-18602,Dollar General #18602,34.0389,-118.2356,Los Angeles County,CA
+dg-ca-17130,Dollar General #17130,32.7145,-117.1201,San Diego County,CA
+dg-ca-19404,Dollar General #19404,33.9612,-117.3790,Riverside County,CA
+dg-ca-15601,Dollar General #15601,38.6401,-121.4302,Sacramento County,CA
+dg-nc-17520,Dollar General #17520,35.7990,-78.5701,Wake County,NC

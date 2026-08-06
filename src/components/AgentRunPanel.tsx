@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, FileText, CheckCircle2, Upload, Zap } from 'lucide-react';
+import { Play, FileText, CheckCircle2, Upload, Zap, Activity, Database } from 'lucide-react';
 import { InvestmentMemoModal } from './InvestmentMemoModal';
 import { AskWhyModal, AskWhyData } from './AskWhyModal';
 import { ParcelUploadModal, CustomSiteParcel } from './ParcelUploadModal';
@@ -58,11 +58,18 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
       startScan(initialPrompt);
     }
   }, [autoRunInstantDemo, autoRunScan]);
+  const [executionSummary, setExecutionSummary] = useState<{
+    liveFetches: number;
+    cacheHits: number;
+    demoRecords: number;
+    executionMode: string;
+  } | null>(null);
+
   const [plan, setPlan] = useState<StrategyPlan | null>(null);
   const [rejections, setRejections] = useState<RejectionItem[]>([]);
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [survivors, setSurvivors] = useState<SurvivorItem[]>([]);
-  
+
   const [selectedMemo, setSelectedMemo] = useState<any>(null);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
 
@@ -75,6 +82,9 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [customUploadedSites, setCustomUploadedSites] = useState<CustomSiteParcel[]>([]);
   const [customUploadedFilename, setCustomUploadedFilename] = useState<string | null>(null);
+
+  // Live Verification Mode state (Force Live Mireye Calls)
+  const [forceLive, setForceLive] = useState<boolean>(false);
 
   const [scanStep, setScanStep] = useState<string>('');
 
@@ -90,7 +100,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
       const res = await fetch('/api/memo/0');
       if (res.ok) {
         const demoMemo = await res.json();
-        
+
         const demoPlan: StrategyPlan = {
           businessGoal: 'Find fast-deployment solar carport targets in Texas under $2M capex.',
           targetState: 'TX',
@@ -199,6 +209,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
         body: JSON.stringify({
           prompt: promptToUse,
           customSites: customUploadedSites.length > 0 ? customUploadedSites : undefined,
+          forceLive,
         }),
       });
 
@@ -226,13 +237,19 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               if (eType === 'strategy_plan') {
                 setPlan(eData);
                 setScanStep('Step 2 of 4: Querying Mireye GIS Endpoints...');
+              } else if (eType === 'batch_progress') {
+                setScanStep(event.message || 'Step 2 of 4: Querying Mireye GIS Endpoints...');
               } else if (eType === 'site_rejected') {
                 setRejections((prev) => [...prev, eData]);
                 setScanStep('Step 3 of 4: Screening Rejection Flaws...');
               } else if (eType === 'site_evaluated') {
                 setEvaluations((prev) => [...prev, eData]);
+                setScanStep('Step 3 of 4: Underwriting Candidate Feasibility...');
               } else if (eType === 'final_result') {
                 setSurvivors(eData.survivors || []);
+                if (event.executionSummary) {
+                  setExecutionSummary(event.executionSummary);
+                }
                 setScanStep('Step 4 of 4: Generating Investment Memo...');
               }
             } catch (err) {
@@ -281,12 +298,56 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
 
   return (
     <div className="w-full bg-transparent text-white space-y-6 font-sans text-left relative z-10">
-      
+
+      {/* Pure Borderless Typography Data Status Stream */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2 font-mono">
+          <span className="text-slate-400 font-bold uppercase tracking-wider">DATA STATUS:</span>
+          {executionSummary ? (
+            executionSummary.liveFetches > 0 ? (
+              <span className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold">
+                <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                Live Mireye API ({executionSummary.liveFetches} Live Calls)
+              </span>
+            ) : executionSummary.cacheHits > 0 ? (
+              <span className="inline-flex items-center gap-1.5 text-amber-300 text-xs font-bold">
+                <Database className="w-3.5 h-3.5 text-amber-400" />
+                Cached Mireye API Result ({executionSummary.cacheHits} Edge Cache Hits)
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-amber-300 text-xs font-bold">
+                <Database className="w-3.5 h-3.5 text-amber-400" />
+                Cached Mireye API Result
+              </span>
+            )
+          ) : customUploadedSites.length > 0 ? (
+            <span className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold">
+              <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              Live Mireye API
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-amber-300 text-xs font-bold">
+              <Database className="w-3.5 h-3.5 text-amber-400" />
+              Cached Mireye API Result
+            </span>
+          )}
+        </div>
+        <span className="text-[11px] text-slate-400">
+          {executionSummary
+            ? executionSummary.liveFetches > 0
+              ? `${executionSummary.liveFetches} evaluations retrieved live from Mireye API endpoints.`
+              : `${executionSummary.cacheHits} evaluations served from Mireye Edge Cache (0 API credits consumed).`
+            : customUploadedSites.length > 0
+            ? 'Evaluations retrieved live from Mireye API endpoints during this session.'
+            : 'Previously retrieved from Mireye API (Atlas Demo Portfolio). Upload a custom CSV for live Mireye evaluation.'}
+        </span>
+      </div>
+
       {/* Target State Selector Pills & Custom CSV/GeoJSON Upload Button */}
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-mono font-bold">
           <span className="text-slate-400 uppercase tracking-wider">TARGET STATE PORTFOLIO:</span>
-          
+
           {/* Custom Upload Trigger Button */}
           <button
             type="button"
@@ -320,11 +381,10 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           <button
             type="button"
             onClick={() => handlePillClick('Find fast-deployment solar carport targets in Texas under $2M capex.')}
-            className={`cursor-pointer transition-all ${
-              prompt.includes('Texas')
+            className={`cursor-pointer transition-all ${prompt.includes('Texas')
                 ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             Texas (ERCOT grid)
           </button>
@@ -332,11 +392,10 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           <button
             type="button"
             onClick={() => handlePillClick('Find high-yield retail solar carport targets in Florida with low flood risk.')}
-            className={`cursor-pointer transition-all ${
-              prompt.includes('Florida')
+            className={`cursor-pointer transition-all ${prompt.includes('Florida')
                 ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             Florida (FRCC grid)
           </button>
@@ -344,11 +403,10 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           <button
             type="button"
             onClick={() => handlePillClick('Find corporate-owned Dollar General sites in Georgia with strong solar potential.')}
-            className={`cursor-pointer transition-all ${
-              prompt.includes('Georgia')
+            className={`cursor-pointer transition-all ${prompt.includes('Georgia')
                 ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             Georgia (SERC grid)
           </button>
@@ -356,11 +414,10 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           <button
             type="button"
             onClick={() => handlePillClick('Find retail carport candidate sites in North Carolina with quick grid tie-in.')}
-            className={`cursor-pointer transition-all ${
-              prompt.includes('North Carolina')
+            className={`cursor-pointer transition-all ${prompt.includes('North Carolina')
                 ? 'text-slate-100 font-bold border-b border-white/80 pb-0.5'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             North Carolina (SERC grid)
           </button>
@@ -378,7 +435,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
             className="w-full bg-[#0a0a14] border-b-2 border-white/20 focus:border-white/80 px-4 py-3.5 text-xs sm:text-sm text-white focus:outline-none font-semibold transition-all"
           />
         </div>
-        
+
         {/* Instant Demo Fast Button */}
         <button
           type="button"
@@ -426,7 +483,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
       {/* Streamed Execution Outputs (Pure Typography Streams) */}
       {(plan || rejections.length > 0 || evaluations.length > 0) && (
         <div className="space-y-6 pt-6 border-t border-white/10">
-          
+
           {/* Strategy Plan Stream */}
           {plan && (
             <div className="space-y-1 font-mono text-xs border-b border-white/10 pb-3">
@@ -440,7 +497,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
 
           {/* Rejections & Evaluations Streams */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Rejection Ledger Stream */}
             {/* Rejections Stream with Compact Fixed Max-Height Scroll Container */}
             <div className="space-y-3 font-sans">
@@ -567,7 +624,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
           {/* MINIMALIST & PROFESSIONAL RANK #1 CANDIDATE UNDERWRITING STREAM (Card-Free, Div-Free) */}
           {survivors.length > 0 && (
             <div className="pt-6 border-t border-white/10 space-y-3 text-left font-sans">
-              
+
               {/* Header Badge */}
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">

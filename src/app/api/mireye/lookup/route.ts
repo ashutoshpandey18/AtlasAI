@@ -18,14 +18,24 @@ export async function POST(req: Request) {
     const token = process.env.MIREYE_API_TOKEN || process.env.MIREYE_TOKEN || process.env.NEXT_PUBLIC_MIREYE_API_TOKEN || process.env.NEXT_PUBLIC_MIREYE_TOKEN;
     const cacheKey = `mireye-lookup-v3:${(address || apn).toLowerCase()}`;
 
-    // Check edge cache
-    const cached = await getCache(cacheKey);
-    if (cached && !cached.error && typeof cached.lat === 'number' && !isNaN(cached.lat)) {
-      return NextResponse.json(cached);
+    const forceLive = Boolean(body.forceLive) || process.env.FORCE_LIVE_MIREYE === 'true' || process.env.NEXT_PUBLIC_FORCE_LIVE_MIREYE === 'true';
+
+    // Check edge cache (bypassed in Live Verification Mode)
+    if (!forceLive) {
+      const cached = await getCache(cacheKey);
+      if (cached && !cached.error && typeof cached.lat === 'number' && !isNaN(cached.lat)) {
+        console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
+        console.log(`[LOOKUP]\nAddress: ${address || apn}\nCache Key: ${cacheKey}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
+        return NextResponse.json(cached);
+      }
     }
 
     if (token) {
       try {
+        console.log(`[LOOKUP]\nAddress: ${address || apn}\nCache Key: ${cacheKey}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
+        console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/lookup\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+        const startTime = Date.now();
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -50,6 +60,8 @@ export async function POST(req: Request) {
 
         if (res.ok) {
           const data = await res.json();
+          console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
+          console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
           await setCache(cacheKey, data);
           return NextResponse.json(data);
         }

@@ -71,9 +71,9 @@ export function AskWhyModal({ data, isOpen, onClose }: AskWhyModalProps) {
         {data.inputsChecked && data.inputsChecked.length > 0 && (
           <div className="space-y-2">
             <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
-              MIREYE PHYSICAL SIGNALS CHECKED:
+              PHYSICAL GIS SIGNALS CHECKED:
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+            <div className="grid grid-cols-1 gap-2 text-xs font-mono">
               {data.inputsChecked.map((input, idx) => (
                 <div key={idx} className="bg-[#14141c] border border-white/10 p-2.5 rounded-xl font-mono text-[11px] text-slate-200">
                   {input}

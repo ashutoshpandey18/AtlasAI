@@ -1,16 +1,16 @@
-geo_id,chain,latitude,longitude,city,state
-FRESH-COORD-TX-0001,Dallas Solar Freight Hub #1,32.76953,-96.72102,Dallas,TX
-FRESH-COORD-TX-0002,Austin Solar Freight Hub #2,30.34579,-97.72324,Austin,TX
-FRESH-COORD-TX-0003,San Antonio Solar Freight Hub #3,29.34825,-98.42124,San Antonio,TX
-FRESH-COORD-TX-0004,Fort Worth Solar Freight Hub #4,32.77721,-97.29856,Fort Worth,TX
-FRESH-COORD-CA-0005,Los Angeles Solar Freight Hub #5,34.10736,-118.32839,Los Angeles,CA
-FRESH-COORD-CA-0006,Ontario Solar Freight Hub #6,34.12045,-117.65394,Ontario,CA
-FRESH-COORD-CA-0007,Fremont Solar Freight Hub #7,37.61324,-122.04913,Fremont,CA
-FRESH-COORD-CA-0008,Stockton Solar Freight Hub #8,37.99743,-121.30842,Stockton,CA
-FRESH-COORD-CA-0009,San Diego Solar Freight Hub #9,32.67269,-117.10755,San Diego,CA
-FRESH-COORD-FL-0010,Miami Solar Freight Hub #10,25.68534,-80.20909,Miami,FL
-FRESH-COORD-FL-0011,Orlando Solar Freight Hub #11,28.48334,-81.44855,Orlando,FL
-FRESH-COORD-FL-0012,Jacksonville Solar Freight Hub #12,30.25791,-81.61557,Jacksonville,FL
-FRESH-COORD-FL-0013,Tampa Solar Freight Hub #13,27.98552,-82.41974,Tampa,FL
-FRESH-COORD-FL-0014,Lakeland Solar Freight Hub #14,27.96112,-81.88537,Lakeland,FL
-FRESH-COORD-GA-0015,Atlanta Solar Freight Hub #15,33.81161,-84.31888,Atlanta,GA
+site_id,site_name,latitude,longitude,county,state
+dg-tx-14321,Dollar General #14321,31.6198,-94.6512,Nacogdoches County,TX
+dg-tx-18492,Dollar General #18492,29.7758,-96.1664,Austin County,TX
+dg-tx-21043,Dollar General #21043,31.8841,-102.3291,Ector County,TX
+dg-tx-11930,Dollar General #11930,30.5012,-97.6743,Williamson County,TX
+dg-tx-15402,Dollar General #15402,30.2014,-95.4215,Montgomery County,TX
+dg-tx-17830,Dollar General #17830,30.6804,-96.3741,Brazos County,TX
+dg-tx-19201,Dollar General #19201,31.0842,-97.3512,Bell County,TX
+dg-tx-16540,Dollar General #16540,29.7121,-98.0845,Comal County,TX
+dg-tx-13890,Dollar General #13890,32.7214,-97.8012,Parker County,TX
+dg-tx-22104,Dollar General #22104,30.2912,-95.4741,Montgomery County,TX
+dg-fl-16740,Dollar General #16740,28.6678,-81.5034,Orange County,FL
+dg-fl-18920,Dollar General #18920,27.9789,-82.4214,Hillsborough County,FL
+dg-fl-14502,Dollar General #14502,30.3989,-81.7145,Duval County,FL
+dg-fl-20310,Dollar General #20310,25.8032,-80.2412,Miami-Dade County,FL
+dg-fl-15890,Dollar General #15890,27.8102,-82.6790,Pinellas County,FL

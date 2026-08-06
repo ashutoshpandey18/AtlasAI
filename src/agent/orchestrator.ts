@@ -191,6 +191,9 @@ export async function runAcquisitionPipeline(
       techEval: item.techEval,
       intelEval: item.intelEval,
       memo,
+      // Pass real Mireye proximity result if available from site-scan pipeline
+      driveTimeMinutes: (item.raw as any).driveTimeMinutes ?? null,
+      proximityEval: (item.raw as any).proximityEval ?? null,
     };
   });
 

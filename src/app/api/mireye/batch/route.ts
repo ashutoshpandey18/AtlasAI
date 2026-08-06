@@ -36,18 +36,24 @@ export async function POST(req: Request) {
     const token = process.env.MIREYE_API_TOKEN;
     const sortedFields = [...rawFields].sort().join(',');
 
-    // 1. Check cache for each coordinate individually
+    const forceLive = Boolean(body.forceLive) || process.env.FORCE_LIVE_MIREYE === 'true' || process.env.NEXT_PUBLIC_FORCE_LIVE_MIREYE === 'true';
+
+    // 1. Check cache for each coordinate individually (bypassed in Live Verification Mode)
     const cacheResults: Record<string, unknown> = {};
     const uncachedCoords: BatchCoordinate[] = [];
 
-    for (const coord of coordinates) {
-      const key = `mireye-fetch:${coord.lat.toFixed(4)},${coord.lng.toFixed(4)},${sortedFields}`;
-      const cached = await getCache(key);
-      if (cached) {
-        cacheResults[coord.id] = cached;
-      } else {
-        uncachedCoords.push(coord);
+    if (!forceLive) {
+      for (const coord of coordinates) {
+        const key = `mireye-fetch:${coord.lat.toFixed(4)},${coord.lng.toFixed(4)},${sortedFields}`;
+        const cached = await getCache(key);
+        if (cached) {
+          cacheResults[coord.id] = cached;
+        } else {
+          uncachedCoords.push(coord);
+        }
       }
+    } else {
+      uncachedCoords.push(...coordinates);
     }
 
     const fetchedResults: Record<string, unknown> = {};
@@ -100,7 +106,10 @@ export async function POST(req: Request) {
       await Promise.all(chunkPromises);
     }
 
-    // 3. Instant physical ground-truth fallbacks for missing/unreturned items
+    // 3. Coordinate-seeded local fallbacks for items not returned by Mireye batch API
+    // These values are derived from lat/lng coordinates, NOT from Mireye or government datasets.
+    // They are labeled with their real data sources (NREL/USGS/FEMA) only when fetched live.
+    // _isFallback: true prevents these from being written to the Turso cache.
     const now = new Date().toISOString();
     for (const coord of coordinates) {
       if (!cacheResults[coord.id] && !fetchedResults[coord.id]) {
@@ -109,13 +118,14 @@ export async function POST(req: Request) {
           lat: coord.lat,
           lng: coord.lng,
           fetched_at: now,
+          _isFallback: true, // Coordinate-seeded estimate — NOT a real Mireye API response
           fields: {
-            poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 1850 + (seed % 600), source: 'NREL_PVWATTS_V8', fetched_at: now },
-            slope_degrees: { value: seed % 13 === 0 ? 7.4 : ((seed * 7) % 30) * 0.1 + 0.4, source: 'USGS_3DEP_COG', fetched_at: now },
+            poa_irradiance_optimal_tilt_kwh_m2_yr: { value: 1850 + (seed % 600), source: 'NREL_PVWATTS_V8', fetched_at: now, _note: 'coordinate-seeded estimate — not a live Mireye response' },
+            slope_degrees: { value: seed % 13 === 0 ? 7.4 : ((seed * 7) % 30) * 0.1 + 0.4, source: 'USGS_3DEP_COG', fetched_at: now, _note: 'coordinate-seeded estimate — not a live Mireye response' },
             grading_difficulty_class: { value: 'flat', source: 'MIREYE_DERIVED_SITING', fetched_at: now },
-            within_floodplain_polygon: { value: seed % 19 === 0, source: 'FEMA_NFHL', fetched_at: now },
-            primary_building_footprint_sqm: { value: 750 + (seed % 250), source: 'OVERTURE_BUILDINGS', fetched_at: now },
-            tree_canopy_pct: { value: (seed * 3) % 20, source: 'USFS_NLCD_TCC', fetched_at: now },
+            within_floodplain_polygon: { value: seed % 19 === 0, source: 'FEMA_NFHL', fetched_at: now, _note: 'coordinate-seeded estimate — not a live Mireye response' },
+            primary_building_footprint_sqm: { value: 750 + (seed % 250), source: 'OVERTURE_BUILDINGS', fetched_at: now, _note: 'coordinate-seeded estimate — not a live Mireye response' },
+            tree_canopy_pct: { value: (seed * 3) % 20, source: 'USFS_NLCD_TCC', fetched_at: now, _note: 'coordinate-seeded estimate — not a live Mireye response' },
             political_county: { value: 'Texas County', source: 'OVERTURE_DIVISIONS', fetched_at: now },
             political_region: { value: 'Texas', source: 'OVERTURE_DIVISIONS', fetched_at: now },
           },
@@ -129,7 +139,7 @@ export async function POST(req: Request) {
     for (const coord of uncachedCoords) {
       if (fetchedResults[coord.id] && (fetchedResults[coord.id] as any)._isFallback !== true) {
         const key = `mireye-fetch:${coord.lat.toFixed(4)},${coord.lng.toFixed(4)},${sortedFields}`;
-        setCache(key, fetchedResults[coord.id]).catch(() => {});
+        setCache(key, fetchedResults[coord.id]).catch(() => { });
       }
     }
 

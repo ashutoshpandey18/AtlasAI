@@ -94,36 +94,49 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative z-10 pt-16 pb-12 px-6 max-w-[1140px] mx-auto text-center flex flex-col items-center">
 
-        {/* Pure Borderless Typography Subheader Badge */}
-        <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-slate-300 mb-6 relative z-10">
-          <Bot className="w-3.5 h-3.5 text-slate-300" />
-          <span>AUTONOMOUS AI AGENT FOR RENEWABLE LAND ACQUISITION</span>
+        {/* Pure Borderless Typography Subheader Stream (0 Cards, 0 Pill Divs) */}
+        <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-slate-400 mb-6 relative z-10">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <span className="text-emerald-400 font-extrabold">MIREYE PHYSICAL LOCATION INTELLIGENCE BACKBONE</span>
+          <span className="text-slate-600 font-bold">•</span>
+          <span className="text-slate-300">AUTONOMOUS SITE UNDERWRITING</span>
         </div>
 
-        {/* 2-Line Balanced Hero Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.15] max-w-4xl font-sans mb-6 relative z-10 text-white text-center flex flex-col items-center gap-2">
-          {/* Line 1: Automate Commercial */}
-          <div className="whitespace-nowrap">
-            <VignetteText text="Automate Commercial" />
-          </div>
-
-          {/* Line 2: Land Siting in Minutes */}
-          <div className="relative inline-flex items-center justify-center gap-x-3 pb-3 whitespace-nowrap">
-            <VignetteText text="Land Siting in" />
-            <span className="font-serif italic font-normal bg-gradient-to-r from-slate-100 via-white to-slate-300 bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(255,255,255,0.35)]">
-              Minutes
+        {/* High-Impact Institutional Headline */}
+        <div className="relative z-10 mb-6 max-w-4xl text-center font-sans">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] uppercase">
+            Underwrite 500 Candidate Parcels <br className="hidden sm:inline" />
+            <span className="inline-flex items-center gap-2 sm:gap-3 flex-wrap justify-center">
+              <span>in</span>
+              <span className="font-serif italic lowercase font-normal text-slate-100 text-3xl sm:text-5xl lg:text-6xl tracking-normal border-b-2 border-emerald-400 pb-0.5 px-2 bg-gradient-to-r from-emerald-200 via-white to-slate-200 bg-clip-text text-transparent drop-shadow-[0_4px_25px_rgba(16,185,129,0.35)]">
+                minutes.
+              </span>
             </span>
+          </h1>
+        </div>
 
-            {/* Line 2 Silver Metallic Glowing Laser Underline Beam */}
-            <span className="absolute bottom-0 inset-x-0 h-[3.5px] bg-gradient-to-r from-slate-400 via-white to-slate-400/20 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.7)] pointer-events-none" />
-            <span className="absolute -bottom-[2px] left-1/4 right-1/4 h-[1.5px] bg-white blur-xs pointer-events-none" />
-          </div>
-        </h1>
+        {/* Customer Value Subheading */}
+        <div className="space-y-4 mb-10 max-w-2xl text-center relative z-10">
+          <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
+            Atlas evaluates physical GIS feasibility by combining Mireye location intelligence with USGS LiDAR slope, FEMA floodways, and NREL solar yield—disqualifying unviable properties and recommending acquisition-ready sites.
+          </p>
 
-        {/* Subtitle with Uniform Slate-Silver Typography */}
-        <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed mb-10 font-medium relative z-10 text-center">
-          Stop spending weeks manually inspecting 50 map layers. Enter a business goal below to run automated site checking, written rejection proofs, and 3-page institutional investment memos.
-        </p>
+          {/* Borderless Pure Typography Social Proof Data Infrastructure */}
+          <p className="text-[11px] font-mono text-slate-400 flex items-center justify-center gap-2 flex-wrap pt-2">
+            <span className="text-slate-400 font-bold uppercase tracking-wider">INTEGRATED INFRASTRUCTURE:</span>
+            <span className="text-emerald-400 font-bold">Mireye Physical Intelligence</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">USGS 3DEP LiDAR</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">FEMA NFHL</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">NREL PVWatts</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">EIA Grid</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">Texas CAD</span>
+          </p>
+        </div>
 
         {/* CARD-FREE INTERACTIVE PROMPT LAUNCHER */}
         <form onSubmit={handleLaunchAgent} className="w-full max-w-2xl mb-12 relative z-10 text-left font-sans">
@@ -211,7 +224,7 @@ export default function Home() {
               className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
             >
               <Play className="w-4 h-4 fill-white" />
-              <span>Run Live Scan →</span>
+              <span>Evaluate Portfolio →</span>
             </button>
           </div>
         </form>

@@ -56,10 +56,39 @@ Atlas replaces manual site screening with an autonomous execution pipeline. It i
 
 Mireye is the physical location intelligence backbone of Atlas. Without Mireye, Atlas cannot resolve street addresses or evaluate ground slope, solar yield, flood clearance, or heavy equipment transport drive times.
 
-- **`/v1/lookup`**: Resolves candidate street addresses into precise latitude/longitude coordinates and county boundaries.
-- **`/v1/fetch`**: Queries physical GIS data layers including NREL PVWatts v8 solar yield, USGS 3DEP 1.2° slope LiDAR, and FEMA NFHL flood clearance.
-- **`/v1/proximity`**: Calculates heavy equipment transport drive-time routing to Interstate freight interchanges, verifying sub-15 minute access for 50-ton transformer deliveries.
-- **`/v1/ask`**: Powers the Spatial Copilot, synthesizing natural language due diligence answers with cited physical radiometry metrics.
+- **`/v1/lookup`**: Resolves candidate street addresses into precise latitude/longitude coordinates and county boundaries. Called for every address in custom portfolio uploads.
+- **`/v1/fetch`**: Queries physical GIS data layers including NREL PVWatts v8 solar yield, USGS 3DEP slope LiDAR, and FEMA NFHL flood clearance. Called for every parcel in custom portfolio uploads. The default demonstration uses Cached Mireye API Results (retrieved July 31, 2026) stored in `data/tx_statewide_matches_enriched.json`.
+- **`/v1/proximity`**: Calculates heavy equipment transport drive-time routing. Called for every parcel in custom portfolio uploads. The destination point is configurable; production deployment integrates verified US Interstate interchange coordinates.
+- **`/v1/ask`**: Powers the Spatial Copilot, synthesizing natural language due diligence answers with cited physical data. Called live with full site context; includes a local fallback when the endpoint is unavailable.
+
+---
+
+## Data Sources
+
+| Data | Source | How It Is Used |
+| :--- | :--- | :--- |
+| **Default Demo (TX)** | Cached Mireye API Results — real `/v1/fetch` responses retrieved 2026-07-31 | Loaded from `data/tx_statewide_matches_enriched.json`; instant demonstration without API credit use |
+| **Custom Portfolio Upload** | Live Mireye `/v1/lookup` + `/v1/fetch` + `/v1/proximity` | Every address geocoded and every parcel fetched live via Mireye API |
+| **Tax Delinquency** | Three real Texas county parcel records (Austin County, Nacogdoches, Ector) | Demonstrated as proof-of-concept; production deployment integrates live CAD APIs |
+| **POA Irradiance** | NREL PVWatts v8 (via Mireye `/v1/fetch`) | Annual solar yield in kWh/m²/yr |
+| **Slope** | USGS 3DEP LiDAR (via Mireye `/v1/fetch`) | Ground slope in degrees; used for civil grading cost assessment |
+| **Flood Zone** | FEMA NFHL (via Mireye `/v1/fetch`) | Floodplain intersection; FATAL deal-killer if Zone AE |
+| **Transmission Distance** | EIA Power Grid Atlas (via Mireye `/v1/fetch`) | Distance to nearest transmission line in meters |
+| **Building Footprint** | Overture Maps Buildings (via Mireye `/v1/fetch`) | Used to estimate solar canopy capacity in kW |
+
+---
+
+## How to Read Atlas Results
+
+Every metric and score in Atlas AI exposes explicit data provenance detailing its source, retrieval mechanism, and execution mode.
+
+| Data Status Badge | Meaning & Provider Provenance |
+| :--- | :--- |
+| **`Live Mireye API`** | Data retrieved live from `api.mireye.com` during the active user session. Mireye API credits consumed once per new parcel. |
+| **`Cached Mireye API Result`** | Response previously retrieved from `api.mireye.com` (Atlas Demo Portfolio or past scan) and served from edge cache to avoid duplicate credit consumption. |
+| **`Public Dataset`** | Derived directly from public government or market datasets (USGS 3DEP LiDAR, FEMA NFHL, NREL PVWatts v8, EIA Power Grid, County Appraisal District tax rolls). |
+| **`Atlas Computation`** | Calculated directly by Atlas from underlying physical GIS signals using standard mathematical formulas. |
+| **`User Input`** | Parameter supplied directly by the user (custom CSV portfolio, target state filter, prompt mandate). |
 
 ---
 

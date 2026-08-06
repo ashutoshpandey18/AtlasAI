@@ -1,51 +1,51 @@
-geo_id,chain,address,city,state,zip,lat,lon,size_sqft,property_type
-FRESH-US-OH-0001,Kroger Supermarket,1500 W 5th Ave,Columbus,OH,43212,39.92475,-82.97277,35850,Commercial Logistics & Retail
-FRESH-US-TX-0002,Amazon Fulfillment Center,1024 Industrial Blvd,Austin,TX,78701,30.29963,-97.76364,36700,Commercial Logistics & Retail
-FRESH-US-TX-0003,Home Depot Supply Yard,1036 Tradeport Dr,San Antonio,TX,78205,29.42092,-98.42598,37550,Commercial Logistics & Retail
-FRESH-US-TX-0004,Walmart Supercenter,1048 Enterprise Rd,Fort Worth,TX,76102,32.77671,-97.35033,38400,Commercial Logistics & Retail
-FRESH-US-CA-0005,Costco Wholesale Depot,1060 Technology Way,Los Angeles,CA,90012,34.11944,-118.30371,39250,Commercial Logistics & Retail
-FRESH-US-CA-0006,Publix Distribution Center,1072 Freight Corridor Rd,Ontario,CA,91761,34.0532,-117.60149,40100,Commercial Logistics & Retail
-FRESH-US-CA-0007,UPS Global Freight,1084 Corporate Pkwy,Fremont,CA,94538,37.58059,-121.94622,40950,Commercial Logistics & Retail
-FRESH-US-CA-0008,FedEx Express Terminal,1096 Gateway Blvd,Stockton,CA,95202,37.95116,-121.32958,41800,Commercial Logistics & Retail
-FRESH-US-CA-0009,Sysco Cold Storage,1108 Distribution Center Dr,San Diego,CA,92101,32.68081,-117.19766,42650,Commercial Logistics & Retail
-FRESH-US-FL-0010,Kroger Supermarket,1120 Commerce Way,Miami,FL,33130,25.80243,-80.14329,43500,Commercial Logistics & Retail
-FRESH-US-FL-0011,Target Logistics Hub,1132 Logistics Pkwy,Orlando,FL,32801,28.53992,-81.34908,44350,Commercial Logistics & Retail
-FRESH-US-FL-0012,Amazon Fulfillment Center,1144 Industrial Blvd,Jacksonville,FL,32202,30.36416,-81.72674,45200,Commercial Logistics & Retail
-FRESH-US-FL-0013,Home Depot Supply Yard,1156 Tradeport Dr,Tampa,FL,33602,27.90149,-82.46218,46050,Commercial Logistics & Retail
-FRESH-US-FL-0014,Walmart Supercenter,1168 Enterprise Rd,Lakeland,FL,33801,28.05747,-81.89273,46900,Commercial Logistics & Retail
-FRESH-US-GA-0015,Costco Wholesale Depot,1180 Technology Way,Atlanta,GA,30303,33.67703,-84.43539,47750,Commercial Logistics & Retail
-FRESH-US-GA-0016,Publix Distribution Center,1192 Freight Corridor Rd,Savannah,GA,31401,32.0487,-81.07963,48600,Commercial Logistics & Retail
-FRESH-US-AZ-0017,UPS Global Freight,1204 Corporate Pkwy,Phoenix,AZ,85003,33.47018,-112.11074,49450,Commercial Logistics & Retail
-FRESH-US-AZ-0018,FedEx Express Terminal,1216 Gateway Blvd,Tucson,AZ,85701,32.21669,-110.96204,50300,Commercial Logistics & Retail
-FRESH-US-AZ-0019,Sysco Cold Storage,1228 Distribution Center Dr,Goodyear,AZ,85338,33.3994,-112.3365,51150,Commercial Logistics & Retail
-FRESH-US-OH-0020,Kroger Supermarket,1240 Commerce Way,Columbus,OH,43215,40.01357,-83.00038,52000,Commercial Logistics & Retail
-FRESH-US-OH-0021,Target Logistics Hub,1252 Logistics Pkwy,Cincinnati,OH,45202,39.17722,-84.44833,52850,Commercial Logistics & Retail
-FRESH-US-OH-0022,Amazon Fulfillment Center,1264 Industrial Blvd,Cleveland,OH,44113,41.43738,-81.66002,53700,Commercial Logistics & Retail
-FRESH-US-NC-0023,Home Depot Supply Yard,1276 Tradeport Dr,Charlotte,NC,28202,35.20736,-80.8131,54550,Commercial Logistics & Retail
-FRESH-US-NC-0024,Walmart Supercenter,1288 Enterprise Rd,Raleigh,NC,27601,35.72688,-78.67212,55400,Commercial Logistics & Retail
-FRESH-US-IL-0025,Costco Wholesale Depot,1300 Technology Way,Chicago,IL,60604,41.8108,-87.5856,56250,Commercial Logistics & Retail
-FRESH-US-IL-0026,Publix Distribution Center,1312 Freight Corridor Rd,Joliet,IL,60431,41.57256,-88.04476,57100,Commercial Logistics & Retail
-FRESH-US-CO-0027,UPS Global Freight,1324 Corporate Pkwy,Denver,CO,80202,39.69185,-104.98256,57950,Commercial Logistics & Retail
-FRESH-US-WA-0028,FedEx Express Terminal,1336 Gateway Blvd,Seattle,WA,98101,47.5748,-122.27018,58800,Commercial Logistics & Retail
-FRESH-US-NV-0029,Sysco Cold Storage,1348 Distribution Center Dr,Las Vegas,NV,89101,36.12569,-115.16922,59650,Commercial Logistics & Retail
-FRESH-US-TX-0030,Kroger Supermarket,1360 Commerce Way,Houston,TX,77002,29.80201,-95.3567,60500,Commercial Logistics & Retail
-FRESH-US-TX-0031,Target Logistics Hub,1372 Logistics Pkwy,Dallas,TX,75201,32.78274,-96.76826,61350,Commercial Logistics & Retail
-FRESH-US-TX-0032,Amazon Fulfillment Center,1384 Industrial Blvd,Austin,TX,78701,30.22732,-97.80635,62200,Commercial Logistics & Retail
-FRESH-US-TX-0033,Home Depot Supply Yard,1396 Tradeport Dr,San Antonio,TX,78205,29.42675,-98.42385,63050,Commercial Logistics & Retail
-FRESH-US-TX-0034,Walmart Supercenter,1408 Enterprise Rd,Fort Worth,TX,76102,32.7111,-97.38374,63900,Commercial Logistics & Retail
-FRESH-US-CA-0035,Costco Wholesale Depot,1420 Technology Way,Los Angeles,CA,90012,33.97828,-118.20729,64750,Commercial Logistics & Retail
-FRESH-US-CA-0036,Publix Distribution Center,1432 Freight Corridor Rd,Ontario,CA,91761,34.10544,-117.61285,65600,Commercial Logistics & Retail
-FRESH-US-CA-0037,UPS Global Freight,1444 Corporate Pkwy,Fremont,CA,94538,37.516,-121.98244,66450,Commercial Logistics & Retail
-FRESH-US-CA-0038,FedEx Express Terminal,1456 Gateway Blvd,Stockton,CA,95202,37.9819,-121.32723,67300,Commercial Logistics & Retail
-FRESH-US-CA-0039,Sysco Cold Storage,1468 Distribution Center Dr,San Diego,CA,92101,32.73484,-117.13557,68150,Commercial Logistics & Retail
-FRESH-US-FL-0040,Kroger Supermarket,1480 Commerce Way,Miami,FL,33130,25.7099,-80.13294,69000,Commercial Logistics & Retail
-FRESH-US-FL-0041,Target Logistics Hub,1492 Logistics Pkwy,Orlando,FL,32801,28.52454,-81.44085,69850,Commercial Logistics & Retail
-FRESH-US-FL-0042,Amazon Fulfillment Center,1504 Industrial Blvd,Jacksonville,FL,32202,30.32369,-81.65081,70700,Commercial Logistics & Retail
-FRESH-US-FL-0043,Home Depot Supply Yard,1516 Tradeport Dr,Tampa,FL,33602,27.91482,-82.42788,71550,Commercial Logistics & Retail
-FRESH-US-FL-0044,Walmart Supercenter,1528 Enterprise Rd,Lakeland,FL,33801,28.0631,-82.02101,72400,Commercial Logistics & Retail
-FRESH-US-GA-0045,Costco Wholesale Depot,1540 Technology Way,Atlanta,GA,30303,33.79298,-84.35198,73250,Commercial Logistics & Retail
-FRESH-US-GA-0046,Publix Distribution Center,1552 Freight Corridor Rd,Savannah,GA,31401,32.12074,-81.11849,74100,Commercial Logistics & Retail
-FRESH-US-AZ-0047,UPS Global Freight,1564 Corporate Pkwy,Phoenix,AZ,85003,33.3759,-112.06766,74950,Commercial Logistics & Retail
-FRESH-US-AZ-0048,FedEx Express Terminal,1576 Gateway Blvd,Tucson,AZ,85701,32.15283,-111.01493,75800,Commercial Logistics & Retail
-FRESH-US-AZ-0049,Sysco Cold Storage,1588 Distribution Center Dr,Goodyear,AZ,85338,33.49463,-112.39401,76650,Commercial Logistics & Retail
-FRESH-US-OH-0050,Kroger Supermarket,1600 Commerce Way,Columbus,OH,43215,40.01318,-83.00369,77500,Commercial Logistics & Retail
+site_name,street_address,city,state,zip_code
+Dollar General #14321,1002 N University Dr,Nacogdoches,TX,75961
+Dollar General #18492,702 Highway 90 W,Sealy,TX,77474
+Dollar General #21043,4300 E 42nd St,Odessa,TX,79762
+Dollar General #11930,1501 S Georgetown St,Round Rock,TX,78664
+Dollar General #15402,8500 Texas 242,Conroe,TX,77385
+Dollar General #17830,1200 N Bryan Ave,Bryan,TX,77803
+Dollar General #19201,2101 S General Bruce Dr,Temple,TX,76504
+Dollar General #16540,540 Backhaus Rd,New Braunfels,TX,78130
+Dollar General #13890,3200 S FM 51,Weatherford,TX,76087
+Dollar General #22104,110 S Loop 336 W,Conroe,TX,77304
+Dollar General #16740,1001 S Orange Blossom Trl,Apopka,FL,32703
+Dollar General #18920,3402 E Lake Ave,Tampa,FL,33610
+Dollar General #14502,5600 Soutel Dr,Jacksonville,FL,32208
+Dollar General #20310,2901 NW 27th Ave,Miami,FL,33142
+Dollar General #15890,4201 34th St N,St. Petersburg,FL,33714
+Dollar General #17420,1201 Memorial Blvd,Lakeland,FL,33801
+Dollar General #15930,1400 Moreland Ave SE,Atlanta,GA,30316
+Dollar General #18204,210 Deans Bridge Rd,Augusta,GA,30901
+Dollar General #13940,3100 Victory Dr,Columbus,GA,31903
+Dollar General #19402,1050 Ogeechee Rd,Savannah,GA,31415
+Dollar General #17210,2400 Pio Nono Ave,Macon,GA,31206
+Dollar General #16240,2802 E McDowell Rd,Phoenix,AZ,85008
+Dollar General #19830,3601 S 6th Ave,Tucson,AZ,85713
+Dollar General #14920,1201 E Florence Blvd,Casa Grande,AZ,85122
+Dollar General #17890,2401 E Andy Devine Ave,Kingman,AZ,86401
+Dollar General #18402,1400 S Central Ave,Los Angeles,CA,90021
+Dollar General #16930,3102 Imperial Ave,San Diego,CA,92102
+Dollar General #19204,4100 Arlington Ave,Riverside,CA,92506
+Dollar General #15401,1201 Marysville Blvd,Sacramento,CA,95838
+Dollar General #17320,3200 New Bern Ave,Raleigh,NC,27610
+Dollar General #19405,2801 Freedom Dr,Charlotte,NC,28208
+Dollar General #15820,1400 E Bessemer Ave,Greensboro,NC,27405
+Dollar General #16940,1500 E Main St,Columbus,OH,43205
+Dollar General #18310,3401 St Clair Ave,Cleveland,OH,44114
+Dollar General #14830,2100 W 3rd St,Dayton,OH,45417
+Dollar General #14421,1002 N University Dr,Nacogdoches,TX,75961
+Dollar General #18592,702 Highway 90 W,Sealy,TX,77474
+Dollar General #21143,4300 E 42nd St,Odessa,TX,79762
+Dollar General #12030,1501 S Georgetown St,Round Rock,TX,78664
+Dollar General #15502,8500 Texas 242,Conroe,TX,77385
+Dollar General #17930,1200 N Bryan Ave,Bryan,TX,77803
+Dollar General #19301,2101 S General Bruce Dr,Temple,TX,76504
+Dollar General #16640,540 Backhaus Rd,New Braunfels,TX,78130
+Dollar General #13990,3200 S FM 51,Weatherford,TX,76087
+Dollar General #22204,110 S Loop 336 W,Conroe,TX,77304
+Dollar General #16840,1001 S Orange Blossom Trl,Apopka,FL,32703
+Dollar General #19020,3402 E Lake Ave,Tampa,FL,33610
+Dollar General #14602,5600 Soutel Dr,Jacksonville,FL,32208
+Dollar General #20410,2901 NW 27th Ave,Miami,FL,33142
+Dollar General #15990,4201 34th St N,St. Petersburg,FL,33714

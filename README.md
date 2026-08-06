@@ -195,6 +195,8 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/fetch \
 
 Calculates heavy equipment transport drive times and freight corridor clearance routes.
 
+![Insomnia Proximity](public/images/insomnia_06_proximity.png)
+
 ```bash
 curl -X POST https://api.mireye.com/v1/proximity \
   -H "Content-Type: application/json" \

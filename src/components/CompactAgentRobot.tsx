@@ -13,33 +13,27 @@ export function CompactAgentRobot() {
   const stages = [
     {
       num: '01',
-      title: 'Goal Formulation',
-      badge: 'Acquisition Strategy',
-      message: 'Extracting capex limits ($2M), parking lot coverage thresholds (≥2.5x), and target ERCOT grid rules.',
+      title: 'Candidate Portfolio Understanding',
+      badge: 'Stage 01: UNDERSTAND',
+      message: 'Atlas parses candidate property portfolios and establishes physical criteria for commercial underwriting.',
     },
     {
       num: '02',
-      title: 'Mireye GIS Batch',
-      badge: 'Data Ingestion',
-      message: 'Querying NREL solar radiometry (2,131 kWh/m²), USGS 3DEP 3D slope LiDAR, and FEMA flood maps in parallel.',
+      title: 'Physical Evidence Synthesis',
+      badge: 'Stage 02: GATHER EVIDENCE',
+      message: 'Atlas queries Mireye physical endpoints and combines physical data with commercial datasets.',
     },
     {
       num: '03',
-      title: 'Feasibility Scoring',
-      badge: 'Multi-Criteria Engine',
-      message: 'Scoring candidate store parcels based on parking lot array area (≥2.5x) and 138kV substation tie-in distance.',
+      title: 'Flaw Screening & Comparative Ranking',
+      badge: 'Stage 03: REASON',
+      message: 'Atlas screens fatal physical flaws, cuts unviable properties with written proof, and ranks candidate sites.',
     },
     {
       num: '04',
-      title: 'Rejection Ledger',
-      badge: 'Fatal Flaw Screening',
-      message: 'Screening fatal flaw disqualifications across FEMA floodways, steep slope, and low irradiance.',
-    },
-    {
-      num: '05',
-      title: 'Institutional Underwriting',
-      badge: '3-Page Memo & LOI',
-      message: 'Underwriting priority site with 30% IRA ITC tax equity ($224k benefit), 5-Yr MACRS, and land LOI.',
+      title: 'Investment Memos & Option Agreements',
+      badge: 'Stage 04: DELIVER',
+      message: 'Atlas generates investment committee memos and draft land option agreements ready for acquisition review.',
     },
   ];
 

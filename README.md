@@ -33,7 +33,8 @@ Atlas replaces manual site screening with an autonomous execution pipeline. It i
 ## Live Demo
 
 - **Live Production**: [https://atlas-ai-pi-one.vercel.app](https://atlas-ai-pi-one.vercel.app)
-- **Repository**: [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
+- **GitHub Repository**: [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
+- **Executive One-Pager**: [https://github.com/ashutoshpandey18/AtlasAI/blob/main/ONE_PAGER.md](https://github.com/ashutoshpandey18/AtlasAI/blob/main/ONE_PAGER.md)
 
 ![Atlas AI Landing Page](public/images/00_hero_landing_page.png)
 

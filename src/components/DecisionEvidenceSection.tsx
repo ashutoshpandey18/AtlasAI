@@ -7,39 +7,57 @@ export function DecisionEvidenceSection() {
   const pipelineSteps = [
     {
       num: '01',
-      stage: 'RAW GIS INGESTION',
-      tag: 'NREL / USGS / FEMA / EIA',
-      title: 'Physical Ground Truth',
-      description: 'Ingests 5 raw spatial layers: 2,131 kWh/m²/yr solar irradiance, 2.1° 3D slope LiDAR, FEMA flood zone polygons, and 138kV grid lines.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '5 Raw Layers',
+      stage: 'UNDERSTAND',
+      tag: 'PARCEL PARSING & ACQUISITION MANDATE',
+      title: 'Candidate Portfolio Understanding',
+      description: 'Atlas parses candidate property portfolios, extracts site geometries, and establishes physical criteria for commercial underwriting.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Portfolio Parsed',
     },
     {
       num: '02',
-      stage: 'FEATURE SYNTHESIS',
-      tag: 'SYNTHESIZER & CITATION LEDGER',
-      title: 'Mireye Evidence Engine',
-      description: 'Synthesizes raw geospatial attributes into structured Decision Evidence with timestamped citations and zero manual map inspecting.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '180ms Latency',
+      stage: 'INVESTIGATE',
+      tag: 'MIREYE API & PHYSICAL EVIDENCE SYNTHESIS',
+      title: 'Physical Evidence & Location Intelligence',
+      description: 'Atlas queries Mireye physical endpoints and GIS layers for slope, floodways, solar potential, and grid proximity.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Evidence Synthesized',
     },
     {
       num: '03',
-      stage: 'FLAW SCREENING',
-      tag: 'WRITTEN REJECTION PROOFS',
-      title: 'Rejection Ledger',
-      description: 'Automatically screens store candidate portfolios and cuts unviable sites with written proofs before engineering capital is wasted.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '0 Capital Wasted',
+      stage: 'UNDERWRITE',
+      tag: 'FATAL FLAW SCREENING & REJECTION PROOFS',
+      title: 'Fatal Flaw Screening & Feasibility Ranking',
+      description: 'Atlas eliminates physical deal-killers, creates written rejection proofs, and ranks viable sites using multi-factor analysis.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Flaws Screened',
     },
     {
       num: '04',
-      stage: 'LOI UNDERWRITING',
-      tag: '30% IRA ITC & LOI CONTRACT',
-      title: '3-Page Investment Memo',
-      description: 'Generates printable investment committee memos with 30% IRA ITC tax equity modeling ($224k benefit) and non-binding option LOI contracts.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '19.8% Net IRR',
+      stage: 'SELECT',
+      tag: 'TARGET SELECTION & DECISION EVIDENCE',
+      title: 'Acquisition Target Selection',
+      description: 'Atlas identifies the primary acquisition candidate and exposes the underlying physical and commercial evidence.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Target Selected',
+    },
+    {
+      num: '05',
+      stage: 'PERSIST',
+      tag: 'PARCEL REGISTRATION (POST /v1/sites)',
+      title: 'Target Site Registration',
+      description: 'Atlas establishes a persistent Mireye site identity for candidates with verified parcel geometry. Sites without verified boundaries continue through stateless spatial analysis.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Site Registered',
+    },
+    {
+      num: '06',
+      stage: 'ACT',
+      tag: 'COMMERCIAL MEMOS & LOI SITE CONTROL',
+      title: 'Investment Memo & Site-Control Output',
+      description: 'Atlas produces executive investment committee memos and draft land option agreements to execute site control.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Deliverables Ready',
     },
   ];
 
@@ -128,7 +146,7 @@ export function DecisionEvidenceSection() {
                 <td className="py-3 px-2 font-bold text-emerald-400">1.2° (Flat Class)</td>
                 <td className="py-3 px-2 text-slate-400 text-[11px]">USGS 3DEP 1m COG • 2026-08-02</td>
                 <td className="py-3 px-2 font-sans font-medium text-slate-200">
-                  Flat terrain. Zero cut-and-fill civil grading required. <strong className="text-slate-100 font-bold">Estimated CapEx savings: ~$145,000</strong>.
+                  Flat terrain. Zero cut-and-fill civil grading required for solar tracking array racking.
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
@@ -136,7 +154,7 @@ export function DecisionEvidenceSection() {
                 <td className="py-3 px-2 font-bold text-emerald-400">Zone X (Unencumbered)</td>
                 <td className="py-3 px-2 text-slate-400 text-[11px]">FEMA NFHL WMS v24.1 • 2026-08-02</td>
                 <td className="py-3 px-2 font-sans font-medium text-slate-200">
-                  Outside Special Flood Hazard Area. Zero base flood elevation mandates or commercial flood insurance premiums.
+                  Outside Special Flood Hazard Area. Zero base flood elevation mandates or mandatory commercial flood insurance.
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
@@ -144,7 +162,7 @@ export function DecisionEvidenceSection() {
                 <td className="py-3 px-2 font-bold text-emerald-400">2,131 kWh/m²/yr</td>
                 <td className="py-3 px-2 text-slate-400 text-[11px]">NREL PVWatts v8 • 2026-08-02</td>
                 <td className="py-3 px-2 font-sans font-medium text-slate-200">
-                  Tier-1 prime solar resource. Yields <strong className="text-slate-100 font-bold">+14.2% higher annual MWh revenue</strong> vs regional benchmark.
+                  Tier-1 prime solar resource. Optimal solar irradiance yield for commercial utility export.
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
@@ -152,7 +170,15 @@ export function DecisionEvidenceSection() {
                 <td className="py-3 px-2 font-bold text-emerald-400">&lt; 480m Distance</td>
                 <td className="py-3 px-2 text-slate-400 text-[11px]">EIA Electric Power Grid • 2026-08-02</td>
                 <td className="py-3 px-2 font-sans font-medium text-slate-200">
-                  Direct distribution feeder access. Reduces gen-tie interconnect timeline to &lt; 12 months.
+                  Direct distribution feeder access. Reduces gen-tie interconnect extension timeline and cost.
+                </td>
+              </tr>
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="py-3 px-2 font-bold text-white">Mireye Site Dossier</td>
+                <td className="py-3 px-2 font-bold text-emerald-400">Registered (POST /v1/sites)</td>
+                <td className="py-3 px-2 text-slate-400 text-[11px]">Mireye Earth API v0.14.0 • 2026-08-02</td>
+                <td className="py-3 px-2 font-sans font-medium text-slate-200">
+                  Persistent site identity created (`site_id`). Enables dossier-backed Copilot due diligence via `/v1/ask-site`.
                 </td>
               </tr>
             </tbody>

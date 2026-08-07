@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Dollar General Ector #03595 (Top Winner Target)",
+        "county": "Ector County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-102.3441, 31.8601],
+            [-102.3421, 31.8601],
+            [-102.3421, 31.8591],
+            [-102.3441, 31.8591],
+            [-102.3441, 31.8601]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Tesla Giga Logistics Canopy Site",
+        "county": "Travis County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-97.6181, 30.2233],
+            [-97.6161, 30.2233],
+            [-97.6161, 30.2213],
+            [-97.6181, 30.2213],
+            [-97.6181, 30.2233]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Bexar Distribution Hub SAT1",
+        "county": "Bexar County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-98.3922, 29.5114],
+            [-98.3902, 29.5114],
+            [-98.3902, 29.5094],
+            [-98.3922, 29.5094],
+            [-98.3922, 29.5114]
+          ]
+        ]
+      }
+    }
+  ]
+}

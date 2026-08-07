@@ -94,22 +94,22 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative z-10 pt-16 pb-12 px-6 max-w-[1140px] mx-auto text-center flex flex-col items-center">
 
-        {/* Pure Borderless Typography Subheader Stream (0 Cards, 0 Pill Divs) */}
+        {/* Pure Borderless Typography Subheader Stream */}
         <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-slate-400 mb-6 relative z-10">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <span className="text-emerald-400 font-extrabold">MIREYE PHYSICAL LOCATION INTELLIGENCE BACKBONE</span>
           <span className="text-slate-600 font-bold">•</span>
-          <span className="text-slate-300">AUTONOMOUS SITE UNDERWRITING</span>
+          <span className="text-slate-300">AUTONOMOUS SITE ACQUISITION AGENT</span>
         </div>
 
         {/* High-Impact Institutional Headline */}
         <div className="relative z-10 mb-6 max-w-4xl text-center font-sans">
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] uppercase">
-            Underwrite 500 Candidate Parcels <br className="hidden sm:inline" />
+            Autonomous Commercial <br className="hidden sm:inline" />
             <span className="inline-flex items-center gap-2 sm:gap-3 flex-wrap justify-center">
-              <span>in</span>
+              <span>Land</span>
               <span className="font-serif italic lowercase font-normal text-slate-100 text-3xl sm:text-5xl lg:text-6xl tracking-normal border-b-2 border-emerald-400 pb-0.5 px-2 bg-gradient-to-r from-emerald-200 via-white to-slate-200 bg-clip-text text-transparent drop-shadow-[0_4px_25px_rgba(16,185,129,0.35)]">
-                minutes.
+                Acquisition.
               </span>
             </span>
           </h1>
@@ -118,13 +118,13 @@ export default function Home() {
         {/* Customer Value Subheading */}
         <div className="space-y-4 mb-10 max-w-2xl text-center relative z-10">
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
-            Atlas evaluates physical GIS feasibility by combining Mireye location intelligence with USGS LiDAR slope, FEMA floodways, and NREL solar yield—disqualifying unviable properties and recommending acquisition-ready sites.
+            Atlas investigates candidate portfolios, screens physical deal-killers using Mireye location intelligence, selects acquisition targets, and promotes finalists into persistent Mireye Site Dossiers for ongoing due diligence.
           </p>
 
           {/* Borderless Pure Typography Social Proof Data Infrastructure */}
           <p className="text-[11px] font-mono text-slate-400 flex items-center justify-center gap-2 flex-wrap pt-2">
-            <span className="text-slate-400 font-bold uppercase tracking-wider">INTEGRATED INFRASTRUCTURE:</span>
-            <span className="text-emerald-400 font-bold">Mireye Physical Intelligence</span>
+            <span className="text-slate-400 font-bold uppercase tracking-wider">EVIDENCE STACK:</span>
+            <span className="text-emerald-400 font-bold">Live Mireye API</span>
             <span className="text-slate-600">•</span>
             <span className="text-slate-300">USGS 3DEP LiDAR</span>
             <span className="text-slate-600">•</span>
@@ -134,7 +134,7 @@ export default function Home() {
             <span className="text-slate-600">•</span>
             <span className="text-slate-300">EIA Grid</span>
             <span className="text-slate-600">•</span>
-            <span className="text-slate-300">Texas CAD</span>
+            <span className="text-slate-300">Mireye Site Dossier</span>
           </p>
         </div>
 
@@ -229,15 +229,15 @@ export default function Home() {
           </div>
         </form>
 
-        {/* Social Proof Trust Avatars */}
+        {/* Institutional Target Roles Alignment */}
         <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md relative z-10">
           <div className="flex -space-x-2">
-            <div className="w-7 h-7 rounded-full bg-amber-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white">VP</div>
-            <div className="w-7 h-7 rounded-full bg-emerald-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white">DEV</div>
-            <div className="w-7 h-7 rounded-full bg-indigo-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white">GIS</div>
+            <div className="w-7 h-7 rounded-full bg-amber-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white" title="VP of Acquisitions">VP</div>
+            <div className="w-7 h-7 rounded-full bg-emerald-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white" title="Land Developer">DEV</div>
+            <div className="w-7 h-7 rounded-full bg-indigo-600 border-2 border-[#030308] flex items-center justify-center text-[10px] font-black text-white" title="GIS Director">GIS</div>
           </div>
           <span className="text-xs font-semibold text-slate-300">
-            Trusted by Commercial Clean Tech Developers & Solar Funds
+            Built for Commercial Real Estate Developers & Infrastructure Funds
           </span>
         </div>
       </section>
@@ -271,7 +271,7 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.9)] animate-pulse" />
               <span className="text-sm font-black text-white tracking-widest uppercase">
-                ATLAS <span className="text-amber-400">//</span> SITE CONTROL AGENT
+                ATLAS <span className="text-amber-400">//</span> AUTONOMOUS LAND ACQUISITION AGENT
               </span>
             </div>
 
@@ -290,8 +290,8 @@ export default function Home() {
               <div className="space-y-1.5 text-slate-300 font-medium">
                 <div>3D Decision Engine</div>
                 <div>Mireye GIS Synthesizer</div>
-                <div>Rejection Ledger</div>
-                <div>LOI Underwriting Engine</div>
+                <div>Fatal Flaw Rejection Ledger</div>
+                <div>Persistent Mireye Site Dossiers</div>
               </div>
             </div>
 
@@ -324,17 +324,17 @@ export default function Home() {
                 04 // DEPLOYMENT
               </div>
               <div className="space-y-1.5 text-slate-300 font-medium">
-                <div>Autonomous Siting Workspace</div>
-                <div>Instant PDF Memo Generation</div>
-                <div>Non-Binding Option LOIs</div>
-                <div>Zero Manual Map Inspecting</div>
+                <div>Autonomous Acquisition Agent</div>
+                <div>Persistent Mireye Site Dossiers</div>
+                <div>Executive PDF Memos</div>
+                <div>Draft Land Option LOIs</div>
               </div>
             </div>
           </div>
 
           {/* Baseline Copyright Line */}
           <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono text-slate-500">
-            <div>© 2026 ATLAS ACQUISITION AGENT. ALL RIGHTS RESERVED.</div>
+            <div>© 2026 ATLAS AI. ALL RIGHTS RESERVED.</div>
             <div>POWERED BY MIREYE LOCATION INTELLIGENCE</div>
           </div>
 

@@ -1,4 +1,5 @@
 import type { MireyeFetchResponse } from './mireye';
+import type { SiteRegistrationStatus } from '../services/mireyeSiteService';
 
 export type UseCaseId =
   | 'warehouse'
@@ -85,6 +86,16 @@ export interface AssemblyResult {
   keyBarriers: string[];
 }
 
+/** Mireye persistent Site Dossier registration metadata (Atlas V1.3) */
+export interface MireyeSiteRegistration {
+  site_id: string | null;
+  status: SiteRegistrationStatus;
+  registered_at: string | null;
+  skip_reason?: string;
+  error?: string;
+  geometrySource?: 'Uploaded GeoJSON' | 'Mireye /v1/lookup' | null;
+}
+
 export interface LocationResult {
   location: LocationEntry;
   data: MireyeFetchResponse | null;
@@ -94,6 +105,8 @@ export interface LocationResult {
   error: string | null;
   alternatives: AlternativeSite[];
   assemblyResult?: AssemblyResult;
+  /** Populated after pipeline completes for top-ranked survivors only */
+  mireyeSite?: MireyeSiteRegistration | null;
 }
 
 export interface ProjectWorkspace {

@@ -99,7 +99,7 @@ export function AwwwardsBentoGrid() {
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-mono font-black uppercase tracking-wider text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
               <ShieldAlert className="w-3 h-3" />
-              <span>STAGE 02 // FATAL FLAW LEDGER</span>
+              <span>STAGE 03 // UNDERWRITING LEDGER</span>
             </span>
             <button
               type="button"
@@ -146,22 +146,22 @@ export function AwwwardsBentoGrid() {
         </div>
       </div>
 
-      {/* BENTO TILE 3: 3-PAGE INVESTMENT MEMO PRO-FORMA FINANCIAL CALCULATOR */}
+      {/* BENTO TILE 3: PERSISTENT MIREYE DOSSIER & INVESTMENT MEMO */}
       <div className="bg-[#0c0c16]/90 border-2 border-white/15 hover:border-emerald-500/60 p-7 rounded-3xl backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-all duration-300 group flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-mono font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
               <Zap className="w-3 h-3" />
-              <span>STAGE 03 // PRO-FORMA ENGINE</span>
+              <span>STAGE 05 & 06 // DOSSIER & ACT</span>
             </span>
             <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
           </div>
 
-          <h3 className="text-xl font-black text-white mb-2 tracking-tight">3-Page Investment Memos</h3>
+          <h3 className="text-xl font-black text-white mb-2 tracking-tight">Mireye Site Dossiers & Memos</h3>
           <p className="text-xs text-slate-300 leading-relaxed font-medium mb-6">
-            Generates printable investment committee memos featuring 30% IRA ITC tax equity modeling, 5-Yr MACRS depreciation, and non-binding LOI contracts.
+            Promotes winning site geometries into persistent Mireye Site Dossiers (`POST /v1/sites`) and generates printable executive investment memos with draft LOIs.
           </p>
         </div>
 

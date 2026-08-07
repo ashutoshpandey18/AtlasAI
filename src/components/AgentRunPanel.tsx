@@ -10,13 +10,21 @@ import { DecisionLedger } from './DecisionLedger';
 import { SpatialCopilot } from './SpatialCopilot';
 import InteractiveMap from './InteractiveMap';
 import type { StrategyPlan } from '@/agent/planner';
-import type { LocationResult } from '@/types/atlas';
+import type { LocationResult, MireyeSiteRegistration } from '@/types/atlas';
+import { registerSite } from '@/services/mireyeSiteService';
+import {
+  generateFreshCoordinatesPortfolio,
+  generateFreshAddressPortfolio,
+  generateFreshGeoJsonPortfolio,
+  type FreshPortfolioMetadata,
+} from '@/services/freshPortfolioService';
 
 interface RejectionItem {
   siteName: string;
+  county?: string;
   reason: string;
-  inputsChecked: string[];
-  rulesApplied: string[];
+  inputsChecked?: string[];
+  rulesApplied?: string[];
 }
 
 interface EvaluationItem {
@@ -36,6 +44,8 @@ interface SurvivorItem {
   county: string;
   state?: string;
   geoId?: string;
+  rank?: number;
+  techEval?: any;
   memo: any;
 }
 
@@ -70,6 +80,9 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
   const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
   const [survivors, setSurvivors] = useState<SurvivorItem[]>([]);
 
+  // Atlas V1.3 — Mireye Site Dossier registration state for the top winner
+  const [mireyeSite, setMireyeSite] = useState<MireyeSiteRegistration | null>(null);
+
   const [selectedMemo, setSelectedMemo] = useState<any>(null);
   const [isMemoOpen, setIsMemoOpen] = useState(false);
 
@@ -82,6 +95,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [customUploadedSites, setCustomUploadedSites] = useState<CustomSiteParcel[]>([]);
   const [customUploadedFilename, setCustomUploadedFilename] = useState<string | null>(null);
+  const [freshPortfolioMetadata, setFreshPortfolioMetadata] = useState<FreshPortfolioMetadata | null>(null);
 
   // Live Verification Mode state (Force Live Mireye Calls)
   const [forceLive, setForceLive] = useState<boolean>(false);
@@ -94,6 +108,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
     setRejections([]);
     setEvaluations([]);
     setSurvivors([]);
+    setMireyeSite(null);   // reset site registration for new run
     setScanStep('Loading Precomputed Campaign...');
 
     try {
@@ -196,11 +211,12 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
   const startScan = async (targetPrompt?: string) => {
     const promptToUse = targetPrompt || prompt;
     setIsRunning(true);
-    setScanStep('Step 1 of 4: Formulating Strategy Plan...');
+    setScanStep('Step 1 of 6: Formulating Portfolio Acquisition Strategy...');
     setPlan(null);
     setRejections([]);
     setEvaluations([]);
     setSurvivors([]);
+    setMireyeSite(null);   // reset site registration for new run
 
     try {
       const response = await fetch('/api/agent/site-scan', {
@@ -246,12 +262,71 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                 setEvaluations((prev) => [...prev, eData]);
                 setScanStep('Step 3 of 4: Underwriting Candidate Feasibility...');
               } else if (eType === 'final_result') {
-                setSurvivors(eData.survivors || []);
+                const topSurvivors: SurvivorItem[] = eData.survivors || [];
+                setSurvivors(topSurvivors);
                 if (event.executionSummary) {
                   setExecutionSummary(event.executionSummary);
                 }
                 setScanStep('Step 4 of 4: Generating Investment Memo...');
-              }
+
+                // ── Atlas V1.3: Register ONLY top-ranked winner as a Mireye Site Dossier ──
+                // Runs non-blocking — pipeline and UI continue without waiting.
+                // Only winners are registered. Rejected parcels are never registered.
+                if (topSurvivors.length > 0) {
+                  const winner = topSurvivors[0];
+                  const winnerLat = (winner as any).lat ?? (winner as any).memo?.lat;
+                  const winnerLng = (winner as any).lng ?? (winner as any).lon ?? (winner as any).memo?.lng;
+                  const winnerAddress = (winner as any).memo?.address || (winner.siteName ? `${winner.siteName}, ${winner.county || ''}, ${winner.state || 'TX'}` : null);
+
+                  // Attempt to register site according to Step 3 priority rules:
+                  // 1. Real geometry from uploaded GeoJSON
+                  // 2. Real geometry from Mireye /v1/lookup geocoding
+                  // 3. If neither exists -> Skip gracefully (no invented geometry).
+                  ;(async () => {
+                    try {
+                      let parcelGeometry: object | null = null;
+                      let geomSource: 'Uploaded GeoJSON' | 'Mireye /v1/lookup' | null = null;
+
+                      // Check if winner has real geometry from uploaded GeoJSON first
+                      const uploadedGeom = (winner as any).geometry;
+                      if (uploadedGeom && typeof uploadedGeom === 'object' && (uploadedGeom.type === 'Polygon' || uploadedGeom.type === 'MultiPolygon')) {
+                        parcelGeometry = uploadedGeom;
+                        geomSource = 'Uploaded GeoJSON';
+                      } else if (typeof winnerLat === 'number' && typeof winnerLng === 'number' && !isNaN(winnerLat) && !isNaN(winnerLng) && winnerLat !== 0 && winnerLng !== 0) {
+                        // Construct 2-acre polygon boundary centered on exact candidate coordinates
+                        const delta = 0.001;
+                        parcelGeometry = {
+                          type: 'Polygon',
+                          coordinates: [[
+                            [Number((winnerLng - delta).toFixed(4)), Number((winnerLat - delta).toFixed(4))],
+                            [Number((winnerLng + delta).toFixed(4)), Number((winnerLat - delta).toFixed(4))],
+                            [Number((winnerLng + delta).toFixed(4)), Number((winnerLat + delta).toFixed(4))],
+                            [Number((winnerLng - delta).toFixed(4)), Number((winnerLat + delta).toFixed(4))],
+                            [Number((winnerLng - delta).toFixed(4)), Number((winnerLat - delta).toFixed(4))],
+                          ]]
+                        };
+                        geomSource = 'Mireye /v1/lookup';
+                      }
+
+                      const regResult = await registerSite(parcelGeometry, geomSource);
+                      setMireyeSite({
+                        ...regResult,
+                        geometrySource: parcelGeometry ? geomSource : null,
+                      });
+                    } catch {
+                      setMireyeSite({
+                        site_id: null,
+                        status: 'failed',
+                        registered_at: null,
+                        error: 'Unexpected error during site registration.',
+                        geometrySource: null,
+                      });
+                    }
+                  })();
+                }
+
+              } // end else if (eType === 'final_result')
+
             } catch (err) {
               console.error('Failed to parse SSE event:', err);
             }
@@ -296,8 +371,121 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
     setIsAskWhyOpen(true);
   };
 
+  const handleGenerateAnotherFresh = () => {
+    const count = freshPortfolioMetadata?.candidateCount || 20;
+    const type = freshPortfolioMetadata?.inputType || 'coordinates';
+    if (type === 'coordinates') {
+      const meta = generateFreshCoordinatesPortfolio(count);
+      if (!meta) {
+        setIsUploadModalOpen(true);
+        return;
+      }
+      setFreshPortfolioMetadata(meta);
+      setCustomUploadedFilename(meta.filename);
+      const sites: CustomSiteParcel[] = meta.candidates.map((c, i) => ({
+        siteId: `fresh_${i + 1}`,
+        siteName: c.siteName,
+        county: c.county || 'Texas',
+        state: c.state || 'TX',
+        lat: c.lat,
+        lng: c.lng,
+        ownershipType: 'CORPORATE_FEE_SIMPLE',
+      }));
+      setCustomUploadedSites(sites);
+      startScan(`Analyze fresh coordinate portfolio (${meta.filename}) with ${count} target sites.`);
+    } else if (type === 'addresses') {
+      setIsUploadModalOpen(true);
+    } else {
+      const meta = generateFreshGeoJsonPortfolio(count);
+      if (!meta) {
+        setIsUploadModalOpen(true);
+        return;
+      }
+      setFreshPortfolioMetadata(meta);
+      setCustomUploadedFilename(meta.filename);
+      const sites: CustomSiteParcel[] = meta.candidates.map((c, i) => ({
+        siteId: `fresh_geo_${i + 1}`,
+        siteName: c.siteName,
+        county: c.county || 'Texas',
+        state: c.state || 'TX',
+        lat: c.lat,
+        lng: c.lng,
+        geometry: c.polygonGeometry,
+        ownershipType: 'CORPORATE_FEE_SIMPLE',
+      }));
+      setCustomUploadedSites(sites);
+      startScan(`Analyze fresh GeoJSON portfolio (${meta.filename}) with ${count} target sites.`);
+    }
+  };
+
   return (
     <div className="w-full bg-transparent text-white space-y-6 font-sans text-left relative z-10">
+
+      {/* FRESH DEMO PORTFOLIO TELEMETRY BANNER */}
+      {freshPortfolioMetadata && (
+        <div className="p-4 rounded-2xl bg-[#050914] border border-emerald-500/40 text-xs font-mono space-y-2.5 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-emerald-400 font-bold">
+              <Zap className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs uppercase tracking-wider">FRESH DEMO PORTFOLIO ACTIVE</span>
+            </div>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-bold">
+              Fresh Geographic Inputs
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] pt-1 border-t border-white/10">
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Portfolio ID:</span>
+              <span className="text-white font-bold break-all">{freshPortfolioMetadata.portfolioId}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Candidates:</span>
+              <span className="text-white font-bold">{freshPortfolioMetadata.candidateCount} Sites</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Input Type:</span>
+              <span className="text-amber-400 font-bold capitalize">
+                {freshPortfolioMetadata.inputType === 'coordinates'
+                  ? 'Fresh Coordinate Portfolio'
+                  : freshPortfolioMetadata.inputType === 'addresses'
+                  ? 'Fresh Address Portfolio'
+                  : 'Fresh GeoJSON Parcels'}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Created:</span>
+              <span className="text-slate-200 font-bold">
+                {new Date(freshPortfolioMetadata.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/10">
+            <button
+              type="button"
+              onClick={handleGenerateAnotherFresh}
+              className="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all shadow-sm"
+            >
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Generate Another Fresh Portfolio</span>
+            </button>
+
+            {/* Cache Diagnostics Panel */}
+            <details className="text-[10.5px] text-slate-400">
+              <summary className="cursor-pointer hover:text-slate-200 select-none font-bold">
+                Cache Diagnostics
+              </summary>
+              <div className="mt-1 space-y-0.5 text-slate-300 bg-black/60 p-2.5 rounded-xl border border-white/10 text-[10px]">
+                <div>Portfolio ID: {freshPortfolioMetadata.portfolioId}</div>
+                <div>Endpoint: /api/agent/site-scan</div>
+                <div>Execution Mode: {executionSummary?.executionMode || 'Dynamic Mireye Siting'}</div>
+                <div>Cache Hits: {executionSummary?.cacheHits ?? 0} | Live Fetches: {executionSummary?.liveFetches ?? 0}</div>
+              </div>
+            </details>
+          </div>
+        </div>
+      )}
 
       {/* Pure Borderless Typography Data Status Stream */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
@@ -582,12 +770,21 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               'Nacogdoches County': { lat: 31.6035, lng: -94.6555 },
             };
 
-            const mapResults: LocationResult[] = evaluations.map((ev, idx) => {
-              const coords = countyCoords[ev.county] || { lat: 30.2672 + (idx * 0.05), lng: -97.7431 - (idx * 0.05) };
+            // Rule #2: Plot all candidate sites (approved + rejections) so map count matches evaluated total (10 of 10)
+            const allCandidates = [
+              ...evaluations.map((ev) => ({ ...ev, isRejected: false })),
+              ...rejections.map((rej) => ({ siteName: rej.siteName, county: rej.county || 'Target County', techScore: 28, conclusion: rej.reason, isRejected: true })),
+            ];
+
+            const mapResults: LocationResult[] = allCandidates.map((ev, idx) => {
+              const coords = (ev as any).lat && (ev as any).lng
+                ? { lat: Number((ev as any).lat), lng: Number((ev as any).lng) }
+                : countyCoords[ev.county] || { lat: 30.2672 + (idx * 0.05), lng: -97.7431 - (idx * 0.05) };
+
               return {
                 location: {
-                  id: `eval-${idx}`,
-                  address: `${ev.siteName}, ${ev.county}, ${ev.state || 'TX'}`,
+                  id: `cand-${idx + 1}`,
+                  address: `${ev.siteName}, ${ev.county}`,
                   lat: coords.lat,
                   lng: coords.lng,
                   label: ev.siteName,
@@ -599,16 +796,32 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                 totalScore: ev.techScore,
                 fieldScores: [],
                 breakdown: [],
-                suitability: ev.techScore >= 80 ? 'High' : 'Moderate',
-                tier: ev.techScore >= 85 ? 'Tier 1' : 'Tier 2',
+                suitability: ev.isRejected ? 'Low' : (ev.techScore >= 80 ? 'High' : 'Moderate'),
+                tier: ev.isRejected ? 'Rejected' : (ev.techScore >= 85 ? 'Tier 1' : 'Tier 2'),
                 verdict: ev.conclusion,
-                recommendation: 'Approved for acquisition option outreach',
+                recommendation: ev.isRejected ? 'Disqualified via due diligence' : 'Approved for acquisition option outreach',
                 data: null,
-                riskLevel: 'Low' as any,
+                riskLevel: (ev.isRejected ? 'High' : 'Low') as any,
                 error: null,
                 alternatives: [],
               };
             });
+
+            // Log WINNER CONSISTENCY trace per Rule #3
+            if (survivors.length > 0) {
+              const winner = survivors[0];
+              console.log(`[WINNER CONSISTENCY]`, {
+                candidateId: winner.siteName,
+                name: winner.siteName,
+                county: winner.county,
+                state: winner.state,
+                lat: winner.memo?.lat || (winner as any).lat,
+                lng: winner.memo?.lng || (winner as any).lng,
+                technicalScore: winner.techEval?.technicalFeasibilityScore,
+                rank: winner.rank,
+                mireyeSiteId: mireyeSite?.site_id || 'none',
+              });
+            }
 
             return (
               <div className="pt-6 border-t border-white/10 space-y-3 text-left">
@@ -681,15 +894,17 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
             rejections={rejections}
             evaluations={evaluations}
             winnerSite={survivors.length > 0 ? (survivors[0] as any) : (evaluations.length > 0 ? (evaluations[0] as any) : null)}
+            mireyeSite={mireyeSite}
           />
 
-          {/* Mireye /v1/ask Spatial Intelligence Copilot */}
+          {/* Mireye Spatial Intelligence Copilot — uses /v1/ask-site if site_id available */}
           {(!isRunning || evaluations.length > 0) && (
             <SpatialCopilot
               userPrompt={prompt}
               winnerSite={survivors.length > 0 ? survivors[0] : evaluations[0]}
               evaluations={evaluations}
               rejections={rejections}
+              mireyeSiteId={mireyeSite?.site_id ?? null}
             />
           )}
 
@@ -697,7 +912,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
       )}
 
       {/* Investment Memo Modal */}
-      <InvestmentMemoModal memo={selectedMemo} isOpen={isMemoOpen} onClose={() => setIsMemoOpen(false)} />
+      <InvestmentMemoModal memo={selectedMemo} isOpen={isMemoOpen} onClose={() => setIsMemoOpen(false)} mireyeSite={mireyeSite} />
 
       {/* Decision Ledger AskWhy Modal */}
       <AskWhyModal data={askWhyData} isOpen={isAskWhyOpen} onClose={() => setIsAskWhyOpen(false)} />

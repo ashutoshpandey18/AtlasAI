@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu } from 'lucide-react';
-import type { LocationResult } from '../types/atlas';
+import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock } from 'lucide-react';
+import type { LocationResult, MireyeSiteRegistration } from '../types/atlas';
 
 export interface RejectionItem {
   siteName: string;
@@ -16,9 +16,11 @@ interface Props {
   evaluations?: any[];
   rejections?: RejectionItem[];
   winnerSite?: any | null;
+  /** Atlas V1.3 — Mireye Site Dossier registration result for the top winner */
+  mireyeSite?: MireyeSiteRegistration | null;
 }
 
-export function DecisionLedger({ promptStr, evaluations = [], rejections = [], winnerSite }: Props) {
+export function DecisionLedger({ promptStr, evaluations = [], rejections = [], winnerSite, mireyeSite }: Props) {
   const totalEvaluated = (evaluations?.length || 0) + (rejections?.length || 0);
   const promptDisplay = promptStr || 'Find fast-deployment solar carport targets in Texas under $2M capex.';
   const topSite = winnerSite || (evaluations.length > 0 ? evaluations[0] : null);
@@ -113,6 +115,83 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
               </p>
             </div>
 
+            {/* Atlas V1.3 — Mireye Site Dossier Registration Card */}
+            {mireyeSite && (
+              <div className={`p-4 rounded-2xl border text-xs font-mono space-y-2.5 ${
+                mireyeSite.status === 'registered'
+                  ? 'bg-emerald-950/30 border-emerald-500/30'
+                  : mireyeSite.status === 'deferred'
+                  ? 'bg-slate-900/60 border-slate-700/60'
+                  : mireyeSite.status === 'pending'
+                  ? 'bg-amber-950/20 border-amber-500/30'
+                  : 'bg-rose-950/20 border-rose-500/20'
+              }`}>
+                <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-2">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className={`w-4 h-4 shrink-0 ${
+                      mireyeSite.status === 'registered' ? 'text-emerald-400'
+                      : mireyeSite.status === 'deferred' ? 'text-slate-300'
+                      : mireyeSite.status === 'pending' ? 'text-amber-400'
+                      : 'text-rose-400'
+                    }`} />
+                    <span className="font-bold uppercase tracking-wider text-xs text-white">
+                      Registered Mireye Site
+                    </span>
+                  </div>
+                  <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
+                    mireyeSite.status === 'registered'
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                      : mireyeSite.status === 'deferred'
+                      ? 'bg-slate-800 border-slate-700 text-slate-300'
+                      : mireyeSite.status === 'pending'
+                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                      : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                  }`}>
+                    {mireyeSite.status === 'registered' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
+                    {mireyeSite.status === 'registered' ? '✓ Registered'
+                     : mireyeSite.status === 'deferred' ? '✓ Registration Deferred'
+                     : mireyeSite.status === 'pending' ? '✓ Pending Registration'
+                     : '✓ Registration Failed'}
+                  </span>
+                </div>
+
+                {mireyeSite.status === 'registered' && mireyeSite.site_id && (
+                  <div className="space-y-1 text-[11px] text-slate-300">
+                    <div>Site ID: <span className="text-white font-bold">{mireyeSite.site_id}</span></div>
+                    <div>Source: <span className="text-slate-200">Mireye /v1/sites</span></div>
+                    {mireyeSite.geometrySource && (
+                      <div>Geometry Source: <span className="text-emerald-400 font-bold">{mireyeSite.geometrySource}</span></div>
+                    )}
+                    {mireyeSite.registered_at && (
+                      <div className="flex items-center gap-1 text-slate-400 text-[10.5px] pt-0.5">
+                        <Clock className="w-3 h-3 text-slate-400" />
+                        <span>Registered: {new Date(mireyeSite.registered_at).toLocaleString()}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {mireyeSite.status === 'deferred' && (
+                  <div className="space-y-2 text-[11px]">
+                    <div className="text-slate-300 font-sans leading-relaxed">
+                      Atlas only registers verified parcel boundaries returned by Mireye Lookup. Because parcel geometry was unavailable for this location, registration was intentionally deferred. Spatial Copilot automatically continues using Mireye /v1/ask without any loss of functionality.
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-white/10 font-mono text-[10.5px]">
+                      <div>Reason: <span className="text-slate-300">Verified parcel geometry was not returned by Mireye Lookup.</span></div>
+                      <div>Copilot Mode: <span className="text-amber-400 font-bold">Stateless Mireye /v1/ask</span></div>
+                      <div>Future Registration: <span className="text-emerald-400 font-bold">Eligible once parcel geometry becomes available.</span></div>
+                    </div>
+                  </div>
+                )}
+
+                {mireyeSite.status === 'failed' && (
+                  <div className="text-[11px] text-rose-300 pt-0.5">
+                    Reason: {mireyeSite.error || 'Mireye API registration request encountered an error. Spatial Copilot will fall back to stateless /v1/ask.'}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Business Impact & Data Provenance Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 font-mono text-xs">
               
@@ -131,7 +210,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   {(() => {
                     const slope = topSite?.techEval?.decisionLedger?.inputsChecked?.find((s: string) => s.includes('Slope') || s.includes('slope'));
                     const slopeVal = slope ? slope.match(/([\d.]+)°/)?.[1] : '0.9';
-                    return `${slopeVal}° Terrain Slope (Flat — ~$145k CapEx Savings)`;
+                    return `${slopeVal}° Terrain Slope (Flat — Low Civil Earthwork Complexity)`;
                   })()}
                 </div>
                 <div className="text-[11px] font-mono flex items-center justify-between pt-1 border-t border-white/10">

@@ -3,6 +3,12 @@
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, CheckCircle2, AlertCircle, X, Sparkles, Zap, ArrowRight, Download } from 'lucide-react';
 import type { AddressInputItem } from '@/services/addressLookupService';
+import {
+  generateFreshCoordinatesPortfolio,
+  generateFreshAddressPortfolio,
+  generateFreshGeoJsonPortfolio,
+  type FreshPortfolioMetadata,
+} from '@/services/freshPortfolioService';
 
 export interface CustomSiteParcel {
   siteId: string;
@@ -13,12 +19,18 @@ export interface CustomSiteParcel {
   lng: number;
   ownershipType?: 'CORPORATE_FEE_SIMPLE' | 'GROUND_LEASE';
   parkingLotAreaSqFt?: number;
+  geometry?: any; // Preserves real GeoJSON geometry (Polygon/MultiPolygon)
+  freshMetadata?: FreshPortfolioMetadata | null;
 }
 
 interface ParcelUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUploadSuccess: (sites: CustomSiteParcel[], filename: string) => void;
+  onUploadSuccess: (
+    sites: CustomSiteParcel[],
+    filename: string,
+    freshMetadata?: FreshPortfolioMetadata | null
+  ) => void;
 }
 
 export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUploadModalProps) {
@@ -30,6 +42,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
   const [isResolvingAddresses, setIsResolvingAddresses] = useState(false);
   const [resolutionProgress, setResolutionProgress] = useState<{ current: number; total: number } | null>(null);
   const [ingestionMode, setIngestionMode] = useState<'COORDINATES' | 'ADDRESS_LOOKUP' | null>(null);
+  const [freshMetadata, setFreshMetadata] = useState<FreshPortfolioMetadata | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -256,6 +269,11 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
       const county = props.county || 'Custom County';
       const state = (props.state || 'TX').toUpperCase();
 
+      // Preserve geometry if it is a Polygon or MultiPolygon
+      const geometry = feat.geometry && (feat.geometry.type === 'Polygon' || feat.geometry.type === 'MultiPolygon')
+        ? feat.geometry
+        : null;
+
       sites.push({
         siteId: `geojson-${idx + 1}-${Date.now()}`,
         siteName,
@@ -265,6 +283,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
         lng,
         ownershipType: 'CORPORATE_FEE_SIMPLE',
         parkingLotAreaSqFt: 50000,
+        geometry: geometry || undefined,
       });
     });
 
@@ -304,34 +323,101 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
 
   const handleConfirm = () => {
     if (parsedSites.length > 0 && uploadedFilename) {
-      onUploadSuccess(parsedSites, uploadedFilename);
+      onUploadSuccess(parsedSites, uploadedFilename, freshMetadata);
       onClose();
     }
   };
 
+  const handleGenerateFresh = async (type: 'coords' | 'addresses' | 'geojson', count: number) => {
+    setErrorMsg(null);
+    if (type === 'coords') {
+      const meta = generateFreshCoordinatesPortfolio(count);
+      if (!meta) {
+        setErrorMsg(`Atlas does not currently have enough unused candidate locations to generate another unique coordinate portfolio of size ${count}. Try a smaller size.`);
+        return;
+      }
+      setFreshMetadata(meta);
+      setUploadedFilename(meta.filename);
+      setIngestionMode('COORDINATES');
+      const sites: CustomSiteParcel[] = meta.candidates.map((c, i) => ({
+        siteId: `fresh_${i + 1}`,
+        siteName: c.siteName,
+        county: c.county || 'Texas',
+        state: c.state || 'TX',
+        lat: c.lat,
+        lng: c.lng,
+        ownershipType: 'CORPORATE_FEE_SIMPLE',
+      }));
+      setParsedSites(sites);
+    } else if (type === 'addresses') {
+      const meta = generateFreshAddressPortfolio(count);
+      if (!meta) {
+        setErrorMsg(`Atlas does not currently have enough unused address candidates to generate another unique address portfolio of size ${count}. Try a smaller size.`);
+        return;
+      }
+      setFreshMetadata(meta);
+      setUploadedFilename(meta.filename);
+      setIngestionMode('ADDRESS_LOOKUP');
+      let csvContent = 'site_name,street_address,city,state,zip_code\n';
+      meta.candidates.forEach((c) => {
+        const fullAddr = c.address || '';
+        const parts = fullAddr.split(',');
+        const street = (parts[0] || '').trim();
+        const city = (parts[1] || '').trim();
+        const stateZip = (parts[2] || '').trim();
+        const stateParts = stateZip.split(' ');
+        const state = stateParts[0] || 'TX';
+        const zip = stateParts[1] || '75001';
+        csvContent += `"${c.siteName}","${street}","${city}","${state}","${zip}"\n`;
+      });
+      const file = new File([csvContent], meta.filename, { type: 'text/csv' });
+      await processFile(file);
+    } else {
+      const meta = generateFreshGeoJsonPortfolio(count);
+      if (!meta) {
+        setErrorMsg(`Atlas does not currently have enough unused parcel geometries to generate another unique GeoJSON portfolio of size ${count}. Try a smaller size.`);
+        return;
+      }
+      setFreshMetadata(meta);
+      setUploadedFilename(meta.filename);
+      setIngestionMode('COORDINATES');
+      const sites: CustomSiteParcel[] = meta.candidates.map((c, i) => ({
+        siteId: `fresh_geo_${i + 1}`,
+        siteName: c.siteName,
+        county: c.county || 'Texas',
+        state: c.state || 'TX',
+        lat: c.lat,
+        lng: c.lng,
+        geometry: c.polygonGeometry,
+        ownershipType: 'CORPORATE_FEE_SIMPLE',
+      }));
+      setParsedSites(sites);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 font-sans text-left">
-      <div className="cosmic-gradient-bg bg-spatial-grid border-2 border-white/20 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-[0_25px_90px_rgba(0,0,0,0.95)] relative text-white space-y-6">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 font-sans text-left overflow-y-auto">
+      <div className="cosmic-gradient-bg bg-spatial-grid border-2 border-white/20 rounded-3xl w-full max-w-[720px] max-h-[calc(100vh-32px)] overflow-y-auto p-5 sm:p-7 shadow-[0_25px_90px_rgba(0,0,0,0.95)] relative text-white space-y-5">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/15">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-              <Upload className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+              <Upload className="w-4 h-4" />
             </div>
             <div>
               <div className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest">
-                CUSTOM PARCEL INGESTION ENGINE
+                PARCEL INGESTION ENGINE
               </div>
-              <h3 className="text-xl font-black text-white tracking-tight">Upload CSV or GeoJSON Portfolio</h3>
+              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Upload Portfolio or Select Demo</h3>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer shrink-0"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -345,7 +431,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
                 <span>Fastest</span>
               </span>
             </div>
-            <div className="text-[11px] mt-1 text-slate-400">CSV/GeoJSON containing lat, lng values for instant evaluation.</div>
+            <div className="text-[11px] mt-1 text-slate-400">CSV/GeoJSON with lat, lng values for instant evaluation.</div>
           </div>
           <div className={`p-3 rounded-xl border transition-all ${ingestionMode === 'ADDRESS_LOOKUP' ? 'bg-amber-500/10 border-amber-400 text-amber-300' : 'bg-slate-950/60 border-white/10 text-slate-400'}`}>
             <div className="font-bold flex items-center justify-between text-white">
@@ -359,14 +445,14 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
           </div>
         </div>
 
-        {/* Drag & Drop Zone */}
+        {/* Primary Drag & Drop Zone */}
         <div
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2.5 ${
+          className={`border-2 border-dashed rounded-2xl p-5 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${
             dragActive
               ? 'border-amber-400 bg-amber-500/10 scale-[1.01]'
               : 'border-white/20 hover:border-amber-500/50 bg-[#06060e]/80'
@@ -379,83 +465,222 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
             onChange={handleFileChange}
             className="hidden"
           />
-          <div className="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-            <FileText className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+            <FileText className="w-4 h-4" />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 w-full">
             <div className="text-sm font-bold text-white">
-              Drag & Drop your parcel portfolio file here
+              Drag & Drop your portfolio file here
             </div>
-            <div className="text-xs text-slate-400 font-mono">
-              Supports <span className="text-amber-400 font-bold">.CSV</span> with coordinates OR street addresses
+            <div className="text-[11px] text-slate-400 font-mono">
+              Supports <span className="text-amber-400 font-bold">.CSV</span> coordinates / addresses or <span className="text-emerald-400 font-bold">.GeoJSON</span>
             </div>
-            <div className="space-y-2 pt-2 text-[11px] font-mono" onClick={(e) => e.stopPropagation()}>
-              <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
-                <span className="font-bold text-cyan-400">Option A (Coordinates):</span>
-                <a href="/data/coordinates_portfolio_15.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+
+            {/* Standard Download Datasets Stream */}
+            <div className="space-y-2 pt-3 text-[11px] font-mono border-t border-white/10 mt-2" onClick={(e) => e.stopPropagation()}>
+              
+              {/* Option A: Standard Coordinates */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-slate-300">
+                <span className="font-bold text-cyan-400">OPTION A — Coords:</span>
+                <a href="/data/coordinates_portfolio_15.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>15 Coords</span>
+                  <span>15</span>
                 </a>
                 <span>•</span>
-                <a href="/data/coordinates_portfolio_20.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/coordinates_portfolio_20.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>20 Coords</span>
+                  <span>20</span>
                 </a>
                 <span>•</span>
-                <a href="/data/coordinates_portfolio_50.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/coordinates_portfolio_50.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>50 Coords</span>
+                  <span>50</span>
                 </a>
                 <span>•</span>
-                <a href="/data/coordinates_portfolio_100.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/coordinates_portfolio_100.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>100 Coords</span>
+                  <span>100</span>
                 </a>
                 <span>•</span>
-                <a href="/data/coordinates_portfolio_300.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/coordinates_portfolio_300.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>300 Coords</span>
+                  <span>300</span>
                 </a>
                 <span>•</span>
-                <a href="/data/coordinates_portfolio_500.csv" download className="text-cyan-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/coordinates_portfolio_500.csv" download className="text-cyan-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-cyan-400" />
-                  <span>500 Coords</span>
+                  <span>500</span>
                 </a>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
-                <span className="font-bold text-amber-400">Option B (Street Addresses):</span>
-                <a href="/data/address_portfolio_15.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+              {/* Option B: Standard Street Addresses */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-slate-300">
+                <span className="font-bold text-amber-400">OPTION B — Addresses:</span>
+                <a href="/data/address_portfolio_15.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>15 Sites</span>
+                  <span>15</span>
                 </a>
                 <span>•</span>
-                <a href="/data/address_portfolio_20.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/address_portfolio_20.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>20 Sites</span>
+                  <span>20</span>
                 </a>
                 <span>•</span>
-                <a href="/data/address_portfolio_50.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/address_portfolio_50.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>50 Sites</span>
+                  <span>50</span>
                 </a>
                 <span>•</span>
-                <a href="/data/address_portfolio_100.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/address_portfolio_100.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>100 Sites</span>
+                  <span>100</span>
                 </a>
                 <span>•</span>
-                <a href="/data/address_portfolio_300.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/address_portfolio_300.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>300 Sites</span>
+                  <span>300</span>
                 </a>
                 <span>•</span>
-                <a href="/data/address_portfolio_500.csv" download className="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                <a href="/data/address_portfolio_500.csv" download className="text-amber-400 hover:underline font-bold inline-flex items-center gap-0.5">
                   <Download className="w-3 h-3 text-amber-400" />
-                  <span>500 Sites</span>
+                  <span>500</span>
                 </a>
               </div>
+
+              {/* Option C: Parcel Geometry GeoJSON */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-slate-300">
+                <span className="font-bold text-emerald-400">OPTION C — GeoJSON:</span>
+                <a href="/data/real_polygon_portfolio.geojson" download className="text-emerald-400 hover:underline font-bold inline-flex items-center gap-0.5">
+                  <Download className="w-3 h-3 text-emerald-400" />
+                  <span>10</span>
+                </a>
+                <span>•</span>
+                <a href="/data/commercial_polygons_20.geojson" download className="text-emerald-400 hover:underline font-bold inline-flex items-center gap-0.5">
+                  <Download className="w-3 h-3 text-emerald-400" />
+                  <span>20</span>
+                </a>
+                <span>•</span>
+                <a href="/data/dollar_general_polygons.geojson" download className="text-emerald-400 hover:underline font-bold inline-flex items-center gap-0.5">
+                  <Download className="w-3 h-3 text-emerald-400" />
+                  <span>50</span>
+                </a>
+                <span>•</span>
+                <a href="/data/commercial_polygons_20.geojson" download className="text-emerald-400 hover:underline font-bold inline-flex items-center gap-0.5">
+                  <Download className="w-3 h-3 text-emerald-400" />
+                  <span>100</span>
+                </a>
+              </div>
+
             </div>
+          </div>
+        </div>
+
+        {/* FRESH DEMO UTILITY SECTION (Subordinate Secondary Utility) */}
+        <div className="pt-4 border-t border-white/10 space-y-3 font-mono">
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 uppercase tracking-widest">
+              <span>✦ FRESH DEMO</span>
+            </div>
+            <p className="text-xs text-slate-300 font-sans mt-0.5 leading-relaxed">
+              Generate a new candidate portfolio for a fresh evaluation with distinct geographic inputs.
+            </p>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            
+            {/* Coordinates Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#060610] p-3 rounded-xl border border-white/10">
+              <div>
+                <span className="text-cyan-400 font-bold uppercase text-[11px] block font-mono">COORDINATES</span>
+                <span className="text-[10px] text-slate-400 font-sans">Fresh coordinate portfolio</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 w-full sm:w-auto min-w-0">
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('coords', 10)}
+                  className="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  10 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('coords', 20)}
+                  className="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  20 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('coords', 50)}
+                  className="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  50 Sites
+                </button>
+              </div>
+            </div>
+
+            {/* Addresses Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#060610] p-3 rounded-xl border border-white/10">
+              <div>
+                <span className="text-amber-400 font-bold uppercase text-[11px] block font-mono">ADDRESSES</span>
+                <span className="text-[10px] text-slate-400 font-sans">Fresh address portfolio → Mireye Lookup</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 w-full sm:w-auto min-w-0">
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('addresses', 10)}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  10 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('addresses', 20)}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  20 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('addresses', 50)}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  50 Sites
+                </button>
+              </div>
+            </div>
+
+            {/* GeoJSON Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#060610] p-3 rounded-xl border border-white/10">
+              <div>
+                <span className="text-emerald-400 font-bold uppercase text-[11px] block font-mono">GEOJSON</span>
+                <span className="text-[10px] text-slate-400 font-sans">Fresh parcel geometry</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 w-full sm:w-auto min-w-0">
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('geojson', 10)}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  10 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('geojson', 20)}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  20 Sites
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGenerateFresh('geojson', 50)}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono font-bold text-xs cursor-pointer transition-all w-full min-w-0 text-center truncate"
+                >
+                  50 Sites
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -497,7 +722,7 @@ export function ParcelUploadModal({ isOpen, onClose, onUploadSuccess }: ParcelUp
                   </span>
                 )}
               </div>
-              <span className="text-[10px] text-slate-400">{uploadedFilename}</span>
+              <span className="text-[10px] text-slate-400 truncate max-w-[180px]">{uploadedFilename}</span>
             </div>
 
             <div className="max-h-36 overflow-y-auto space-y-1.5 pt-1 text-[11px] text-slate-300 divide-y divide-white/10">

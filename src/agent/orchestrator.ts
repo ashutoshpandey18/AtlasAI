@@ -93,32 +93,8 @@ export async function runAcquisitionPipeline(
     if (techEval.hasDealKiller) {
       const reason = techEval.fatalFlaws[0]?.defensibleImpact || 'Failed technical due diligence.';
       rejections.push({ siteName, county, reason });
-      onEvent({
-        eventType: 'site_rejected',
-        data: {
-          siteName,
-          county,
-          reason,
-          alternative: techEval.alternativeSuggestion,
-          inputsChecked: techEval.decisionLedger.inputsChecked,
-          rulesApplied: techEval.decisionLedger.rulesApplied,
-          conclusion: techEval.decisionLedger.conclusion,
-        },
-      });
     } else {
       candidateEvaluations.push({ raw: item, techEval, intelEval });
-      onEvent({
-        eventType: 'site_evaluated',
-        data: {
-          siteName,
-          county,
-          techScore: techEval.technicalFeasibilityScore,
-          priorityScore: intelEval.acquisitionPriorityScore,
-          inputsChecked: techEval.decisionLedger.inputsChecked,
-          rulesApplied: techEval.decisionLedger.rulesApplied,
-          conclusion: techEval.decisionLedger.conclusion,
-        },
-      });
     }
   }
 
@@ -194,6 +170,7 @@ export async function runAcquisitionPipeline(
       // Pass real Mireye proximity result if available from site-scan pipeline
       driveTimeMinutes: (item.raw as any).driveTimeMinutes ?? null,
       proximityEval: (item.raw as any).proximityEval ?? null,
+      geometry: (item.raw as any).geometry ?? null, // preserve uploaded GeoJSON boundary geometry
     };
   });
 

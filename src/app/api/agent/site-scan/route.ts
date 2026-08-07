@@ -34,9 +34,10 @@ export async function POST(req: Request) {
       }
     }
 
-    let enrichedDataset = [];
+    let enrichedDataset: any[] = [];
 
     if (activeCustomSites.length > 0) {
+      console.log(`[GEOJSON AUDIT] Input Custom Sites: ${customSites?.length || 0} | Active Sliced Sites: ${activeCustomSites.length}`);
       // Ingest user's custom uploaded CSV/GeoJSON parcels directly into agent dataset
       const promptLower = userPrompt.toLowerCase();
       enrichedDataset = activeCustomSites.map((cs: any, idx: number) => {
@@ -68,6 +69,7 @@ export async function POST(req: Request) {
           lon: Number(cs.lng ?? cs.lon),
           acres: 1.5,
           mireye: null,
+          geometry: cs.geometry || null, // preserve uploaded GeoJSON geometry
         };
       });
     } else {

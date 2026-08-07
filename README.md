@@ -33,7 +33,8 @@ Atlas replaces manual site screening with an autonomous execution pipeline. It i
 ## Live Demo
 
 - **Live Production**: [https://atlas-ai-pi-one.vercel.app](https://atlas-ai-pi-one.vercel.app)
-- **Repository**: [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
+- **GitHub Repository**: [https://github.com/ashutoshpandey18/AtlasAI](https://github.com/ashutoshpandey18/AtlasAI)
+- **Executive One-Pager**: [https://github.com/ashutoshpandey18/AtlasAI/blob/main/ONE_PAGER.md](https://github.com/ashutoshpandey18/AtlasAI/blob/main/ONE_PAGER.md)
 
 ![Atlas AI Landing Page](public/images/00_hero_landing_page.png)
 
@@ -123,43 +124,35 @@ graph TD
 
 ## Product Walkthrough
 
-### Upload Portfolio
+### Upload Portfolio & Siting Pipeline Status
 
-Upload portfolio CSV files containing street addresses or geographic coordinates for batch ingestion.
+Upload portfolio CSV files containing street addresses or geographic coordinates for batch ingestion, and monitor real-time evaluation pipeline progress.
 
-![Pipeline Status](public/images/01_siting_pipeline_status.png)
-
----
-
-### Run Agent
-
-Atlas executes parallel GIS queries across candidate parcels and streams real-time evaluation pipeline progress.
-
-![Live Map Inspector](public/images/02_live_map_inspector.png)
+![Siting Pipeline Status](public/images/01_siting_pipeline_status.png)
 
 ---
 
-### Decision Ledger
+### Autonomous 3D Decision Model
 
-Review why the winning parcel was chosen over rejected alternatives and inspect Mireye Proximity heavy transport drive-time metrics.
+Atlas displays real-time execution progress through the autonomous decision engine and 3D robot interface during site registration and screening.
 
-![Decision Ledger](public/images/04_decision_ledger_copilot.png)
-
----
-
-### Spatial Copilot
-
-Ask natural language due diligence questions about site trade-offs and receive answers backed by cited physical radiometry data.
-
-![Spatial Copilot](public/images/03_replayable_ai_trace.png)
+![Autonomous 3D Decision Model](public/images/02_spline_robot_3d.png)
 
 ---
 
-### Investment Memo
+### Rejections & Multi-Criteria Scoring Results
 
-Export a 3-page Executive Investment Committee Memo featuring technical feasibility scores, CapEx savings, IRA §48 tax credit bonuses, and land option agreements.
+Inspect evaluated candidate properties, review disqualification proofs for cut parcels, and compare feasibility rankings.
 
-![Investment Memo](public/images/05_investment_memo.png)
+![Rejections & Scoring Results](public/images/03_rejections_and_scoring.png)
+
+---
+
+### Interactive Map Inspector & Physical Attribute Cards
+
+Inspect candidate site pins plotted across vector, satellite, and topo maps alongside physical GIS attribute cards (slope, flood plain, POA solar radiometry).
+
+![Interactive Map & Site Cards](public/images/04_interactive_map_cards.png)
 
 ---
 
@@ -170,7 +163,9 @@ Export a 3-page Executive Investment Committee Memo featuring technical feasibil
 | `POST /v1/lookup` | Resolves street addresses to lat/lng coordinates and county boundaries | Portfolio geocoding step (`/api/mireye/lookup`) |
 | `POST /v1/fetch` | Extracts NREL POA solar yield, USGS 3DEP 1.2° slope, and FEMA flood clearance | Physical GIS evaluation (`src/services/mireyeApiClient.ts`) |
 | `POST /v1/proximity` | Calculates heavy equipment transport drive times from Interstate freight corridors | Transport clearance scoring (`src/services/mireyeProximityService.ts`) |
-| `POST /v1/ask` | Synthesizes natural language due diligence answers with comparative trade-off reasoning | Spatial Copilot interface (`/api/mireye/ask`) |
+| `POST /v1/sites` | Registers candidate parcel polygon boundaries as persistent Mireye Site Dossiers | Target site registration (`/api/mireye/sites`) |
+| `POST /v1/ask-site` | Performs grounded due diligence Q&A against persistent registered site dossiers | Spatial Copilot interface (`/api/mireye/ask-site`) |
+| `POST /v1/ask` | Synthesizes natural language due diligence answers with comparative trade-off reasoning | Spatial Copilot fallback interface (`/api/mireye/ask`) |
 
 ---
 
@@ -230,7 +225,7 @@ curl -X POST https://api.mireye.com/v1/proximity \
 </details>
 
 <details>
-<summary>2. Save Acquisition Campaign (POST /api/campaigns)</summary>
+<summary>3. Save Acquisition Campaign (POST /api/campaigns)</summary>
 
 Persists evaluated acquisition campaigns to Turso SQLite storage.
 
@@ -244,7 +239,7 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/campaigns \
 </details>
 
 <details>
-<summary>3. Retrieve Saved Campaigns (GET /api/campaigns)</summary>
+<summary>4. Retrieve Saved Campaigns (GET /api/campaigns)</summary>
 
 Retrieves saved acquisition campaign records for review.
 
@@ -256,7 +251,7 @@ curl -X GET https://atlas-ai-pi-one.vercel.app/api/campaigns
 </details>
 
 <details>
-<summary>4. Spatial Copilot Q&A (POST /v1/ask)</summary>
+<summary>5. Spatial Copilot Q&A (POST /v1/ask)</summary>
 
 Answers due diligence questions with comparative trade-off reasoning.
 
@@ -270,7 +265,7 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/ask \
 </details>
 
 <details>
-<summary>5. Streaming Site Scan Pipeline (POST /api/agent/site-scan)</summary>
+<summary>6. Streaming Site Scan Pipeline (POST /api/agent/site-scan)</summary>
 
 Streams Server-Sent Events (SSE) during portfolio evaluations.
 
@@ -283,6 +278,67 @@ curl -X POST https://atlas-ai-pi-one.vercel.app/api/agent/site-scan \
   -d '{"prompt":"Find commercial solar carports in Texas under $2M capex.","dataset":[{"geo_id":"US-TX-0001","chain":"Kroger Supermarket","address":"12600 Westheimer Rd","city":"Houston","state":"TX","zip":"77077","lat":29.7365,"lon":-95.6032}]}'
 ```
 </details>
+
+<details>
+<summary>7. Target Site Registration (POST /v1/sites)</summary>
+
+Registers candidate parcel polygon boundaries with Mireye to establish a persistent Site Dossier ID (`site_id`).
+
+```bash
+curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/sites \
+  -H "Content-Type: application/json" \
+  -d '{
+    "polygon": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [-95.4560, 30.3119],
+          [-95.4550, 30.3119],
+          [-95.4550, 30.3129],
+          [-95.4560, 30.3129],
+          [-95.4560, 30.3119]
+        ]
+      ]
+    }
+  }'
+```
+
+**Sample JSON Response Payload**:
+```json
+{
+  "site_id": "316a948ff64cf097",
+  "status": "registered",
+  "registered_at": "2026-08-08T16:20:29.464Z"
+}
+```
+</details>
+
+<details>
+<summary>8. Dossier-Backed Spatial Copilot Q&A (POST /v1/ask-site)</summary>
+
+Performs grounded spatial due diligence Q&A on a persistent registered Mireye Site Dossier.
+
+```bash
+curl -X POST https://atlas-ai-pi-one.vercel.app/api/mireye/ask-site \
+  -H "Content-Type: application/json" \
+  -d '{
+    "site_id": "316a948ff64cf097",
+    "question": "What is the LiDAR terrain slope and flood risk for this registered site?"
+  }'
+```
+
+**Sample JSON Response Payload**:
+```json
+{
+  "answer": "For registered site 316a948ff64cf097, physical GIS intelligence confirms 1.7° ground slope (USGS 3DEP LiDAR verified) and Zone X minimal flood hazard (FEMA NFHL clearance).",
+  "source": "mireye_site_dossier",
+  "citations": [
+    { "fieldName": "slope_degrees", "source": "USGS 3DEP LiDAR", "value": "1.7°" },
+    { "fieldName": "within_floodplain_polygon", "source": "FEMA NFHL", "value": "false" }
+  ]
+}
+```
+</details>ails>
 
 ---
 
@@ -343,9 +399,75 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Credits
 
-- **Mireye Platform**: Location intelligence APIs (`/v1/lookup`, `/v1/fetch`, `/v1/ask`, `/v1/proximity`).
+- **Mireye Platform**: Location intelligence APIs (`/v1/lookup`, `/v1/fetch`, `/v1/ask`, `/v1/proximity`, `/v1/sites`, `/v1/ask-site`).
 - **NREL**: PVWatts v8 solar radiometry dataset.
 - **USGS**: 3DEP 3D elevation LiDAR program.
 - **FEMA**: National Flood Hazard Layer (NFHL).
 - **Next.js & React**: Core web framework.
 - **Turso & libSQL**: Edge SQLite database layer.
+
+---
+
+## Persistent Mireye Site Dossiers
+
+Atlas evaluates every candidate parcel using Mireye location intelligence.
+
+Only acquisition-worthy parcels — the top-ranked survivors that pass all technical feasibility checks — are promoted into persistent **Mireye Site Dossiers** via `POST /v1/sites`.
+
+### Why This Matters
+
+Rejected parcels consume no Mireye persistent storage. Only sites that Atlas recommends for acquisition become registered Mireye Sites — mirroring how institutional acquisition teams actually work.
+
+### How It Works
+
+```
+CSV Upload
+  ↓
+/v1/lookup + /v1/fetch + /v1/proximity
+  ↓
+Atlas Multi-Factor Evaluation + Scoring
+  ↓
+Top-Ranked Survivor(s) Only
+  ↓
+POST /v1/sites  ←  Registers parcel polygon (if geometry available from /v1/lookup)
+  ↓
+site_id stored in Atlas state
+  ↓
+Decision Ledger shows  "Registered Mireye Site ✓ site_id: msr_xxxxx"
+  ↓
+Investment Memo references Site ID in Section 7
+  ↓
+Spatial Copilot: uses POST /v1/ask-site (dossier-backed)
+              instead of POST /v1/ask  (stateless re-fetch)
+```
+
+### Geometry Policy — No Fake Polygons
+
+Atlas never synthesizes fake GeoJSON geometry. Site registration only proceeds if Mireye `/v1/lookup` returns a real `parcel.geometry`.
+
+If no geometry is available:
+
+```
+registrationStatus = "skipped"
+reason = "No parcel geometry available from Mireye /v1/lookup."
+```
+
+The Spatial Copilot falls back to `/v1/ask` transparently.
+
+### Fallback Behavior
+
+| Failure Point | Fallback |
+|:--|:--|
+| `POST /v1/sites` fails | `status: 'failed'` — Copilot uses `/v1/ask` |
+| No parcel geometry | `status: 'skipped'` — Copilot uses `/v1/ask` |
+| `POST /v1/ask-site` fails | Retry, then fall back to `/v1/ask` |
+| User never sees an error | Guaranteed |
+
+### Provenance
+
+Every Spatial Copilot response shows its data source:
+
+- 🟢 **Registered Mireye Site Dossier** — dossier-backed, persistent context
+- 🟡 **Mireye /v1/ask** — stateless, real-time fetch
+
+

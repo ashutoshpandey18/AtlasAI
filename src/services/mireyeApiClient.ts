@@ -46,13 +46,12 @@ export async function fetchMireyeResilient(
         return null;
       }
 
-      console.log(`[FETCH]\nCoordinates: ${lat}, ${lng}\nFields: ${sortedFields}\nCache Key: ${cacheKey}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
-      console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/fetch\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+      const requestId = `req_fetch_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
       const startTime = Date.now();
-
-      // 3. Execute with Exponential Backoff & 429 Retry-After compliance
       const backoffDelays = [250, 500, 1000, 2000];
       let attempt = 0;
+
+      console.log(`[MIREYE REQUEST] Endpoint: POST /v1/fetch | Coordinates: ${lat}, ${lng} | Fields: ${sortedFields} | Attempt: ${attempt + 1} | RequestId: ${requestId}`);
 
       while (attempt <= backoffDelays.length) {
         try {
@@ -74,21 +73,19 @@ export async function fetchMireyeResilient(
           if (res.ok) {
             const data = await res.json();
             if (data && data.fields) {
-              console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
-              console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
+              const durationMs = Date.now() - startTime;
+              console.log(`[MIREYE RESPONSE] Endpoint: POST /v1/fetch | Status: ${res.status} OK | CacheHit: false | Duration: ${durationMs}ms | RequestId: ${requestId}`);
               await setCache(cacheKey, data);
               return { ...data, _cacheHit: false };
             }
           } else if (res.status === 429) {
-            // Respect Mireye HTTP 429 Retry-After header if present
             const retryAfterHeader = res.headers.get('retry-after');
             let delayMs = backoffDelays[attempt] || 2000;
             if (retryAfterHeader) {
               const seconds = parseInt(retryAfterHeader, 10);
-              if (!isNaN(seconds) && seconds > 0) {
-                delayMs = seconds * 1000;
-              }
+              if (!isNaN(seconds) && seconds > 0) delayMs = seconds * 1000;
             }
+            console.warn(`[MIREYE RETRY] Endpoint: POST /v1/fetch | Status: 429 RateLimited | Delay: ${delayMs}ms | Attempt: ${attempt + 1}`);
             await new Promise((resolve) => setTimeout(resolve, delayMs));
           } else if (res.status >= 500 && attempt < backoffDelays.length) {
             // Retry server errors with exponential backoff
@@ -156,12 +153,12 @@ export async function fetchMireyeProximityResilient(
 
       if (!token) return null;
 
-      console.log(`[PROXIMITY]\nOrigin: ${originLat}, ${originLng}\nDestination: ${destLat}, ${destLng}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
-      console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/proximity\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+      const requestId = `req_prox_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
       const startTime = Date.now();
-
       const backoffDelays = [250, 500, 1000, 2000];
       let attempt = 0;
+
+      console.log(`[MIREYE REQUEST] Endpoint: POST /v1/proximity | Origin: ${originLat},${originLng} | Dest: ${destLat},${destLng} | Mode: ${mode} | Attempt: ${attempt + 1} | RequestId: ${requestId}`);
 
       while (attempt <= backoffDelays.length) {
         try {
@@ -189,8 +186,8 @@ export async function fetchMireyeProximityResilient(
           if (res.ok) {
             const data = await res.json();
             if (data) {
-              console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
-              console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
+              const durationMs = Date.now() - startTime;
+              console.log(`[MIREYE RESPONSE] Endpoint: POST /v1/proximity | Status: ${res.status} OK | CacheHit: false | Duration: ${durationMs}ms | RequestId: ${requestId}`);
               await setCache(cacheKey, data);
               return { ...data, _cacheHit: false };
             }

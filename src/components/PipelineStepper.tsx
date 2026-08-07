@@ -177,13 +177,13 @@ export function PipelineStepper() {
       <div className="text-center max-w-xl mx-auto mb-10">
         <span className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-widest bg-[var(--bg-soft)] border border-[var(--border)] px-4 py-1.5 rounded-full inline-flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-          AUTONOMOUS DECISION ENGINE
+          AUTONOMOUS ACQUISITION ENGINE
         </span>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight mt-4 font-sans leading-tight">
-          The Architecture of Autonomous Land Acquisition
+          The Lifecycle of Autonomous Land Acquisition
         </h2>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-3 leading-relaxed font-medium">
-          Four synchronized stages transforming unstructured physical data into signed-ready development decisions.
+          Six synchronized stages transforming unstructured physical data into registered Mireye Site Dossiers and signed-ready site control options.
         </p>
       </div>
 

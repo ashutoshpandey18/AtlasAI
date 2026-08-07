@@ -6,39 +6,57 @@ export function AppleStyleCapabilities() {
   const capabilities = [
     {
       num: '01',
-      stageTag: 'RAW GIS INGESTION',
-      subtitle: 'NREL / USGS / FEMA / EIA',
-      title: 'Physical Ground Truth',
-      description: 'Ingests 5 raw spatial layers: 2,131 kWh/m²/yr solar irradiance, 2.1° 3D slope LiDAR, FEMA flood zone polygons, and 138kV grid lines.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '5 Raw Layers',
+      stageTag: 'UNDERSTAND',
+      subtitle: 'PARCEL PARSING & ACQUISITION MANDATE',
+      title: 'Candidate Portfolio Understanding',
+      description: 'Atlas parses candidate property portfolios, extracts site geometries, and establishes physical criteria for commercial underwriting.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Portfolio Parsed',
     },
     {
       num: '02',
-      stageTag: 'FEATURE SYNTHESIS',
-      subtitle: 'SYNTHESIZER & CITATION LEDGER',
-      title: 'Mireye Evidence Engine',
-      description: 'Synthesizes raw geospatial attributes into structured Decision Evidence with timestamped citations and zero manual map inspecting.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '180ms Latency',
+      stageTag: 'INVESTIGATE',
+      subtitle: 'MIREYE API & PHYSICAL EVIDENCE SYNTHESIS',
+      title: 'Physical Evidence & Location Intelligence',
+      description: 'Atlas queries Mireye physical endpoints and GIS layers for slope, floodways, solar potential, and grid proximity.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Evidence Synthesized',
     },
     {
       num: '03',
-      stageTag: 'FLAW SCREENING',
-      subtitle: 'WRITTEN REJECTION PROOFS',
-      title: 'Rejection Ledger',
-      description: 'Automatically screens store candidate portfolios and cuts unviable sites with written proofs before engineering capital is wasted.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '0 Capital Wasted',
+      stageTag: 'UNDERWRITE',
+      subtitle: 'FATAL FLAW SCREENING & REJECTION PROOFS',
+      title: 'Fatal Flaw Screening & Feasibility Ranking',
+      description: 'Atlas eliminates physical deal-killers, creates written rejection proofs, and ranks viable sites using multi-factor analysis.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Flaws Screened',
     },
     {
       num: '04',
-      stageTag: 'LOI UNDERWRITING',
-      subtitle: '30% IRA ITC & LOI CONTRACT',
-      title: '3-Page Investment Memo',
-      description: 'Generates printable investment committee memos with 30% IRA ITC tax equity modeling ($224k benefit) and non-binding option LOI contracts.',
-      metricLabel: 'STAGE METRIC:',
-      metricValue: '19.8% Net IRR',
+      stageTag: 'SELECT',
+      subtitle: 'TARGET SELECTION & DECISION EVIDENCE',
+      title: 'Acquisition Target Selection',
+      description: 'Atlas identifies the primary acquisition candidate and exposes the underlying physical and commercial evidence.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Target Selected',
+    },
+    {
+      num: '05',
+      stageTag: 'PERSIST',
+      subtitle: 'PARCEL REGISTRATION (POST /v1/sites)',
+      title: 'Target Site Registration',
+      description: 'Atlas establishes a persistent Mireye site identity for candidates with verified parcel geometry. Sites without verified boundaries continue through stateless spatial analysis.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Site Registered',
+    },
+    {
+      num: '06',
+      stageTag: 'ACT',
+      subtitle: 'COMMERCIAL MEMOS & LOI SITE CONTROL',
+      title: 'Investment Memo & Site-Control Output',
+      description: 'Atlas produces executive investment committee memos and draft land option agreements to execute site control.',
+      metricLabel: 'AGENT ACTION:',
+      metricValue: 'Deliverables Ready',
     },
   ];
 
@@ -52,11 +70,11 @@ export function AppleStyleCapabilities() {
             AUTONOMOUS LAND ACQUISITION ENGINE
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-2">
-            4-Stage Spatial Pipeline Architecture
+            6-Stage Spatial Acquisition Lifecycle
           </h2>
         </div>
         <div className="text-xs font-mono text-slate-400 font-bold">
-          MIREYE API VERIFIED • ERCOT / FRCC / SERC
+          MIREYE PHYSICAL INTELLIGENCE BACKBONE • POST /v1/sites
         </div>
       </div>
 

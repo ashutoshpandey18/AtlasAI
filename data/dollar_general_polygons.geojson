@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Dollar General #21043 (Ector Co Winner Target)",
+        "address": "4300 E 42nd St, Odessa, TX 79762",
+        "county": "Ector County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-102.3451, 31.8618],
+            [-102.3421, 31.8618],
+            [-102.3421, 31.8598],
+            [-102.3451, 31.8598],
+            [-102.3451, 31.8618]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Dollar General #14321",
+        "address": "1002 N University Dr, Nacogdoches, TX 75961",
+        "county": "Nacogdoches County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-94.6424, 31.6121],
+            [-94.6394, 31.6121],
+            [-94.6394, 31.6091],
+            [-94.6424, 31.6091],
+            [-94.6424, 31.6121]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Dollar General #18492",
+        "address": "702 Highway 90 W, Sealy, TX 77474",
+        "county": "Austin County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-96.1622, 29.7792],
+            [-96.1592, 29.7792],
+            [-96.1592, 29.7762],
+            [-96.1622, 29.7762],
+            [-96.1622, 29.7792]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Dollar General #11930",
+        "address": "1501 S Georgetown St, Round Rock, TX 78664",
+        "county": "Williamson County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-97.6711, 30.4990],
+            [-97.6681, 30.4990],
+            [-97.6681, 30.4960],
+            [-97.6711, 30.4960],
+            [-97.6711, 30.4990]
+          ]
+        ]
+      }
+    }
+  ]
+}

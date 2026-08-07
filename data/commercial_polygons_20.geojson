@@ -1,0 +1,385 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Kroger Supermarket Westheimer",
+        "address": "12600 Westheimer Rd, Houston, TX 77077",
+        "county": "Harris County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-95.6047, 29.7375],
+          [-95.6017, 29.7375],
+          [-95.6017, 29.7355],
+          [-95.6047, 29.7355],
+          [-95.6047, 29.7375]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Target Center Austin",
+        "address": "8500 Westgate Blvd, Austin, TX 78745",
+        "county": "Travis County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-97.8027, 30.2024],
+          [-97.7997, 30.2024],
+          [-97.7997, 30.2004],
+          [-97.8027, 30.2004],
+          [-97.8027, 30.2024]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Home Depot Logistics Dallas",
+        "address": "2500 N Stemmons Fwy, Dallas, TX 75207",
+        "county": "Dallas County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.8356, 32.8025],
+          [-96.8326, 32.8025],
+          [-96.8326, 32.8005],
+          [-96.8356, 32.8005],
+          [-96.8356, 32.8025]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Walmart Supercenter San Antonio",
+        "address": "5555 De Zavala Rd, San Antonio, TX 78249",
+        "county": "Bexar County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-98.6030, 29.5631],
+          [-98.6000, 29.5631],
+          [-98.6000, 29.5611],
+          [-98.6030, 29.5611],
+          [-98.6030, 29.5631]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Best Buy Plaza Fort Worth",
+        "address": "1400 Hulen St, Fort Worth, TX 76107",
+        "county": "Tarrant County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-97.3927, 32.7220],
+          [-97.3897, 32.7220],
+          [-97.3897, 32.7200],
+          [-97.3927, 32.7200],
+          [-97.3927, 32.7220]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Costco Wholesale Arlington",
+        "address": "600 W Arbrook Blvd, Arlington, TX 76014",
+        "county": "Tarrant County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-97.1140, 32.6791],
+          [-97.1110, 32.6791],
+          [-97.1110, 32.6771],
+          [-97.1140, 32.6771],
+          [-97.1140, 32.6791]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Lowe's Home Improvement Plano",
+        "address": "2000 Preston Rd, Plano, TX 75093",
+        "county": "Collin County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.7957, 33.0299],
+          [-96.7927, 33.0299],
+          [-96.7927, 33.0279],
+          [-96.7957, 33.0279],
+          [-96.7957, 33.0299]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Sam's Club Garland",
+        "address": "5300 N Garland Ave, Garland, TX 75044",
+        "county": "Dallas County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.6363, 32.9651],
+          [-96.6333, 32.9651],
+          [-96.6333, 32.9631],
+          [-96.6363, 32.9631],
+          [-96.6363, 32.9651]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Whole Foods Market Irving",
+        "address": "7700 N MacArthur Blvd, Irving, TX 75063",
+        "county": "Dallas County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.9604, 32.9162],
+          [-96.9574, 32.9162],
+          [-96.9574, 32.9142],
+          [-96.9604, 32.9142],
+          [-96.9604, 32.9162]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "IKEA Retail Store Frisco",
+        "address": "7171 Frisco Square Blvd, Frisco, TX 75034",
+        "county": "Collin County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.8251, 33.1518],
+          [-96.8221, 33.1518],
+          [-96.8221, 33.1498],
+          [-96.8251, 33.1498],
+          [-96.8251, 33.1518]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Academy Sports McKinney",
+        "address": "3800 S Central Expressway, McKinney, TX 75070",
+        "county": "Collin County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.6430, 33.1794],
+          [-96.6400, 33.1794],
+          [-96.6400, 33.1774],
+          [-96.6430, 33.1774],
+          [-96.6430, 33.1794]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "HEB Grocery Store Bryan",
+        "address": "4400 Texas Ave, Bryan, TX 77802",
+        "county": "Brazos County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.3496, 30.6522],
+          [-96.3466, 30.6522],
+          [-96.3466, 30.6502],
+          [-96.3496, 30.6502],
+          [-96.3496, 30.6522]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "WinCo Foods Wichita Falls",
+        "address": "2850 Southwest Pkwy, Wichita Falls, TX 76308",
+        "county": "Wichita County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-98.5336, 33.8751],
+          [-98.5306, 33.8751],
+          [-98.5306, 33.8731],
+          [-98.5336, 33.8731],
+          [-98.5336, 33.8751]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Tractor Supply Co Lubbock",
+        "address": "1500 Loop 289, Lubbock, TX 79404",
+        "county": "Lubbock County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-101.8507, 33.5694],
+          [-101.8477, 33.5694],
+          [-101.8477, 33.5674],
+          [-101.8507, 33.5674],
+          [-101.8507, 33.5694]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Trader Joe's College Station",
+        "address": "1400 S College Ave, College Station, TX 77840",
+        "county": "Brazos County",
+        "state": "TX"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-96.3229, 30.6135],
+          [-96.3199, 30.6135],
+          [-96.3199, 30.6115],
+          [-96.3229, 30.6115],
+          [-96.3229, 30.6135]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Tesla Megapack Hub Palo Alto",
+        "address": "3500 Deer Creek Rd, Palo Alto, CA 94304",
+        "county": "Santa Clara County",
+        "state": "CA"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-122.1496, 37.3994],
+          [-122.1466, 37.3994],
+          [-122.1466, 37.3974],
+          [-122.1496, 37.3974],
+          [-122.1496, 37.3994]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Amazon Fulfillment Center Los Angeles",
+        "address": "2125 Washington Blvd, Los Angeles, CA 90021",
+        "county": "Los Angeles County",
+        "state": "CA"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-118.2329, 34.0225],
+          [-118.2299, 34.0225],
+          [-118.2299, 34.0205],
+          [-118.2329, 34.0205],
+          [-118.2329, 34.0225]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Prologis Park West Ontario",
+        "address": "1800 Ontario Mills Pkwy, Ontario, CA 91764",
+        "county": "San Bernardino County",
+        "state": "CA"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-117.5527, 34.0731],
+          [-117.5497, 34.0731],
+          [-117.5497, 34.0711],
+          [-117.5527, 34.0711],
+          [-117.5527, 34.0731]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Publix Distribution Lakeland",
+        "address": "3300 Publix Blvd, Lakeland, FL 33811",
+        "county": "Polk County",
+        "state": "FL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-81.9927, 27.9994],
+          [-81.9897, 27.9994],
+          [-81.9897, 27.9974],
+          [-81.9927, 27.9974],
+          [-81.9927, 27.9994]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "site_name": "Home Depot Logistics Miami",
+        "address": "1400 NW 110th Ave, Miami, FL 33172",
+        "county": "Miami-Dade County",
+        "state": "FL"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-80.3756, 25.7871],
+          [-80.3726, 25.7871],
+          [-80.3726, 25.7851],
+          [-80.3756, 25.7851],
+          [-80.3756, 25.7871]
+        ]]
+      }
+    }
+  ]
+}

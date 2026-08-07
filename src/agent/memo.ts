@@ -53,12 +53,12 @@ export interface InvestmentMemo {
 }
 
 const BUSINESS_IMPACT_MAP: Record<string, string> = {
-  slope_degrees: 'Flat terrain (LiDAR verified). Zero earthwork cut-and-fill civil grading required (~$145k CapEx savings).',
-  within_floodplain_polygon: 'Unencumbered Zone X clearance. Zero base flood elevation mandates or flood insurance premiums required.',
-  poa_irradiance_optimal_tilt_kwh_m2_yr: 'Tier-1 prime solar irradiance resource. Yields +14.2% higher annual MWh generation vs regional average.',
-  primary_building_footprint_sqm: 'Optimal parking-to-building ratio. Supports high-density commercial installation.',
+  slope_degrees: 'Flat terrain (<2.0° LiDAR verified). Low civil earthwork complexity; estimated avoided earthwork grading fees.',
+  within_floodplain_polygon: 'Unencumbered Zone X flood clearance. Zero mandatory base flood elevation engineering or commercial flood insurance surcharges.',
+  poa_irradiance_optimal_tilt_kwh_m2_yr: 'Tier-1 prime solar irradiance resource for high annual MWh generation yield.',
+  primary_building_footprint_sqm: 'Optimal parking-to-building ratio for commercial rooftop/carport array installation.',
   intersects_wetland: 'Zero USFWS wetland encroachment. Bypasses Army Corps §404 environmental permitting delays.',
-  tree_canopy_pct: 'Low tree canopy density (<15%). Zero timber clearing required and minimal shading degradation.',
+  tree_canopy_pct: 'Low tree canopy density (<15%). Zero timber clearing required and minimal Plane-of-Array shading degradation.',
   substation_distance_m: 'Sub-kilometer distribution substation proximity. Low gen-tie line loss and fast interconnect queue approval.',
 };
 
@@ -137,8 +137,8 @@ export function generateInvestmentMemo(
   const projectedNetEquityIrr = Number((projectedUnleveredIrr * 1.32).toFixed(1));
 
   const tradeoffExplanation = intelEval.isTaxDelinquent
-    ? `Rank #1 Priority Target: Site combines optimal civil feasibility (${techEval.technicalFeasibilityScore}/100 Technical Score) with an exceptional acquisition window. County tax rolls reveal $${intelEval.taxDelinquencyAmountUsd.toLocaleString()} in overdue property taxes over 2+ years, creating immediate high-leverage option acceptance dynamics with the fee-simple owner (${intelEval.matchedEntity}).`
-    : `Rank #${rank} Acquisition Target: Site demonstrates strong civil feasibility (${techEval.technicalFeasibilityScore}/100 Technical Score) and unencumbered title. Standard fee-simple commercial acquisition profile recommended for immediate option agreement outreach.`;
+    ? `Rank #1 Priority Target: Site combines strong physical feasibility (${techEval.technicalFeasibilityScore}/100 Technical Feasibility Score) with a key tax delinquency signal. County public tax records indicate $${intelEval.taxDelinquencyAmountUsd.toLocaleString()} in reported overdue property taxes, suggesting favorable acquisition option outreach terms with the fee-simple landowner (${intelEval.matchedEntity}).`
+    : `Rank #${rank} Acquisition Target: Site demonstrates strong physical feasibility (${techEval.technicalFeasibilityScore}/100 Technical Feasibility Score) and unencumbered title. Standard fee-simple commercial acquisition profile recommended for option agreement outreach.`;
 
   const todayStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   const actionDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {

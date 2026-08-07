@@ -8,6 +8,8 @@ interface SpatialCopilotProps {
   winnerSite?: any;
   evaluations?: any[];
   rejections?: any[];
+  /** Atlas V1.3 — Mireye site_id for ask-site routing. null = use /v1/ask fallback. */
+  mireyeSiteId?: string | null;
 }
 
 const SUGGESTED_QUESTIONS = [
@@ -19,7 +21,7 @@ const SUGGESTED_QUESTIONS = [
   'Summarize the acquisition strategy.',
 ];
 
-export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejections = [] }: SpatialCopilotProps) {
+export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejections = [], mireyeSiteId }: SpatialCopilotProps) {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
@@ -27,6 +29,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
     answer: string;
     traceSteps?: string[];
     citations?: { fieldName: string; source: string; value: string }[];
+    source?: 'mireye_site_dossier' | 'mireye_ask';
   } | null>(null);
 
   const handleAsk = async (qToAsk?: string) => {
@@ -37,7 +40,57 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
     setLoading(true);
     setAnswerData(null);
 
+    const winnerName = winnerSite?.siteName || winnerSite?.chain || 'Top Candidate';
+    const candidateId = winnerSite?.geoId || winnerSite?.siteId || 'site-1';
+    const county = winnerSite?.county || 'Target County';
+    const lat = winnerSite?.lat ?? 0;
+    const lng = winnerSite?.lng ?? winnerSite?.lon ?? 0;
+
+    console.log(`[COPILOT SITE CONTEXT]`, {
+      displayedWinner: winnerName,
+      candidateId,
+      county,
+      lat,
+      lng,
+      mireyeSiteId: mireyeSiteId || 'none (using /v1/ask fallback)',
+      question: q,
+      askEndpoint: mireyeSiteId ? '/api/mireye/ask-site' : '/api/mireye/ask',
+    });
+
     try {
+      // Atlas V1.3: Use /v1/ask-site (dossier-backed) if site_id is available.
+      // Falls back to /v1/ask automatically — user never sees an error.
+      if (mireyeSiteId) {
+        try {
+          const siteRes = await fetch('/api/mireye/ask-site', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ site_id: mireyeSiteId, question: q.slice(0, 2000) }),
+          });
+          if (siteRes.ok) {
+            const siteData = await siteRes.json();
+            if (siteData?.answer) {
+              console.log(`[MIREYE DOSSIER RESPONSE]`, {
+                siteId: mireyeSiteId,
+                dossierLocation: `${county}, ${lat}, ${lng}`,
+                answerSnippet: siteData.answer.slice(0, 120),
+              });
+              setAnswerData({
+                answer: siteData.answer,
+                traceSteps: siteData.traceSteps,
+                citations: siteData.citations,
+                source: 'mireye_site_dossier',
+              });
+              return; // success — exit early
+            }
+          }
+          // Non-OK or no answer — fall through to /v1/ask
+        } catch {
+          // Network error — fall through to /v1/ask
+        }
+      }
+
+      // Fallback: stateless /v1/ask (existing behavior, unchanged)
       const res = await fetch('/api/mireye/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,7 +108,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
 
       if (res.ok) {
         const data = await res.json();
-        setAnswerData(data);
+        setAnswerData({ ...data, source: 'mireye_ask' });
       }
     } catch (err) {
       console.error('Failed to ask Spatial Copilot:', err);
@@ -186,6 +239,22 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
               ))}
             </div>
           )}
+
+          {/* Provenance Source Tag — honest, never faked */}
+          <div className="pt-2 border-t border-white/10 flex items-center gap-1.5 font-mono text-[9.5px] text-slate-500">
+            <span className="uppercase tracking-wider font-bold">Source:</span>
+            {answerData.source === 'mireye_site_dossier' ? (
+              <span className="inline-flex items-center gap-1 text-emerald-400 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Mireye Site Dossier
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-amber-400 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                Stateless Mireye /v1/ask
+              </span>
+            )}
+          </div>
 
         </div>
       )}

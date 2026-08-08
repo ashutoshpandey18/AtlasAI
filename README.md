@@ -136,7 +136,7 @@ Upload portfolio CSV files containing street addresses or geographic coordinates
 
 Atlas displays real-time execution progress through the autonomous decision engine and 3D robot interface during site registration and screening.
 
-![Autonomous 3D Decision Model](public/images/02_spline_robot_3d.png)
+![Autonomous 3D Decision Model](public/images/03_spline_robot_3d.png)
 
 ---
 
@@ -144,7 +144,7 @@ Atlas displays real-time execution progress through the autonomous decision engi
 
 Inspect evaluated candidate properties, review disqualification proofs for cut parcels, and compare feasibility rankings.
 
-![Rejections & Scoring Results](public/images/03_rejections_and_scoring.png)
+![Rejections & Scoring Results](public/images/02_rejections_and_scoring.png)
 
 ---
 

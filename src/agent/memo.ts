@@ -38,6 +38,7 @@ export interface InvestmentMemo {
   overallRank: number;
   technicalScore: number;
   acquisitionPriorityScore: number;
+  driveTimeMinutes?: number | null;
   tradeoffExplanation: string;
   executiveSummary: string;
   financialSummary: InstitutionalFinancialModel;
@@ -85,7 +86,8 @@ export function generateInvestmentMemo(
   plan: StrategyPlan,
   techEval: SiteEvaluationResult,
   intelEval: EntityResolutionResult,
-  mireyeData: MireyeFetchResponse
+  mireyeData: MireyeFetchResponse,
+  driveTimeMinutes?: number | null
 ): InvestmentMemo {
   const fields = mireyeData.fields ?? {};
   const citations = extractCitations(fields);
@@ -181,6 +183,7 @@ Date: __________________________________`;
     overallRank: rank,
     technicalScore: techEval.technicalFeasibilityScore,
     acquisitionPriorityScore: intelEval.acquisitionPriorityScore,
+    driveTimeMinutes: driveTimeMinutes ?? (fields['driveTimeMinutes']?.value as number) ?? null,
     tradeoffExplanation,
     executiveSummary: `Executive site control assessment for ${techEval.siteName} (${intelEval.matchedEntity}). Evaluated under the ${plan.strategyName} deployment strategy. Physical Mireye GIS screening confirms zero floodplain encumbrance, flat topographical slope, and high Plane-of-Array irradiance. Recommended for immediate option execution.`,
     financialSummary: {

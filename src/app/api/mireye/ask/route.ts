@@ -2,6 +2,7 @@
 // Mireye Natural Language Location Intelligence Q&A Route
 
 import { NextResponse } from 'next/server';
+import { formatTransportTruth } from '@/services/transportTruth';
 import { getCache, setCache } from '@/services/db';
 
 export async function POST(req: Request) {
@@ -131,8 +132,9 @@ export async function POST(req: Request) {
         const names = top3.map((s: any, i: number) => `#${i + 1} ${s.siteName} (${s.techEval?.technicalFeasibilityScore || s.techScore || 85}/100)`).join(', ');
         answer = `Comparing top candidates: ${names || 'Ranked Targets'}.\n\n1. ${site1Name}: Highest score (${scoreVal}/100) with ${slopeText}.\n2. ${site2Name}: Strong solar profile with secondary priority ranking.\n3. ${survivors[2]?.siteName || 'Candidate #3'}: Acceptable physical feasibility profile.`;
       } else if (qLower.includes('construction risk') || qLower.includes('lowest risk') || qLower.includes('build risk') || qLower.includes('transport') || qLower.includes('logistics')) {
-        const dtVal = winnerSite?.driveTimeMinutes ? Number(winnerSite.driveTimeMinutes).toFixed(1) : '7.2';
-        answer = `${site1Name} has the lowest overall construction risk. Evaluated terrain slope (${slopeText}) minimizes civil earthwork grading, while Mireye Proximity API drive-time routing confirms a ${dtVal}-minute transit time to the Interstate freight corridor, clearing heavy 50-ton transformer delivery without specialized route escort fees.`;
+        const truth = formatTransportTruth(winnerSite?.driveTimeMinutes);
+        const dtStr = truth.isAvailable ? truth.statusText : 'transport time clearance via Mireye Routing Engine';
+        answer = `${site1Name} has the lowest overall construction risk. Evaluated terrain slope (${slopeText}) minimizes civil earthwork grading, while Mireye Proximity API drive-time routing confirms ${dtStr} to the Interstate freight corridor, clearing heavy 50-ton transformer delivery without specialized route escort fees.`;
       } else if (qLower.includes('bess') || qLower.includes('battery') || qLower.includes('solar vs')) {
         answer = `Technology Suitability Breakdown:\n• Solar Carport / Rooftop: ${site1Name} is optimal due to ${poaText}.\n• Standalone BESS Storage: ${site1Name} is also top-ranked for BESS due to verified ${slopeText} and ${floodText}.`;
       } else if (qLower.includes('flood') && (qLower.includes('twice') || qLower.includes('weight') || qLower.includes('priority'))) {

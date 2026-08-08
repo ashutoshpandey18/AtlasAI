@@ -4,6 +4,7 @@
 // to evaluate heavy equipment construction transport drive-time routing.
 
 import { fetchMireyeProximityResilient } from './mireyeApiClient';
+import { formatTransportTruth } from './transportTruth';
 
 export interface ProximityEvaluationResult {
   geoId: string;
@@ -64,9 +65,9 @@ export async function evaluateHeavyConstructionLogistics(
       if (apiData && apiData.legs && apiData.legs[0]) {
         const leg = apiData.legs[0];
         if (leg.duration_minutes != null) {
-          driveTimeMinutes = Number(leg.duration_minutes.toFixed(1));
+          driveTimeMinutes = Number(leg.duration_minutes);
         } else if (leg.duration_seconds != null) {
-          driveTimeMinutes = Number((leg.duration_seconds / 60).toFixed(1));
+          driveTimeMinutes = Number(leg.duration_seconds / 60);
         }
         if (leg.distance_miles != null) {
           distanceMeters = Math.round(leg.distance_miles * 1609.34);
@@ -79,21 +80,22 @@ export async function evaluateHeavyConstructionLogistics(
     }
   }
 
+  const transportTruth = formatTransportTruth(driveTimeMinutes);
   let logisticsScore = 95;
   let logisticsCategory: ProximityEvaluationResult['logisticsCategory'] = 'OPTIMAL';
-  let defensibleImpact = driveTimeMinutes != null 
-    ? `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to Interstate corridor.` 
-    : 'Drive time unavailable (No response from Mireye /v1/proximity)';
+  let defensibleImpact = transportTruth.isAvailable 
+    ? `Mireye /v1/proximity: ${transportTruth.displayDriveTime} (${transportTruth.status}).` 
+    : 'Transport time not returned by Mireye.';
 
   if (driveTimeMinutes != null) {
     if (driveTimeMinutes > 15) {
       logisticsScore = 68;
       logisticsCategory = 'ELEVATED_COST';
-      defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight corridor. Remote access adds ~$45,000 in heavy equipment transport fees.`;
+      defensibleImpact = `Mireye /v1/proximity: ${transportTruth.displayDriveTime} (${transportTruth.status}). Remote access adds ~$45,000 in heavy equipment transport fees.`;
     } else if (driveTimeMinutes > 10) {
       logisticsScore = 82;
       logisticsCategory = 'ACCEPTABLE';
-      defensibleImpact = `Mireye /v1/proximity drive time: ${driveTimeMinutes} mins to freight interchange. Standard transport clearance.`;
+      defensibleImpact = `Mireye /v1/proximity: ${transportTruth.displayDriveTime} (${transportTruth.status}). Standard transport clearance.`;
     }
   } else {
     logisticsScore = 75;

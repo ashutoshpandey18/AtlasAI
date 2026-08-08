@@ -158,7 +158,8 @@ export async function runAcquisitionPipeline(
 
   const survivors = candidateEvaluations.slice(0, 3).map((item, idx) => {
     const rank = idx + 1;
-    const memo = generateInvestmentMemo(rank, plan, item.techEval, item.intelEval, item.raw.mireye);
+    const driveTimeMinutes = (item.raw as any).driveTimeMinutes ?? null;
+    const memo = generateInvestmentMemo(rank, plan, item.techEval, item.intelEval, item.raw.mireye, driveTimeMinutes);
     return {
       rank,
       siteName: item.techEval.siteName,
@@ -168,7 +169,7 @@ export async function runAcquisitionPipeline(
       intelEval: item.intelEval,
       memo,
       // Pass real Mireye proximity result if available from site-scan pipeline
-      driveTimeMinutes: (item.raw as any).driveTimeMinutes ?? null,
+      driveTimeMinutes,
       proximityEval: (item.raw as any).proximityEval ?? null,
       geometry: (item.raw as any).geometry ?? null, // preserve uploaded GeoJSON boundary geometry
     };

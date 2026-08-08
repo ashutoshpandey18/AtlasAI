@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import type { InvestmentMemo } from '../agent/memo';
 import type { MireyeSiteRegistration } from '../types/atlas';
+import { formatTransportTruth } from '../services/transportTruth';
 import { FileText, Download, X, ShieldCheck, DollarSign, AlertTriangle, CheckCircle2, Clock, ExternalLink, Copy, Check, BookOpen, Activity, Database, Cpu, Zap, Target } from 'lucide-react';
 
 interface InvestmentMemoModalProps {
@@ -200,18 +201,21 @@ export function InvestmentMemoModal({ memo, isOpen, onClose, mireyeSite }: Inves
 
               {/* Heavy Equipment Transit Card */}
               <div className="p-3.5 bg-black/40 border border-white/10 rounded-xl space-y-1.5 font-sans">
-                <div className="text-[10px] font-mono text-emerald-400 font-bold uppercase flex items-center justify-between">
+                <div className="text-[10px] font-mono text-cyan-400 font-bold uppercase flex items-center justify-between">
                   <span>HEAVY EQUIPMENT ACCESS</span>
-                  <span className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono border border-white/5">
-                    Routing Engine
+                  <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/80 px-1.5 py-0.5 rounded font-mono">
+                    Mireye /v1/proximity
                   </span>
                 </div>
                 <div className="text-sm font-black text-white">
-                  7.2 Mins to Freight Corridor (Low Logistics Risk)
+                  {(() => {
+                    const truth = formatTransportTruth(memo.driveTimeMinutes);
+                    return truth.statusText;
+                  })()}
                 </div>
                 <div className="text-[10.5px] font-mono flex items-center justify-between pt-1 border-t border-white/10 text-slate-400">
                   <span>Source: <strong className="text-slate-200">Mireye /v1/proximity</strong></span>
-                  <span className="text-emerald-400 font-bold">Source-Backed</span>
+                  <span className="text-cyan-400 font-bold">Mireye Routing Engine</span>
                 </div>
               </div>
 
@@ -334,9 +338,12 @@ export function InvestmentMemoModal({ memo, isOpen, onClose, mireyeSite }: Inves
                     },
                     {
                       metric: 'Transport Drive Time',
-                      value: '7.2 min',
+                      value: (() => {
+                        const truth = formatTransportTruth(memo.driveTimeMinutes);
+                        return truth.isAvailable ? truth.displayDriveTime : 'Unavailable';
+                      })(),
                       classification: 'Source-Backed',
-                      source: 'Mireye /v1/proximity',
+                      source: 'Mireye /v1/proximity → Mireye Routing Engine',
                       badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
                     },
                     {

@@ -3,6 +3,7 @@
 import React from 'react';
 import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock } from 'lucide-react';
 import type { LocationResult, MireyeSiteRegistration } from '../types/atlas';
+import { formatTransportTruth } from '../services/transportTruth';
 
 export interface RejectionItem {
   siteName: string;
@@ -291,16 +292,11 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                     Mireye /v1/proximity
                   </span>
                 </div>
-
                 <div className="text-sm font-black text-white">
                   {(() => {
                     const dt = topSite?.driveTimeMinutes ?? topSite?.proximityEval?.driveTimeMinutes;
-                    if (dt == null) return 'Drive time unavailable';
-                    const ratingStr = dt < 5 ? 'Sub-5 Min Freight Clearance'
-                      : dt < 10 ? 'Sub-10 Min Freight Clearance'
-                      : dt <= 15 ? 'Sub-15 Min Freight Clearance'
-                      : 'Elevated Transport Time (Logistics Risk)';
-                    return `${Number(dt).toFixed(1)} min drive time (${ratingStr})`;
+                    const truth = formatTransportTruth(dt);
+                    return truth.statusText;
                   })()}
                 </div>
 
@@ -310,7 +306,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                     {topSite?.isFreshProximity ? (
                       <>
                         <Activity className="w-3 h-3 text-cyan-400 animate-pulse" />
-                        <span>Live Mireye API</span>
+                        <span>Live Mireye API Result</span>
                       </>
                     ) : (
                       <>
@@ -327,7 +323,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   </summary>
                   <div className="mt-1.5 p-2 bg-black/60 border border-white/5 rounded space-y-1 text-[10px]">
                     <div>Provider: <span className="text-slate-200">Mireye Routing Engine</span></div>
-                    <div>Data Status: <span className="text-slate-200">{topSite?.isFreshProximity ? 'Live Mireye API' : 'Cached Mireye API Result'}</span></div>
+                    <div>Data Status: <span className="text-slate-200">{topSite?.isFreshProximity ? 'Live Mireye API Result' : 'Cached Mireye API Result'}</span></div>
                     <div>Origin: <span className="text-slate-200">{topSite?.lat != null && topSite?.lng != null ? `${Number(topSite.lat).toFixed(4)}, ${Number(topSite.lng).toFixed(4)}` : (topSite?.proximityEval?.originLat != null ? `${topSite.proximityEval.originLat}, ${topSite.proximityEval.originLng}` : 'Parcel Geocoded Point')}</span></div>
                     <div>Destination: <span className="text-slate-200">{topSite?.lat != null && topSite?.lng != null ? `Nearest freight corridor (${(Number(topSite.lat) + 0.08).toFixed(4)}, ${(Number(topSite.lng) + 0.06).toFixed(4)})` : 'Nearest freight corridor'}</span></div>
                     <details className="text-[9.5px] text-slate-500 pt-0.5">

@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock } from 'lucide-react';
+import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock, Layers } from 'lucide-react';
 import type { LocationResult, MireyeSiteRegistration } from '../types/atlas';
 import { formatTransportTruth } from '../services/transportTruth';
+import { analyzeBuildableArea } from '../services/buildableAreaHarness';
 
 export interface RejectionItem {
   siteName: string;
@@ -280,6 +281,52 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   </div>
                 </details>
               </div>
+
+              {/* Estimated Site Developability Card */}
+              {(() => {
+                const mireyeRaw = (topSite as any)?.raw?.mireye ?? null;
+                const geometry = (topSite as any)?.geometry ?? null;
+                const report = analyzeBuildableArea(mireyeRaw, 50, 100, geometry, false, topSite?.isFreshProximity);
+                return (
+                  <div className="p-3.5 bg-black/40 border border-white/10 rounded-xl backdrop-blur-sm space-y-1.5 font-sans hover:border-white/20 transition-all">
+                    <div className="text-[10px] font-mono text-amber-400 font-bold uppercase flex items-center justify-between">
+                      <span className="flex items-center gap-1">
+                        <Layers className="w-3.5 h-3.5 text-amber-400" />
+                        <span>ESTIMATED SITE DEVELOPABILITY</span>
+                      </span>
+                      <span className="text-[9px] bg-amber-950/80 text-amber-400 border border-amber-800/80 px-1.5 py-0.5 rounded font-mono">
+                        {report.methodology}
+                      </span>
+                    </div>
+
+                    <div className="text-sm font-black text-white flex items-baseline justify-between">
+                      <span>{report.estimatedNetDevelopableAcres != null ? `${report.estimatedNetDevelopableAcres} Acres` : 'Developability Unavailable'}</span>
+                      {report.estimatedSiteEfficiencyPct != null && (
+                        <span className="text-[10.5px] font-bold text-amber-400">
+                          {report.estimatedSiteEfficiencyPct}% Efficiency ({report.grossParcelAcres} Gross Ac)
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="text-[11px] font-mono flex items-center justify-between pt-1 border-t border-white/10 text-slate-400">
+                      <span>Evidence: <strong className="text-slate-200">{report.provenance}</strong></span>
+                      <span className="text-amber-400 font-bold">{report.confidence} Confidence</span>
+                    </div>
+
+                    <details className="group text-[10.5px] font-mono text-slate-400 pt-1">
+                      <summary className="cursor-pointer text-slate-400 hover:text-slate-200 font-semibold select-none flex items-center gap-1">
+                        <span>Data Provenance & Disclosures</span>
+                      </summary>
+                      <div className="mt-1.5 p-2 bg-black/60 border border-white/5 rounded space-y-1 text-[10px]">
+                        <div>Method: <span className="text-slate-200">{report.methodology}</span></div>
+                        <div>Boundary: <span className="text-slate-200">{report.boundaryLabel}</span></div>
+                        <div>Constraint Deductions: <span className="text-slate-200">{report.deductions.length > 0 ? report.deductions.map(d => `${d.label} (-${d.deductionPct}%)`).join(', ') : 'None (Unencumbered)'}</span></div>
+                        <div className="text-slate-500 pt-0.5 text-[9.5px]">{report.disclaimer}</div>
+                      </div>
+                    </details>
+                  </div>
+                );
+              })()}
 
               {/* Heavy Transport Proximity Card */}
               <div className="p-3.5 bg-black/40 border border-white/10 rounded-xl backdrop-blur-sm space-y-1.5 font-sans sm:col-span-2 hover:border-white/20 transition-all">

@@ -83,29 +83,33 @@ export default function BuildableAreaCard({
         </span>
       </div>
 
-      {/* Realistic Metric Card — Warm Skin / Cream Background */}
+"      {/* Realistic Metric Card — Warm Skin / Cream Background */}
       <div className="bg-[#FAF8F3] border border-[#EAE4D9] rounded-2xl p-4 space-y-3 shadow-inner">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273] mb-1">
-              Net Buildable Acreage
+            <div className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273] mb-1 flex items-center gap-1.5">
+              <span>Estimated Net Developable Area</span>
+              <span className="text-[9px] font-mono text-amber-800 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                {report.methodology}
+              </span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-[26px] font-black text-[var(--text-primary)] leading-none">
-                {report.netBuildableAcres}
+                {report.estimatedNetDevelopableAcres ?? '—'}
               </span>
               <span className="text-[12px] font-bold text-[#6E6659]">Acres</span>
               <span className="text-[10px] font-bold text-amber-800 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full ml-1">
-                {report.buildableEfficiencyPct}% Usable
+                {report.estimatedSiteEfficiencyPct ?? '0'}% Estimated Efficiency
               </span>
             </div>
           </div>
 
           <div className="sm:text-right border-t sm:border-t-0 border-[#E5DFD3] pt-2 sm:pt-0">
-            <div className="text-[9.5px] uppercase font-bold text-[#8C8273] mb-0.5">Target Requirement</div>
-            <div className="text-[14px] font-black text-orange-600">
-              {report.targetRequiredAcres} Acres
+            <div className="text-[9.5px] uppercase font-bold text-[#8C8273] mb-0.5">Gross Parcel Area</div>
+            <div className="text-[14px] font-black text-slate-700">
+              {report.grossParcelAcres ?? '—'} Acres
             </div>
+            <div className="text-[9px] font-mono text-slate-500 mt-0.5">{report.boundaryLabel}</div>
           </div>
         </div>
 
@@ -113,8 +117,14 @@ export default function BuildableAreaCard({
         <div className="h-3 bg-[#EAE4D9] rounded-full overflow-hidden flex border border-[#DCD5C7] p-0.5 shadow-inner">
           <div
             className="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 transition-all duration-700 shadow-sm"
-            style={{ width: `${report.buildableEfficiencyPct}%` }}
+            style={{ width: `${report.estimatedSiteEfficiencyPct ?? 0}%` }}
           />
+        </div>
+
+        {/* Provenance & Methodology Footnote */}
+        <div className="text-[9.5px] text-slate-500 font-mono flex items-center justify-between pt-1 border-t border-[#E5DFD3]">
+          <span>Evidence: <strong className="text-slate-700">{report.provenance}</strong></span>
+          <span className="text-amber-800 font-semibold">{report.disclaimer}</span>
         </div>
       </div>
 
@@ -122,7 +132,7 @@ export default function BuildableAreaCard({
       {report.deductions.length > 0 && (
         <div className="space-y-2">
           <div className="text-[9.5px] uppercase font-bold tracking-wider text-[#8C8273]">
-            Active Constraint Deductions ({report.deductions.length})
+            Estimated Impact Deductions ({report.deductions.length})
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {report.deductions.map((d) => (
@@ -132,9 +142,14 @@ export default function BuildableAreaCard({
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <ShieldAlert className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
-                  <span className="text-[11px] font-bold text-[var(--text-primary)] truncate">
-                    {d.label}
-                  </span>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-bold text-[var(--text-primary)] block truncate">
+                      {d.label}
+                    </span>
+                    <span className="text-[9px] font-mono text-slate-400 block truncate">
+                      Trigger: {d.trigger}
+                    </span>
+                  </div>
                 </div>
                 <span className="text-[10px] font-black text-orange-700 bg-orange-100 border border-orange-200 px-2 py-0.5 rounded-full flex-shrink-0">
                   -{d.deductionAcres} Ac (-{d.deductionPct}%)

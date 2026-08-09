@@ -361,6 +361,13 @@ export function InvestmentMemoModal({ memo, isOpen, onClose, mireyeSite }: Inves
                       badgeClass: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
                     },
                     {
+                      metric: 'Developability Model',
+                      value: 'Atlas Civil Deduction',
+                      classification: 'Atlas Calculation',
+                      source: 'Atlas Civil Deduction Model (Mireye Indicators)',
+                      badgeClass: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+                    },
+                    {
                       metric: 'Gross CapEx',
                       value: `$${Math.round(memo.financialSummary.grossCapexUsd / 1000)}k USD`,
                       classification: 'Illustrative Assumption',

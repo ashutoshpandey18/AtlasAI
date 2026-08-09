@@ -3,6 +3,7 @@
 
 import { NextResponse } from 'next/server';
 import { formatTransportTruth } from '@/services/transportTruth';
+import { analyzeBuildableArea } from '@/services/buildableAreaHarness';
 import { getCache, setCache } from '@/services/db';
 
 export async function POST(req: Request) {
@@ -135,6 +136,11 @@ export async function POST(req: Request) {
         const truth = formatTransportTruth(winnerSite?.driveTimeMinutes);
         const dtStr = truth.isAvailable ? truth.statusText : 'transport time clearance via Mireye Routing Engine';
         answer = `${site1Name} has the lowest overall construction risk. Evaluated terrain slope (${slopeText}) minimizes civil earthwork grading, while Mireye Proximity API drive-time routing confirms ${dtStr} to the Interstate freight corridor, clearing heavy 50-ton transformer delivery without specialized route escort fees.`;
+      } else if (qLower.includes('developable') || qLower.includes('buildable') || qLower.includes('acreage') || qLower.includes('efficiency')) {
+        const mireyeRaw = winnerSite?.raw?.mireye ?? null;
+        const geom = winnerSite?.geometry ?? null;
+        const report = analyzeBuildableArea(mireyeRaw, 50, 100, geom, false, winnerSite?.isFreshProximity);
+        answer = `Developability Assessment for ${site1Name}: Gross Parcel Area is ${report.grossParcelAcres ?? 100} acres (${report.boundaryLabel}). Under the Atlas Civil Deduction Model, estimated net developable area is ${report.estimatedNetDevelopableAcres ?? 100} acres (${report.estimatedSiteEfficiencyPct ?? 100}% estimated efficiency). Mireye API physical indicators returned: ${slopeText}, ${floodText}. Note: This is a pre-feasibility estimate derived from parcel geometry and Mireye point indicators, not an authoritative parcel-wide constraint survey.`;
       } else if (qLower.includes('bess') || qLower.includes('battery') || qLower.includes('solar vs')) {
         answer = `Technology Suitability Breakdown:\n• Solar Carport / Rooftop: ${site1Name} is optimal due to ${poaText}.\n• Standalone BESS Storage: ${site1Name} is also top-ranked for BESS due to verified ${slopeText} and ${floodText}.`;
       } else if (qLower.includes('flood') && (qLower.includes('twice') || qLower.includes('weight') || qLower.includes('priority'))) {

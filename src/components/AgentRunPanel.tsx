@@ -874,6 +874,51 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
             );
           })()}
 
+          {/* ATLAS DECISION • PRIORITY ACQUISITION SUMMARY BANNER */}
+          {survivors.length > 0 && (
+            <div className="p-4 bg-[#090d18] border border-cyan-500/30 rounded-2xl space-y-3 font-sans shadow-[0_0_40px_rgba(6,182,212,0.1)] text-left">
+              <div className="flex items-center justify-between text-xs font-mono border-b border-white/10 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                  <span className="font-bold text-cyan-400 uppercase tracking-widest text-[11px]">
+                    ATLAS DECISION • PRIORITY ACQUISITION TARGET
+                  </span>
+                </div>
+                <span className="text-[10px] bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 px-2 py-0.5 rounded font-mono font-bold">
+                  Rank #1 of {evaluations.length + rejections.length} Candidates
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-1">
+                <div>
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Investigated:</span>
+                  <span className="text-white font-bold">{evaluations.length + rejections.length} Sites</span>
+                </div>
+                <div>
+                  <span className="text-rose-400 block text-[10px] uppercase font-bold">Disqualified:</span>
+                  <span className="text-rose-400 font-bold">{rejections.length} Cut</span>
+                </div>
+                <div>
+                  <span className="text-emerald-400 block text-[10px] uppercase font-bold">Passed Screening:</span>
+                  <span className="text-emerald-400 font-bold">{evaluations.length} Sites</span>
+                </div>
+                <div>
+                  <span className="text-cyan-400 block text-[10px] uppercase font-bold">Priority Target:</span>
+                  <span className="text-cyan-400 font-bold">{survivors[0].siteName}</span>
+                </div>
+              </div>
+
+              <div className="text-xs text-slate-300 font-medium leading-relaxed pt-1.5 border-t border-white/10">
+                "{survivors[0].siteName} ranked highest among surviving candidates based on the Atlas screening and scoring model using verified Mireye physical and logistics evidence."
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[10.5px] font-mono text-slate-400 pt-1">
+                <div>Site Dossier: <span className="text-emerald-400 font-bold">{mireyeSite?.site_id ? `Registered (${mireyeSite.site_id})` : 'Mireye Physical Intelligence'}</span></div>
+                <div>Underwriting Status: <span className="text-white font-bold">Investment Memo & LOI Ready</span></div>
+              </div>
+            </div>
+          )}
+
           {/* MINIMALIST & PROFESSIONAL RANK #1 CANDIDATE UNDERWRITING STREAM (Card-Free, Div-Free) */}
           {survivors.length > 0 && (
             <div className="pt-6 border-t border-white/10 space-y-3 text-left font-sans">

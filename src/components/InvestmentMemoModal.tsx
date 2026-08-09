@@ -134,6 +134,28 @@ export function InvestmentMemoModal({ memo, isOpen, onClose, mireyeSite }: Inves
             </div>
           </div>
 
+          {/* ATLAS DECISION TRACE & EVIDENCE CHAIN */}
+          <div className="p-4 bg-[#090d18] border border-cyan-500/30 rounded-xl space-y-2.5 font-mono text-xs shadow-sm">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <span className="font-bold text-cyan-400 uppercase tracking-widest text-[11px]">
+                ATLAS DECISION TRACE • INSTANT AUDIT BRIDGE
+              </span>
+              <span className="text-[10px] bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 px-2 py-0.5 rounded font-bold">
+                Provenanced Underwriting
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] text-slate-300 pt-0.5">
+              <div>Candidate: <strong className="text-white font-sans">{memo.siteName}</strong></div>
+              <div>Portfolio Rank: <strong className="text-emerald-400">Rank #1 Target</strong></div>
+              <div>Screening: <strong className="text-emerald-400">Passed Fatal Flaw</strong></div>
+              <div>Tech Feasibility: <strong className="text-cyan-400">{memo.technicalScore} / 100</strong></div>
+            </div>
+            <div className="text-[10.5px] text-slate-400 pt-1 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 font-sans">
+              <span>Evidence Basis: <strong className="text-slate-200">Mireye Physical & Logistics API Ground Truth</strong></span>
+              <span className="text-emerald-400 font-mono font-bold">Live Mireye API Result</span>
+            </div>
+          </div>
+
           {/* 02 • STRATEGIC RATIONALE & PHYSICAL EVIDENCE CARDS */}
           <div className="space-y-4 font-sans">
             <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">

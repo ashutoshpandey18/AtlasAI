@@ -382,6 +382,59 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
               </div>
 
             </div>
+
+            {/* CANDIDATE COMPARISON MATRIX (WINNER VS ALTERNATIVES) */}
+            {evaluations.length > 1 && (
+              <div className="pt-4 border-t border-white/10 space-y-3 font-sans">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-cyan-400" />
+                    <span>CANDIDATE COMPARISON MATRIX • WHY WINNER OVER ALTERNATIVES</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">TOP {Math.min(3, evaluations.length)} SURVIVORS</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-xl border border-white/10">
+                  <table className="w-full text-left font-mono text-xs text-slate-300">
+                    <thead className="bg-black/60 text-[10.5px] uppercase font-bold text-slate-400 border-b border-white/10">
+                      <tr>
+                        <th className="p-2.5">Rank</th>
+                        <th className="p-2.5">Candidate Site</th>
+                        <th className="p-2.5">Technical Score</th>
+                        <th className="p-2.5">Priority Score</th>
+                        <th className="p-2.5">Decision Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {evaluations.slice(0, 3).map((cand, idx) => (
+                        <tr key={idx} className={idx === 0 ? 'bg-emerald-950/20 font-bold text-white' : 'hover:bg-white/5'}>
+                          <td className="p-2.5">
+                            <span className={`px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'}`}>
+                              #{idx + 1}
+                            </span>
+                          </td>
+                          <td className="p-2.5 font-sans font-semibold">
+                            {cand.siteName} ({cand.county || 'TX'})
+                          </td>
+                          <td className="p-2.5 text-emerald-400">
+                            {cand.techScore} / 100
+                          </td>
+                          <td className="p-2.5 text-slate-200">
+                            {cand.priorityScore}%
+                          </td>
+                          <td className="p-2.5">
+                            <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${idx === 0 ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-300'}`}>
+                              {idx === 0 ? '✓ SELECTED PRIORITY' : 'PASSED SCREENING'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
           </div>
         ) : (
           <div className="pt-4 border-t border-white/10 space-y-2 font-sans">

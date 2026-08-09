@@ -27,6 +27,38 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
   const promptDisplay = promptStr || 'Find fast-deployment solar carport targets in Texas under $2M capex.';
   const topSite = winnerSite || (evaluations.length > 0 ? evaluations[0] : null);
 
+  const canonicalWinnerName = topSite?.siteName || topSite?.techEval?.siteName || topSite?.memo?.siteName || null;
+  const canonicalWinnerId = topSite?.geoId || topSite?.siteId || topSite?.memo?.siteId || canonicalWinnerName;
+
+  // Build canonical ranked candidates list starting strictly with topSite as Rank #1
+  const sortedSurvivors = React.useMemo(() => {
+    if (!topSite && (!evaluations || evaluations.length === 0)) return [];
+
+    const rest = (evaluations || []).filter((e) => {
+      const name = e.siteName || e.techEval?.siteName || e.memo?.siteName;
+      const id = e.geoId || e.siteId || e.memo?.siteId || name;
+      return id !== canonicalWinnerId && name !== canonicalWinnerName;
+    }).sort((a, b) => {
+      const scoreA = (a.techScore ?? a.techEval?.technicalFeasibilityScore ?? 0) + (a.priorityScore ?? 0);
+      const scoreB = (b.techScore ?? b.techEval?.technicalFeasibilityScore ?? 0) + (b.priorityScore ?? 0);
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      // Deterministic tie-breaker: lexicographical comparison on siteName
+      return (a.siteName || '').localeCompare(b.siteName || '');
+    });
+
+    const list = topSite ? [topSite, ...rest] : rest;
+
+    // Defensive validation: verify list[0] is the canonical winner
+    if (topSite && list.length > 0) {
+      const rank1Name = list[0].siteName || list[0].techEval?.siteName || list[0].memo?.siteName;
+      if (rank1Name !== canonicalWinnerName) {
+        console.error(`[CONSISTENCY ERROR]: Winner Site ID Mismatch! Main Winner (${canonicalWinnerName}) != Comparison Matrix Rank #1 (${rank1Name})`);
+      }
+    }
+
+    return list;
+  }, [topSite, evaluations, canonicalWinnerId, canonicalWinnerName]);
+
   return (
     <div className="space-y-6 pt-6 border-t border-white/10 font-sans text-left">
 
@@ -406,7 +438,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {evaluations.slice(0, 3).map((cand, idx) => (
+                      {sortedSurvivors.slice(0, 3).map((cand, idx) => (
                         <tr key={idx} className={idx === 0 ? 'bg-emerald-950/20 font-bold text-white' : 'hover:bg-white/5'}>
                           <td className="p-2.5">
                             <span className={`px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'}`}>

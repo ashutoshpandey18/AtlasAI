@@ -96,6 +96,29 @@ export interface MireyeSiteRegistration {
   geometrySource?: 'Uploaded GeoJSON' | 'Mireye /v1/lookup' | null;
 }
 
+/** Canonical Winner Selection Decision Object */
+export interface CanonicalDecision {
+  selectedSiteId: string;
+  selectedSiteName: string;
+  selectedCounty: string;
+  selectedState: string;
+  selectedRank: number;
+  selectedTechnicalScore: number;
+  selectedPriorityScore: number;
+  selectionReason: string;
+  rankedCandidates: Array<{
+    rank: number;
+    siteId: string;
+    siteName: string;
+    county: string;
+    state: string;
+    techScore: number;
+    priorityScore: number;
+    decisionStatus: 'SELECTED PRIORITY' | 'PASSED SCREENING';
+    rawCandidate: any;
+  }>;
+}
+
 export interface LocationResult {
   location: LocationEntry;
   data: MireyeFetchResponse | null;

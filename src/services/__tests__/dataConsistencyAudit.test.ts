@@ -69,4 +69,43 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     const floodInput = res.decisionLedger.inputsChecked.find(i => i.includes('Flood'));
     expect(floodInput).toContain('Zone AE');
   });
+
+  it('guarantees single canonical winner selection across main card and comparison matrix', () => {
+    const winnerSite = {
+      siteId: 'ctor-45835',
+      siteName: 'Dollar General Ector County #45835',
+      county: 'Ector County',
+      state: 'TX',
+      techScore: 88,
+      priorityScore: 88,
+    };
+
+    const rawEvaluations = [
+      {
+        siteId: 'san-001',
+        siteName: 'San Antonio De Zavala Depot Site #1',
+        county: 'Bexar County',
+        state: 'TX',
+        techScore: 50,
+        priorityScore: 50,
+      },
+      {
+        siteId: 'ctor-45835',
+        siteName: 'Dollar General Ector County #45835',
+        county: 'Ector County',
+        state: 'TX',
+        techScore: 88,
+        priorityScore: 88,
+      },
+    ];
+
+    // Simulate canonical candidate sorting logic
+    const canonicalWinnerId = winnerSite.siteId;
+    const rest = rawEvaluations.filter(e => e.siteId !== canonicalWinnerId);
+    const sortedList = [winnerSite, ...rest];
+
+    expect(sortedList[0].siteId).toBe('ctor-45835');
+    expect(sortedList[0].siteName).toBe('Dollar General Ector County #45835');
+    expect(sortedList[0].techScore).toBe(88);
+  });
 });

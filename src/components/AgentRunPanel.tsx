@@ -264,6 +264,24 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               } else if (eType === 'final_result') {
                 const topSurvivors: SurvivorItem[] = eData.survivors || [];
                 setSurvivors(topSurvivors);
+
+                // Re-sort evaluations state so Rank #1 winner matches topSurvivors[0]
+                if (topSurvivors.length > 0) {
+                  const winnerName = topSurvivors[0].siteName || topSurvivors[0].memo?.siteName;
+                  const winnerId = topSurvivors[0].geoId || (topSurvivors[0] as any).siteId || winnerName;
+                  setEvaluations((prev) => {
+                    return [...prev].sort((a, b) => {
+                      const aName = a.siteName || (a as any).memo?.siteName;
+                      const aId = (a as any).geoId || (a as any).siteId || aName;
+                      const bName = b.siteName || (b as any).memo?.siteName;
+                      const bId = (b as any).geoId || (b as any).siteId || bName;
+                      if (aId === winnerId || aName === winnerName) return -1;
+                      if (bId === winnerId || bName === winnerName) return 1;
+                      return (b.techScore ?? 0) - (a.techScore ?? 0);
+                    });
+                  });
+                }
+
                 if (event.executionSummary) {
                   setExecutionSummary(event.executionSummary);
                 }

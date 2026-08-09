@@ -713,14 +713,24 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                     </div>
 
                     <div className="pt-1.5 border-t border-white/10 grid grid-cols-1 gap-1 text-[10.5px] font-mono">
-                      {rej.inputsChecked && rej.inputsChecked[0] && (
+                      {rej.inputsChecked && rej.inputsChecked.length > 0 && (
                         <div className="text-slate-400 truncate">
-                          <strong className="text-slate-300">1. Mireye Evidence:</strong> {rej.inputsChecked[0]}
+                          <strong className="text-slate-300">1. Mireye Evidence:</strong> {
+                            rej.inputsChecked.find(i => 
+                              (rej.reason.toLowerCase().includes('slope') || rej.reason.toLowerCase().includes('lidar')) ? i.toLowerCase().includes('slope') :
+                              (rej.reason.toLowerCase().includes('flood') || rej.reason.toLowerCase().includes('fema')) ? i.toLowerCase().includes('flood') : true
+                            ) || rej.inputsChecked[0]
+                          }
                         </div>
                       )}
-                      {rej.rulesApplied && rej.rulesApplied[0] && (
+                      {rej.rulesApplied && rej.rulesApplied.length > 0 && (
                         <div className="text-slate-400 truncate">
-                          <strong className="text-rose-300">2. Atlas Rule:</strong> {rej.rulesApplied[0]}
+                          <strong className="text-rose-300">2. Atlas Rule:</strong> {
+                            rej.rulesApplied.find(r => 
+                              (rej.reason.toLowerCase().includes('slope') || rej.reason.toLowerCase().includes('lidar')) ? r.toLowerCase().includes('slope') :
+                              (rej.reason.toLowerCase().includes('flood') || rej.reason.toLowerCase().includes('fema')) ? r.toLowerCase().includes('flood') : true
+                            ) || rej.rulesApplied[0]
+                          }
                         </div>
                       )}
                       <div className="flex items-center justify-between text-[9.5px] text-slate-500 pt-0.5">

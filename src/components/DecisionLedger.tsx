@@ -475,11 +475,21 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                     {rej.reason}
                   </div>
                   <div className="pt-1.5 border-t border-white/10 space-y-1 text-[10.5px]">
-                    {rej.inputsChecked && rej.inputsChecked[0] && (
-                      <div><span className="text-slate-400">1. Mireye Evidence:</span> <span className="text-slate-200">{rej.inputsChecked[0]}</span></div>
+                    {rej.inputsChecked && rej.inputsChecked.length > 0 && (
+                      <div><span className="text-slate-400">1. Mireye Evidence:</span> <span className="text-slate-200">{
+                        rej.inputsChecked.find(i => 
+                          (rej.reason.toLowerCase().includes('slope') || rej.reason.toLowerCase().includes('lidar')) ? i.toLowerCase().includes('slope') :
+                          (rej.reason.toLowerCase().includes('flood') || rej.reason.toLowerCase().includes('fema')) ? i.toLowerCase().includes('flood') : true
+                        ) || rej.inputsChecked[0]
+                      }</span></div>
                     )}
-                    {rej.rulesApplied && rej.rulesApplied[0] && (
-                      <div><span className="text-rose-300">2. Atlas Rule:</span> <span className="text-slate-200">{rej.rulesApplied[0]}</span></div>
+                    {rej.rulesApplied && rej.rulesApplied.length > 0 && (
+                      <div><span className="text-rose-300">2. Atlas Rule:</span> <span className="text-slate-200">{
+                        rej.rulesApplied.find(r => 
+                          (rej.reason.toLowerCase().includes('slope') || rej.reason.toLowerCase().includes('lidar')) ? r.toLowerCase().includes('slope') :
+                          (rej.reason.toLowerCase().includes('flood') || rej.reason.toLowerCase().includes('fema')) ? r.toLowerCase().includes('flood') : true
+                        ) || rej.rulesApplied[0]
+                      }</span></div>
                     )}
                     <div className="flex items-center justify-between text-[9.5px] text-slate-500 pt-0.5">
                       <span>Source: <strong className="text-slate-300">Mireye Physical Intelligence</strong></span>

@@ -38,8 +38,8 @@ export interface BuildableAreaReport {
   methodology: 'Atlas Civil Deduction Model';
   boundaryLabel: 'Verified Parcel Boundary' | 'Approximated Boundary Box' | 'No Verified Geometry';
   isGeometryAuthoritative: boolean;
-  confidence: 'High' | 'Estimated' | 'Unavailable';
-  provenance: 'Live Mireye API Indicators' | 'Cached Mireye API Indicators' | 'No Physical Indicators';
+  confidence: 'High' | 'Pre-Feasibility Model Estimate' | 'Estimated' | 'Unavailable';
+  provenance: 'Live Mireye API Indicators' | 'Cached Mireye API Indicators' | 'Assessment used parcel geometry only — Mireye physical indicators available in Site Dossier' | 'No Physical Indicators';
   disclaimer: string;
   isAvailable: boolean;
 }
@@ -154,7 +154,7 @@ export function analyzeBuildableArea(
       boundaryLabel: 'No Verified Geometry',
       isGeometryAuthoritative: false,
       confidence: 'Unavailable',
-      provenance: 'No Physical Indicators',
+      provenance: 'Assessment used parcel geometry only — Mireye physical indicators available in Site Dossier',
       disclaimer: 'Developability assessment requires verified parcel geometry and Mireye physical indicators.',
       isAvailable: false,
     };
@@ -263,10 +263,10 @@ export function analyzeBuildableArea(
     verdictReason = `Estimated net developable area (${estimatedNetDevelopableAcres} acres) falls short of ${targetRequiredAcres} acres. Requires acquiring an adjacent parcel to assemble target footprint.`;
   }
 
-  const confidence: BuildableAreaReport['confidence'] = isGeometryAuthoritative ? 'High' : 'Estimated';
+  const confidence: BuildableAreaReport['confidence'] = isGeometryAuthoritative ? 'High' : 'Pre-Feasibility Model Estimate';
   const provenance: BuildableAreaReport['provenance'] = isDataPresent
     ? (isFreshProximity ? 'Live Mireye API Indicators' : 'Cached Mireye API Indicators')
-    : 'No Physical Indicators';
+    : 'Assessment used parcel geometry only — Mireye physical indicators available in Site Dossier';
 
   const disclaimer = "Pre-feasibility estimate derived from parcel geometry and Mireye point indicators using Atlas's disclosed deduction model. Mireye does not currently return constraint geometries required for exact parcel-wide clipping.";
 

@@ -132,4 +132,30 @@ describe('buildableAreaHarness — Evidence-Based Developability Assessment', ()
     expect(result.confidence).toBe('Unavailable');
     expect(result.boundaryLabel).toBe('No Verified Geometry');
   });
+
+  it('correctly subtracts inner hole rings for donut Polygon geometries', () => {
+    const outerRing = [
+      [-102.3441, 31.8601],
+      [-102.3421, 31.8601],
+      [-102.3421, 31.8591],
+      [-102.3441, 31.8591],
+      [-102.3441, 31.8601],
+    ];
+    const innerHoleRing = [
+      [-102.3435, 31.8598],
+      [-102.3425, 31.8598],
+      [-102.3425, 31.8594],
+      [-102.3435, 31.8594],
+      [-102.3435, 31.8598],
+    ];
+
+    const solidPoly = { type: 'Polygon', coordinates: [outerRing] };
+    const donutPoly = { type: 'Polygon', coordinates: [outerRing, innerHoleRing] };
+
+    const solidAcres = calculateGeoJsonAreaAcres(solidPoly)!;
+    const donutAcres = calculateGeoJsonAreaAcres(donutPoly)!;
+
+    expect(donutAcres).toBeLessThan(solidAcres);
+    expect(donutAcres).toBeGreaterThan(0);
+  });
 });

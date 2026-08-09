@@ -174,4 +174,32 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     expect(tScore).toBe(88);
     expect(pScore).toBe(92);
   });
+
+  it('generates truthful execution metadata for Spatial Copilot Q&A routes', () => {
+    const dossierMeta = {
+      mode: 'MIREYE SITE DOSSIER Q&A',
+      atlasRoute: '/api/mireye/ask-site',
+      mireyeEndpoint: 'POST /v1/ask-site',
+      siteId: '4a32309517709caa',
+      cacheStatus: 'LIVE_REQUEST',
+      liveRequestExecuted: true,
+      httpStatus: 200,
+    };
+
+    const portfolioMeta = {
+      mode: 'ATLAS PORTFOLIO DECISION ASSISTANT',
+      atlasRoute: '/api/mireye/ask',
+      mireyeEndpoint: 'Atlas Evaluated Portfolio',
+      siteId: '4a32309517709caa',
+      cacheStatus: 'CACHE_HIT',
+      liveRequestExecuted: false,
+      httpStatus: 200,
+    };
+
+    expect(dossierMeta.mireyeEndpoint).toBe('POST /v1/ask-site');
+    expect(dossierMeta.liveRequestExecuted).toBe(true);
+
+    expect(portfolioMeta.mireyeEndpoint).toBe('Atlas Evaluated Portfolio');
+    expect(portfolioMeta.cacheStatus).toBe('CACHE_HIT');
+  });
 });

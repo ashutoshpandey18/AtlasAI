@@ -31,7 +31,12 @@ export async function POST(req: Request) {
     ) {
       console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
       console.log(`[ASK]\nQuestion: ${questionStr}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
-      return NextResponse.json(cachedData);
+      return NextResponse.json({
+        ...cachedData,
+        isCacheHit: true,
+        liveRequestExecuted: false,
+        httpStatus: 200,
+      });
     }
 
     let responseData: any = null;
@@ -81,6 +86,9 @@ export async function POST(req: Request) {
               answer: data.answer || data.reply,
               traceSteps: data.traceSteps || data.trace || ['Querying physical spatial intelligence...'],
               citations: data.citations || [],
+              isCacheHit: false,
+              liveRequestExecuted: true,
+              httpStatus: res.status,
             };
             await setCache(cacheKey, responseData);
             return NextResponse.json(responseData);

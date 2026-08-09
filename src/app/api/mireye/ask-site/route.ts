@@ -84,10 +84,13 @@ export async function POST(req: Request) {
         return NextResponse.json({
           answer,
           site_id: siteId,
-          traceSteps: data?.trace || data?.traceSteps || ['Queried Mireye Site Dossier'],
+          traceSteps: data?.trace || data?.traceSteps || ['Queried Mireye Site Dossier (POST /v1/ask-site)'],
           citations: data?.citations || data?.fields_used || [],
           source: 'mireye_site_dossier',
           queried_at: new Date().toISOString(),
+          isCacheHit: false,
+          liveRequestExecuted: true,
+          httpStatus: res.status,
         });
       }
     }

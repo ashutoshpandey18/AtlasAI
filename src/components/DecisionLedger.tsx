@@ -193,6 +193,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   <div className="space-y-1 text-[11px] text-slate-300">
                     <div>Site ID: <span className="text-white font-bold">{mireyeSite.site_id}</span></div>
                     <div>Source: <span className="text-slate-200">Mireye /v1/sites</span></div>
+                    <div>Registration Endpoint: <span className="text-cyan-400 font-bold">POST https://api.mireye.com/v1/sites</span></div>
                     {mireyeSite.geometrySource && (
                       <div>Geometry Source: <span className="text-emerald-400 font-bold">{mireyeSite.geometrySource}</span></div>
                     )}
@@ -426,15 +427,19 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   <span className="text-[10px] text-slate-400 font-mono">TOP {Math.min(3, evaluations.length)} SURVIVORS</span>
                 </div>
 
+                <div className="text-[10.5px] font-mono text-slate-400 bg-white/5 border border-white/10 p-2 rounded-lg">
+                  💡 <strong className="text-slate-200">Scoring Methodology:</strong> Technical feasibility measures physical/site suitability. Acquisition priority incorporates Atlas portfolio-level selection logic.
+                </div>
+
                 <div className="overflow-x-auto rounded-xl border border-white/10">
                   <table className="w-full text-left font-mono text-xs text-slate-300">
                     <thead className="bg-black/60 text-[10.5px] uppercase font-bold text-slate-400 border-b border-white/10">
                       <tr>
-                        <th className="p-2.5">Rank</th>
-                        <th className="p-2.5">Candidate Site</th>
-                        <th className="p-2.5">Technical Score</th>
-                        <th className="p-2.5">Priority Score</th>
-                        <th className="p-2.5">Decision Status</th>
+                        <th className="p-2.5">RANK</th>
+                        <th className="p-2.5">CANDIDATE SITE</th>
+                        <th className="p-2.5">TECHNICAL FEASIBILITY</th>
+                        <th className="p-2.5">ACQUISITION PRIORITY</th>
+                        <th className="p-2.5">DECISION STATUS</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">

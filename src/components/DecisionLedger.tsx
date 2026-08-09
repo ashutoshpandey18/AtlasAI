@@ -194,6 +194,7 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                     <div>Site ID: <span className="text-white font-bold">{mireyeSite.site_id}</span></div>
                     <div>Source: <span className="text-slate-200">Mireye /v1/sites</span></div>
                     <div>Registration Endpoint: <span className="text-cyan-400 font-bold">POST https://api.mireye.com/v1/sites</span></div>
+                    <div>Spatial Scope: <span className="text-amber-400 font-bold">Registered Site Identity (Whole-Parcel Geometry)</span></div>
                     {mireyeSite.geometrySource && (
                       <div>Geometry Source: <span className="text-emerald-400 font-bold">{mireyeSite.geometrySource}</span></div>
                     )}

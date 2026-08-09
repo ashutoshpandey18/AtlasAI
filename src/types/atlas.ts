@@ -1,6 +1,23 @@
 import type { MireyeFetchResponse } from './mireye';
 import type { SiteRegistrationStatus } from '../services/mireyeSiteService';
 
+export type SpatialScope =
+  | 'representative_point'
+  | 'logistics_routing'
+  | 'registered_site_identity'
+  | 'registered_site_dossier'
+  | 'atlas_decision_logic'
+  | 'illustrative_assumption';
+
+export interface EvidenceProvenance {
+  endpoint: string;
+  source: string;
+  scope: SpatialScope;
+  scopeLabel: string;
+  isCacheHit: boolean;
+  liveRequestExecuted: boolean;
+}
+
 export type UseCaseId =
   | 'warehouse'
   | 'hospital'

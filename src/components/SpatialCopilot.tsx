@@ -308,6 +308,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300 pt-0.5">
                 <div><span className="text-slate-500">Agent Mode:</span> <strong className="text-white">{answerData.executionMeta.mode}</strong></div>
                 <div><span className="text-slate-500">Endpoint:</span> <strong className="text-cyan-400">{answerData.executionMeta.mireyeEndpoint}</strong></div>
+                <div><span className="text-slate-500">Spatial Scope:</span> <strong className="text-amber-400">{answerData.executionMeta.mode === 'MIREYE SITE DOSSIER Q&A' ? 'Registered Whole-Site Polygon' : 'Atlas Evaluated Portfolio'}</strong></div>
                 <div><span className="text-slate-500">Atlas Route:</span> <span className="text-slate-300">{answerData.executionMeta.atlasRoute}</span></div>
                 <div><span className="text-slate-500">Status Code:</span> <strong className="text-emerald-400">{answerData.executionMeta.httpStatus ? `HTTP ${answerData.executionMeta.httpStatus}` : 'HTTP 200'}</strong></div>
               </div>

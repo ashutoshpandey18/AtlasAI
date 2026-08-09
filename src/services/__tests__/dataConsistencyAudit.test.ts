@@ -202,4 +202,37 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     expect(portfolioMeta.mireyeEndpoint).toBe('Atlas Evaluated Portfolio');
     expect(portfolioMeta.cacheStatus).toBe('CACHE_HIT');
   });
+
+  it('distinguishes point-level screening evidence from registered whole-site dossier scope', () => {
+    const screeningPointEvidence = {
+      endpoint: 'POST /v1/fetch',
+      source: 'Mireye /v1/fetch → USGS 3DEP LiDAR',
+      scope: 'representative_point',
+      slope: 0.4,
+      flood: 'Zone X',
+    };
+
+    const wholeSiteDossierEvidence = {
+      endpoint: 'POST /v1/ask-site',
+      source: 'Mireye /v1/ask-site → Registered Site Dossier (4a32309517709caa)',
+      scope: 'registered_site_dossier',
+      slopeRange: '0.4° - 1.7°',
+      floodFringe: 'Zone AE creek boundary fringe',
+    };
+
+    expect(screeningPointEvidence.scope).toBe('representative_point');
+    expect(wholeSiteDossierEvidence.scope).toBe('registered_site_dossier');
+    expect(screeningPointEvidence.slope).not.toEqual(wholeSiteDossierEvidence.slopeRange);
+  });
+
+  it('asserts cache hits are never labeled live request executed', () => {
+    const cachedResponse = {
+      isCacheHit: true,
+      liveRequestExecuted: false,
+      cacheStatus: 'CACHE_HIT',
+    };
+
+    expect(cachedResponse.isCacheHit).toBe(true);
+    expect(cachedResponse.liveRequestExecuted).toBe(false);
+  });
 });

@@ -438,29 +438,40 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {sortedSurvivors.slice(0, 3).map((cand, idx) => (
-                        <tr key={idx} className={idx === 0 ? 'bg-emerald-950/20 font-bold text-white' : 'hover:bg-white/5'}>
-                          <td className="p-2.5">
-                            <span className={`px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'}`}>
-                              #{idx + 1}
-                            </span>
-                          </td>
-                          <td className="p-2.5 font-sans font-semibold">
-                            {cand.siteName} ({cand.county || 'TX'})
-                          </td>
-                          <td className="p-2.5 text-emerald-400">
-                            {cand.techScore} / 100
-                          </td>
-                          <td className="p-2.5 text-slate-200">
-                            {cand.priorityScore}%
-                          </td>
-                          <td className="p-2.5">
-                            <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${idx === 0 ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-300'}`}>
-                              {idx === 0 ? '✓ SELECTED PRIORITY' : 'PASSED SCREENING'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      {sortedSurvivors.slice(0, 3).map((cand, idx) => {
+                        const tScore = cand.techScore ?? cand.techEval?.technicalFeasibilityScore ?? cand.memo?.technicalScore;
+                        const tScoreDisplay = tScore != null ? `${tScore} / 100` : '— / 100';
+
+                        const pScore = cand.priorityScore ?? cand.intelEval?.acquisitionPriorityScore ?? cand.memo?.acquisitionPriorityScore;
+                        const pScoreDisplay = pScore != null ? `${pScore}%` : '—';
+
+                        const siteName = cand.siteName || cand.techEval?.siteName || cand.memo?.siteName || `Site #${idx + 1}`;
+                        const county = cand.county || cand.techEval?.county || cand.memo?.county || 'TX';
+
+                        return (
+                          <tr key={idx} className={idx === 0 ? 'bg-emerald-950/20 font-bold text-white' : 'hover:bg-white/5'}>
+                            <td className="p-2.5">
+                              <span className={`px-2 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'}`}>
+                                #{idx + 1}
+                              </span>
+                            </td>
+                            <td className="p-2.5 font-sans font-semibold">
+                              {siteName} ({county})
+                            </td>
+                            <td className="p-2.5 text-emerald-400">
+                              {tScoreDisplay}
+                            </td>
+                            <td className="p-2.5 text-slate-200">
+                              {pScoreDisplay}
+                            </td>
+                            <td className="p-2.5">
+                              <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${idx === 0 ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-300'}`}>
+                                {idx === 0 ? '✓ SELECTED PRIORITY' : 'PASSED SCREENING'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

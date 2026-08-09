@@ -157,4 +157,21 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     expect(top3[2].techScore).toBe(57);
     expect(top3[2].priorityScore).toBe(78);
   });
+
+  it('defensively extracts techScore and priorityScore from nested techEval or memo properties', () => {
+    const winnerCandidate = {
+      siteName: 'Fort Worth Hulen Energy Yard Site #7',
+      county: 'Tarrant County',
+      memo: {
+        technicalScore: 88,
+        acquisitionPriorityScore: 92,
+      },
+    };
+
+    const tScore = (winnerCandidate as any).techScore ?? (winnerCandidate as any).techEval?.technicalFeasibilityScore ?? (winnerCandidate as any).memo?.technicalScore;
+    const pScore = (winnerCandidate as any).priorityScore ?? (winnerCandidate as any).intelEval?.acquisitionPriorityScore ?? (winnerCandidate as any).memo?.acquisitionPriorityScore;
+
+    expect(tScore).toBe(88);
+    expect(pScore).toBe(92);
+  });
 });

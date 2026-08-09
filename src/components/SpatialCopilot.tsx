@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageSquare, Sparkles, Compass, Shield, Zap, ArrowRight, CheckCircle2, Loader2, Send } from 'lucide-react';
+import { MessageSquare, Sparkles, Compass, Shield, Zap, ArrowRight, CheckCircle2, Loader2, Send, Globe } from 'lucide-react';
 
 interface SpatialCopilotProps {
   userPrompt: string;
@@ -291,8 +291,18 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
                   <Compass className="w-3.5 h-3.5" />
                   AGENT EXECUTION METADATA
                 </span>
-                <span className={`px-2 py-0.5 rounded font-bold ${answerData.executionMeta.cacheStatus === 'CACHE_HIT' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}`}>
-                  {answerData.executionMeta.cacheStatus === 'CACHE_HIT' ? '⚡ CACHED RESULT (CACHE HIT)' : '🌍 LIVE REQUEST EXECUTED'}
+                <span className={`px-2 py-0.5 rounded font-bold flex items-center gap-1.5 ${answerData.executionMeta.cacheStatus === 'CACHE_HIT' ? 'bg-amber-400/10 text-amber-300 border border-amber-400/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'}`}>
+                  {answerData.executionMeta.cacheStatus === 'CACHE_HIT' ? (
+                    <>
+                      <Zap className="w-3 h-3 text-amber-400" />
+                      <span>CACHED RESULT (CACHE HIT)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Globe className="w-3 h-3 text-emerald-400 animate-pulse" />
+                      <span>LIVE REQUEST EXECUTED</span>
+                    </>
+                  )}
                 </span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300 pt-0.5">

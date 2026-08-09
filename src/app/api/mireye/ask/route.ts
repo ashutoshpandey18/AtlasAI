@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       !cachedData.answer.includes("doesn't appear to be answerable") &&
       !cachedData.answer.includes('Mireye Earth answers questions')
     ) {
-      console.log(`⚡ CACHE HIT\nKey: ${cacheKey}`);
+      console.log(`[CACHE HIT]\nKey: ${cacheKey}`);
       console.log(`[ASK]\nQuestion: ${questionStr}\nCache HIT / MISS: HIT\nLive Mireye Request Executed: NO\nCache Written: NO\n------------------------------------------------`);
       return NextResponse.json({
         ...cachedData,
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     if (token) {
       try {
         console.log(`[ASK]\nQuestion: ${questionStr}\nCache HIT / MISS: MISS\nLive Mireye Request Executed: YES\nCache Written: YES`);
-        console.log(`🌍 LIVE MIREYE REQUEST\nEndpoint: /v1/ask\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
+        console.log(`[LIVE MIREYE REQUEST]\nEndpoint: /v1/ask\nTimestamp: ${new Date().toISOString()}\n------------------------------------------------`);
         const startTime = Date.now();
 
         const controller = new AbortController();
@@ -80,8 +80,8 @@ export async function POST(req: Request) {
             (data.answer || data.reply) &&
             !String(data.answer || data.reply).includes("doesn't appear to be answerable")
           ) {
-            console.log(`✅ MIREYE RESPONSE RECEIVED\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
-            console.log(`💾 CACHE WRITE\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
+            console.log(`[MIREYE RESPONSE RECEIVED]\nStatus: ${res.status}\nDuration: ${Date.now() - startTime}ms`);
+            console.log(`[CACHE WRITE]\nKey: ${cacheKey}\nTTL: 7776000\n------------------------------------------------`);
             responseData = {
               answer: data.answer || data.reply,
               traceSteps: data.traceSteps || data.trace || ['Querying physical spatial intelligence...'],

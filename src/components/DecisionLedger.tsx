@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock, Layers } from 'lucide-react';
+import { Target, CheckCircle2, XCircle, ShieldCheck, DollarSign, Award, Truck, Activity, Database, Cpu, BookOpen, Clock, Layers, Lightbulb } from 'lucide-react';
 import type { LocationResult, MireyeSiteRegistration } from '../types/atlas';
 import { formatTransportTruth } from '../services/transportTruth';
 import { analyzeBuildableArea } from '../services/buildableAreaHarness';
@@ -427,8 +427,9 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                   <span className="text-[10px] text-slate-400 font-mono">TOP {Math.min(3, evaluations.length)} SURVIVORS</span>
                 </div>
 
-                <div className="text-[10.5px] font-mono text-slate-400 bg-white/5 border border-white/10 p-2 rounded-lg">
-                  💡 <strong className="text-slate-200">Scoring Methodology:</strong> Technical feasibility measures physical/site suitability. Acquisition priority incorporates Atlas portfolio-level selection logic.
+                <div className="text-[10.5px] font-mono text-slate-400 bg-white/5 border border-white/10 p-2 rounded-lg flex items-center gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span><strong className="text-slate-200">Scoring Methodology:</strong> Technical feasibility measures physical/site suitability. Acquisition priority incorporates Atlas portfolio-level selection logic.</span>
                 </div>
 
                 <div className="overflow-x-auto rounded-xl border border-white/10">

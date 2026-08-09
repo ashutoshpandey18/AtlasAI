@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeBuildableArea } from '../buildableAreaHarness';
 import { evaluateSiteTechnicalFeasibility } from '../../agent/evaluator';
+import { sanitizeMireyeResponse } from '../../utils/sanitizeResponse';
 
 describe('Atlas Data Consistency & Provenance Audit Suite', () => {
   it('correctly attributes GeoJSON parcel acreage vs Site Dossier acreage', () => {
@@ -234,5 +235,27 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
 
     expect(cachedResponse.isCacheHit).toBe(true);
     expect(cachedResponse.liveRequestExecuted).toBe(false);
+  });
+
+  it('sanitizes raw Mireye XML parameter tags and extracts confidence cleanly', () => {
+    const rawAnswer = 'The site features flat terrain.<parameter name="confidence">high</parameter> No flood risk.<parameter name="note">verified</parameter>';
+    const sanitized = sanitizeMireyeResponse(rawAnswer);
+
+    expect(sanitized.cleanAnswer).not.toContain('<parameter');
+    expect(sanitized.cleanAnswer).not.toContain('</parameter>');
+    expect(sanitized.cleanAnswer).toBe('The site features flat terrain. No flood risk.');
+    expect(sanitized.extractedConfidence).toBe('HIGH');
+  });
+
+  it('renders "Not Available" for missing scores instead of blank placeholders', () => {
+    const incompleteCandidate: any = { siteName: 'Incomplete Site' };
+    const tScore = incompleteCandidate.techScore ?? incompleteCandidate.techEval?.technicalFeasibilityScore;
+    const tScoreDisplay = tScore != null ? `${tScore} / 100` : 'Not Available';
+
+    const pScore = incompleteCandidate.priorityScore ?? incompleteCandidate.intelEval?.acquisitionPriorityScore;
+    const pScoreDisplay = pScore != null ? `${pScore}%` : 'Not Available';
+
+    expect(tScoreDisplay).toBe('Not Available');
+    expect(pScoreDisplay).toBe('Not Available');
   });
 });

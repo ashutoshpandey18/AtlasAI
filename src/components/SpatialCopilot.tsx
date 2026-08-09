@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MessageSquare, Sparkles, Compass, Shield, Zap, ArrowRight, CheckCircle2, Loader2, Send, Globe } from 'lucide-react';
+import { sanitizeMireyeResponse } from '../utils/sanitizeResponse';
 
 interface SpatialCopilotProps {
   userPrompt: string;
@@ -32,6 +33,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
   const [answerData, setAnswerData] = useState<{
     answer: string;
+    confidence?: 'HIGH' | 'MEDIUM' | 'LOW' | null;
     traceSteps?: string[];
     citations?: { fieldName: string; source: string; value: string }[];
     source?: 'mireye_site_dossier' | 'mireye_ask' | 'atlas_portfolio_comparison';
@@ -91,8 +93,10 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
           if (siteRes.ok) {
             const siteData = await siteRes.json();
             if (siteData?.answer) {
+              const { cleanAnswer, extractedConfidence } = sanitizeMireyeResponse(siteData.answer);
               setAnswerData({
-                answer: siteData.answer,
+                answer: cleanAnswer,
+                confidence: extractedConfidence,
                 traceSteps: siteData.traceSteps || ['Queried Mireye Site Dossier (POST /v1/ask-site)'],
                 citations: siteData.citations || [],
                 source: 'mireye_site_dossier',
@@ -138,8 +142,11 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
 
       if (res.ok) {
         const data = await res.json();
+        const { cleanAnswer, extractedConfidence } = sanitizeMireyeResponse(data.answer || data.reply || '');
         setAnswerData({
           ...data,
+          answer: cleanAnswer,
+          confidence: extractedConfidence,
           source: isComparisonQuery ? 'atlas_portfolio_comparison' : (data.source || 'mireye_ask'),
           executionMeta: {
             mode: isComparisonQuery ? 'ATLAS PORTFOLIO DECISION ASSISTANT' : 'MIREYE SITE DOSSIER Q&A',
@@ -148,11 +155,12 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
             siteId: mireyeSiteId,
             cacheStatus: data.isCacheHit ? 'CACHE_HIT' : 'LIVE_REQUEST',
             liveRequestExecuted: data.liveRequestExecuted ?? true,
-            httpStatus: res.status,
-            source: isComparisonQuery ? 'Atlas Portfolio Evaluation Engine' : 'Mireye Physical API Intelligence',
+            httpStatus: data.httpStatus || res.status,
+            source: isComparisonQuery ? 'Atlas Portfolio Decision Engine' : 'Mireye Physical API Intelligence',
             unverifiedLimitations: [
-              'Third-party commercial solar developer off-take PPA negotiations',
-              'Municipal zoning variance hearing requirements',
+              'Local utility interconnection queue timeline & cost study',
+              'Phase 1 Environmental Site Assessment (soil borings & contamination history)',
+              'ALTA commercial land title policy & easement encumbrances',
             ],
           },
         });
@@ -299,7 +307,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
                     </>
                   ) : (
                     <>
-                      <Globe className="w-3 h-3 text-emerald-400 animate-pulse" />
+                    <Globe className="w-3 h-3 text-emerald-400 animate-pulse" />
                       <span>LIVE REQUEST EXECUTED</span>
                     </>
                   )}
@@ -308,9 +316,12 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300 pt-0.5">
                 <div><span className="text-slate-500">Agent Mode:</span> <strong className="text-white">{answerData.executionMeta.mode}</strong></div>
                 <div><span className="text-slate-500">Endpoint:</span> <strong className="text-cyan-400">{answerData.executionMeta.mireyeEndpoint}</strong></div>
-                <div><span className="text-slate-500">Spatial Scope:</span> <strong className="text-amber-400">{answerData.executionMeta.mode === 'MIREYE SITE DOSSIER Q&A' ? 'Registered Whole-Site Polygon' : 'Atlas Evaluated Portfolio'}</strong></div>
+                <div><span className="text-slate-500">Spatial Scope:</span> <strong className="text-amber-400">{answerData.executionMeta.mode === 'MIREYE SITE DOSSIER Q&A' ? 'Registered Mireye Site Dossier' : 'Atlas Evaluated Portfolio'}</strong></div>
                 <div><span className="text-slate-500">Atlas Route:</span> <span className="text-slate-300">{answerData.executionMeta.atlasRoute}</span></div>
                 <div><span className="text-slate-500">Status Code:</span> <strong className="text-emerald-400">{answerData.executionMeta.httpStatus ? `HTTP ${answerData.executionMeta.httpStatus}` : 'HTTP 200'}</strong></div>
+                {answerData.confidence && (
+                  <div><span className="text-slate-500">Confidence:</span> <strong className="text-emerald-400">{answerData.confidence}</strong></div>
+                )}
               </div>
             </div>
           )}
@@ -368,9 +379,9 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
                   <tbody className="divide-y divide-white/5 text-slate-300">
                     {evaluations.slice(0, 3).map((cand: any, idx: number) => {
                       const tScore = cand.techScore ?? cand.techEval?.technicalFeasibilityScore;
-                      const tScoreDisplay = tScore != null ? `${tScore} / 100` : '— / 100';
+                      const tScoreDisplay = tScore != null ? `${tScore} / 100` : 'Not Available';
                       const pScore = cand.priorityScore ?? cand.intelEval?.acquisitionPriorityScore;
-                      const pScoreDisplay = pScore != null ? `${pScore}%` : '—';
+                      const pScoreDisplay = pScore != null ? `${pScore}%` : 'Not Available';
                       const siteName = cand.siteName || cand.techEval?.siteName || `Site #${idx + 1}`;
                       const county = cand.county || cand.techEval?.county || 'TX';
 

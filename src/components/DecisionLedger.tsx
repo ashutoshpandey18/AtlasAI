@@ -447,10 +447,10 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
                     <tbody className="divide-y divide-white/5">
                       {sortedSurvivors.slice(0, 3).map((cand, idx) => {
                         const tScore = cand.techScore ?? cand.techEval?.technicalFeasibilityScore ?? cand.memo?.technicalScore;
-                        const tScoreDisplay = tScore != null ? `${tScore} / 100` : '— / 100';
+                        const tScoreDisplay = tScore != null ? `${tScore} / 100` : 'Not Available';
 
                         const pScore = cand.priorityScore ?? cand.intelEval?.acquisitionPriorityScore ?? cand.memo?.acquisitionPriorityScore;
-                        const pScoreDisplay = pScore != null ? `${pScore}%` : '—';
+                        const pScoreDisplay = pScore != null ? `${pScore}%` : 'Not Available';
 
                         const siteName = cand.siteName || cand.techEval?.siteName || cand.memo?.siteName || `Site #${idx + 1}`;
                         const county = cand.county || cand.techEval?.county || cand.memo?.county || 'TX';

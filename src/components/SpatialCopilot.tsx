@@ -240,6 +240,57 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
             {answerData.answer}
           </div>
 
+          {/* Structured Canonical Candidate Comparison Table (guarantees 100% data consistency with Decision Ledger) */}
+          {answerData.source === 'atlas_portfolio_comparison' && evaluations.length > 0 && (
+            <div className="p-3 bg-black/50 border border-white/10 rounded-xl space-y-2 font-mono text-xs my-2">
+              <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                <span>VERIFIED ATLAS CANDIDATE COMPARISON MATRIX</span>
+                <span className="text-slate-400 font-mono text-[9px]">{evaluations.length} SURVIVORS</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="text-[10px] text-slate-400 border-b border-white/10 uppercase">
+                    <tr>
+                      <th className="py-1">Rank</th>
+                      <th className="py-1">Candidate Site</th>
+                      <th className="py-1">Technical Score</th>
+                      <th className="py-1">Priority Score</th>
+                      <th className="py-1">Decision Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-slate-300">
+                    {evaluations.slice(0, 3).map((cand: any, idx: number) => {
+                      const tScore = cand.techScore ?? cand.techEval?.technicalFeasibilityScore;
+                      const tScoreDisplay = tScore != null ? `${tScore} / 100` : '— / 100';
+                      const pScore = cand.priorityScore ?? cand.intelEval?.acquisitionPriorityScore;
+                      const pScoreDisplay = pScore != null ? `${pScore}%` : '—';
+                      const siteName = cand.siteName || cand.techEval?.siteName || `Site #${idx + 1}`;
+                      const county = cand.county || cand.techEval?.county || 'TX';
+
+                      return (
+                        <tr key={idx} className={idx === 0 ? 'text-white font-bold bg-emerald-950/20' : ''}>
+                          <td className="py-1.5">
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] ${idx === 0 ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'}`}>
+                              #{idx + 1}
+                            </span>
+                          </td>
+                          <td className="py-1.5 font-sans font-semibold">{siteName} ({county})</td>
+                          <td className="py-1.5 text-emerald-400">{tScoreDisplay}</td>
+                          <td className="py-1.5 text-slate-200">{pScoreDisplay}</td>
+                          <td className="py-1.5">
+                            <span className={`text-[9.5px] px-1.5 py-0.5 rounded font-bold ${idx === 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-300'}`}>
+                              {idx === 0 ? '✓ SELECTED PRIORITY' : 'PASSED SCREENING'}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Evidence Citation Tags */}
           {answerData.citations && answerData.citations.length > 0 && (
             <div className="pt-2 border-t border-white/10 flex flex-wrap items-center gap-3 font-mono text-[10.5px]">

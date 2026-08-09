@@ -1015,7 +1015,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
             <SpatialCopilot
               userPrompt={prompt}
               winnerSite={survivors.length > 0 ? survivors[0] : evaluations[0]}
-              evaluations={evaluations}
+              evaluations={survivors.length > 0 ? survivors : evaluations}
               rejections={rejections}
               mireyeSiteId={mireyeSite?.site_id ?? null}
             />

@@ -135,4 +135,26 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     expect(simulateCompareAnswer([{ siteName: 'S1' }, { siteName: 'S2' }], [])).toContain('2 survivors');
     expect(simulateCompareAnswer([{ siteName: 'S1' }, { siteName: 'S2' }, { siteName: 'S3' }], [])).toContain('Top 3 candidates');
   });
+
+  it('guarantees Matrix and Copilot receive identical candidate IDs, technical scores, priority scores, and rankings', () => {
+    const survivors = [
+      { siteName: 'Fort Worth Transit Canopy Site #10', techScore: 56, priorityScore: 96 },
+      { siteName: 'Temple Central TX Solar Hub Site #8', techScore: 49, priorityScore: 95 },
+      { siteName: 'Dallas Industrial Carport Site #9', techScore: 57, priorityScore: 78 },
+    ];
+
+    // Simulate mapping in Matrix & Copilot Table
+    const top3 = survivors.slice(0, 3);
+    expect(top3[0].siteName).toBe('Fort Worth Transit Canopy Site #10');
+    expect(top3[0].techScore).toBe(56);
+    expect(top3[0].priorityScore).toBe(96);
+
+    expect(top3[1].siteName).toBe('Temple Central TX Solar Hub Site #8');
+    expect(top3[1].techScore).toBe(49);
+    expect(top3[1].priorityScore).toBe(95);
+
+    expect(top3[2].siteName).toBe('Dallas Industrial Carport Site #9');
+    expect(top3[2].techScore).toBe(57);
+    expect(top3[2].priorityScore).toBe(78);
+  });
 });

@@ -398,6 +398,47 @@ export function DecisionLedger({ promptStr, evaluations = [], rejections = [], w
           </div>
         )}
 
+        {/* Rejection Evidence Ledger Section */}
+        {rejections.length > 0 && (
+          <div className="pt-4 border-t border-white/10 space-y-3 font-sans">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="font-bold text-rose-400 uppercase tracking-widest flex items-center gap-2">
+                <XCircle className="w-4 h-4 text-rose-400" />
+                <span>DISQUALIFIED CANDIDATES ({rejections.length} CUT SITES)</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">FATAL FLAW SCREENING PROOFS</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {rejections.map((rej, idx) => (
+                <div key={idx} className="p-3.5 bg-black/40 border border-rose-500/20 rounded-xl space-y-2 font-mono text-xs">
+                  <div className="flex items-center justify-between text-rose-400 font-bold text-[11px]">
+                    <span>✕ DISQUALIFIED — {rej.siteName}</span>
+                    <span className="text-[9px] bg-rose-950/80 border border-rose-800/80 px-1.5 py-0.5 rounded text-rose-300 font-mono">
+                      Fatal Flaw
+                    </span>
+                  </div>
+                  <div className="text-slate-200 text-xs font-sans font-medium">
+                    {rej.reason}
+                  </div>
+                  <div className="pt-1.5 border-t border-white/10 space-y-1 text-[10.5px]">
+                    {rej.inputsChecked && rej.inputsChecked[0] && (
+                      <div><span className="text-slate-400">1. Mireye Evidence:</span> <span className="text-slate-200">{rej.inputsChecked[0]}</span></div>
+                    )}
+                    {rej.rulesApplied && rej.rulesApplied[0] && (
+                      <div><span className="text-rose-300">2. Atlas Rule:</span> <span className="text-slate-200">{rej.rulesApplied[0]}</span></div>
+                    )}
+                    <div className="flex items-center justify-between text-[9.5px] text-slate-500 pt-0.5">
+                      <span>Source: <strong className="text-slate-300">Mireye Physical Intelligence</strong></span>
+                      <span className="text-rose-400 font-bold">Live API Result</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -685,32 +685,55 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
 
           {/* Rejections & Evaluations Streams */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
             {/* Rejection Ledger Stream */}
-            {/* Rejections Stream with Compact Fixed Max-Height Scroll Container */}
             <div className="space-y-3 font-sans">
               <div className="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider flex items-center justify-between">
                 <span>Explaining Rejections ({rejections.length} Sites Cut)</span>
-                <span className="text-[10px] text-slate-400 font-normal">Scroll to view all</span>
+                <span className="text-[10px] font-mono text-rose-300/80 bg-rose-950/60 border border-rose-800/60 px-2 py-0.5 rounded font-bold">
+                  Fatal Flaw Ledger
+                </span>
               </div>
-              <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+              <div className="max-h-[380px] overflow-y-auto space-y-2.5 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {rejections.map((rej, i) => (
                   <div
                     key={i}
                     onClick={() => handleOpenWhyRejection(rej)}
-                    className="text-xs py-2 border-b border-white/10 cursor-pointer hover:border-rose-400 transition-colors"
+                    className="p-3 bg-[#0d0912] border border-rose-500/20 rounded-xl space-y-1.5 cursor-pointer hover:border-rose-400 transition-all font-sans text-xs shadow-sm"
                   >
-                    <div className="font-bold text-rose-400 flex justify-between items-center">
-                      <span>Rejected — {rej.siteName}</span>
-                      <span className="text-[10px] text-slate-400 font-mono underline">Why? →</span>
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span className="text-rose-400 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                        <span>✕ DISQUALIFIED — {rej.siteName}</span>
+                      </span>
+                      <span className="text-[9.5px] font-mono text-slate-400 underline">View Trace →</span>
                     </div>
-                    <div className="text-xs text-slate-300 mt-1 font-medium">{rej.reason}</div>
+
+                    <div className="text-[11px] text-slate-200 font-medium leading-tight">
+                      {rej.reason}
+                    </div>
+
+                    <div className="pt-1.5 border-t border-white/10 grid grid-cols-1 gap-1 text-[10.5px] font-mono">
+                      {rej.inputsChecked && rej.inputsChecked[0] && (
+                        <div className="text-slate-400 truncate">
+                          <strong className="text-slate-300">1. Mireye Evidence:</strong> {rej.inputsChecked[0]}
+                        </div>
+                      )}
+                      {rej.rulesApplied && rej.rulesApplied[0] && (
+                        <div className="text-slate-400 truncate">
+                          <strong className="text-rose-300">2. Atlas Rule:</strong> {rej.rulesApplied[0]}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-[9.5px] text-slate-500 pt-0.5">
+                        <span>Source: <strong className="text-slate-300">Mireye Physical Intelligence</strong></span>
+                        <span className="text-rose-400 font-bold">Live API Result</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Approved Evaluations Stream with Compact Fixed Max-Height Scroll Container */}
+            {/* Approved Evaluations Stream */}
             <div className="space-y-3 font-sans">
               <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider flex justify-between items-center">
                 <span>Scoring Results ({evaluations.length} Evaluated)</span>
@@ -724,7 +747,7 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
               </div>
 
               {showCriteriaWeights && (
-                <div className="text-[11px] font-mono text-slate-400 space-y-1 py-1">
+                <div className="text-[11px] font-mono text-slate-400 space-y-1 py-1 bg-black/40 border border-white/10 rounded-xl p-2.5">
                   <div>• Solar Yield (28%) — Optimal POA Irradiance</div>
                   <div>• Slope & Topography (22%) — USGS 3DEP Flat Class</div>
                   <div>• Grid Proximity (18%) — Substation & Transmission Distance</div>
@@ -732,20 +755,37 @@ export function AgentRunPanel({ initialPrompt, autoRunInstantDemo, autoRunScan }
                 </div>
               )}
 
-              <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+              <div className="max-h-[380px] overflow-y-auto space-y-2.5 pr-1.5 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {evaluations.map((ev, i) => (
                   <div
                     key={i}
                     onClick={() => handleOpenWhyApproved(ev)}
-                    className="text-xs py-2 border-b border-white/10 cursor-pointer hover:border-emerald-400 transition-colors flex justify-between items-center"
+                    className="p-3 bg-[#061010] border border-emerald-500/20 rounded-xl space-y-1.5 cursor-pointer hover:border-emerald-400 transition-all font-sans text-xs shadow-sm"
                   >
-                    <div>
-                      <div className="font-bold text-emerald-400">Approved — {ev.siteName} ({ev.county})</div>
-                      <div className="text-[11px] text-slate-300 mt-0.5">Feasibility Score: {ev.techScore}/100</div>
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span className="text-emerald-400 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span>✓ APPROVED — {ev.siteName} ({ev.county})</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-emerald-300 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
+                        Score {ev.techScore}/100
+                      </span>
                     </div>
-                    <div className="text-right font-mono">
-                      <div className="text-xs font-bold text-slate-200">Priority {ev.priorityScore}%</div>
-                      <div className="text-[10px] text-slate-400 underline">See details →</div>
+
+                    <div className="text-[11px] text-slate-200 font-medium leading-tight">
+                      {ev.conclusion}
+                    </div>
+
+                    <div className="pt-1.5 border-t border-white/10 grid grid-cols-1 gap-1 text-[10.5px] font-mono">
+                      {ev.inputsChecked && ev.inputsChecked[0] && (
+                        <div className="text-slate-400 truncate">
+                          <strong className="text-slate-300">1. Mireye Evidence:</strong> {ev.inputsChecked.slice(0, 2).join(' | ')}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-[9.5px] text-slate-500 pt-0.5">
+                        <span>Source: <strong className="text-slate-300">Mireye Physical Intelligence</strong></span>
+                        <span className="text-emerald-400 font-bold">Priority {ev.priorityScore}%</span>
+                      </div>
                     </div>
                   </div>
                 ))}

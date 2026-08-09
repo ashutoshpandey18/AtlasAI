@@ -133,6 +133,15 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
         </span>
       </div>
 
+      {/* Grounded Mireye Site Dossier Status Indicator */}
+      <div className="flex items-center justify-between text-[10.5px] font-mono bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-slate-300">
+        <span>Grounded Intelligence: <strong className="text-white">{mireyeSiteId ? `Registered Mireye Site Dossier (${mireyeSiteId})` : 'Mireye Physical API Endpoints'}</strong></span>
+        <span className="text-emerald-400 font-bold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>{mireyeSiteId ? 'POST /v1/ask-site' : 'POST /v1/ask'}</span>
+        </span>
+      </div>
+
       {/* Suggested Question Chips */}
       <div className="space-y-1.5 font-mono">
         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">

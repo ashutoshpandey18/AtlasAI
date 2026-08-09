@@ -12,13 +12,18 @@ interface SpatialCopilotProps {
   mireyeSiteId?: string | null;
 }
 
-const SUGGESTED_QUESTIONS = [
-  'Why was Site #1 selected?',
+const SITE_DOSSIER_QUESTIONS = [
+  'Why is this site physically attractive?',
+  'What physical risks affect this parcel?',
+  'What infrastructure & grid lines are nearby?',
+  'What residual risks remain unverified?',
+];
+
+const PORTFOLIO_DECISION_QUESTIONS = [
+  'Why did Atlas select this site as Rank #1?',
   'Why were cut sites rejected?',
   'Compare the top 3 candidates.',
-  "Explain this recommendation like I'm a CFO.",
-  'What residual risks affect this parcel?',
-  'Summarize the acquisition strategy.',
+  "Explain the investment memo like I'm a CFO.",
 ];
 
 export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejections = [], mireyeSiteId }: SpatialCopilotProps) {
@@ -147,26 +152,54 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
         </span>
       </div>
 
-      {/* Suggested Question Chips */}
-      <div className="space-y-1.5 font-mono">
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          Suggested Spatial Questions
+      {/* Categorized Suggested Question Chips */}
+      <div className="space-y-3 font-mono">
+        {/* Group 1: Mireye Site Dossier Q&A */}
+        <div className="space-y-1.5">
+          <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span>Mireye Site Dossier Q&A (POST /v1/ask-site)</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {SITE_DOSSIER_QUESTIONS.map((sq, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  setQuestion(sq);
+                  handleAsk(sq);
+                }}
+                className="text-xs font-mono py-1 px-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-slate-200 hover:text-white hover:border-emerald-400 transition-all cursor-pointer text-left flex items-center gap-1.5"
+              >
+                <span>{sq}</span>
+                <ArrowRight className="w-3 h-3 text-emerald-500" />
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {SUGGESTED_QUESTIONS.map((sq, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => {
-                setQuestion(sq);
-                handleAsk(sq);
-              }}
-              className="text-xs font-mono py-1 px-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:border-amber-400/50 transition-all cursor-pointer text-left flex items-center gap-1.5"
-            >
-              <span>{sq}</span>
-              <ArrowRight className="w-3 h-3 text-slate-500" />
-            </button>
-          ))}
+
+        {/* Group 2: Atlas Portfolio Decision Assistant */}
+        <div className="space-y-1.5">
+          <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span>Atlas Portfolio Decision Assistant</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {PORTFOLIO_DECISION_QUESTIONS.map((sq, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  setQuestion(sq);
+                  handleAsk(sq);
+                }}
+                className="text-xs font-mono py-1 px-2.5 rounded-lg bg-cyan-950/20 border border-cyan-500/20 text-slate-200 hover:text-white hover:border-cyan-400 transition-all cursor-pointer text-left flex items-center gap-1.5"
+              >
+                <span>{sq}</span>
+                <ArrowRight className="w-3 h-3 text-cyan-500" />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

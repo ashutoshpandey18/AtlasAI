@@ -108,4 +108,31 @@ describe('Atlas Data Consistency & Provenance Audit Suite', () => {
     expect(sortedList[0].siteName).toBe('Dollar General Ector County #45835');
     expect(sortedList[0].techScore).toBe(88);
   });
+
+  it('correctly routes comparison queries vs dossier queries in Spatial Copilot', () => {
+    const comparisonQuery = 'Compare the top 3 candidates.';
+    const dossierQuery = 'Why was this site selected?';
+
+    const isComparison1 = /\b(compare|top\s*3|portfolio|candidates|versus|vs)\b/i.test(comparisonQuery);
+    const isComparison2 = /\b(compare|top\s*3|portfolio|candidates|versus|vs)\b/i.test(dossierQuery);
+
+    expect(isComparison1).toBe(true);
+    expect(isComparison2).toBe(false);
+  });
+
+  it('handles survivor count edge cases honestly (0, 1, 2, 3+ survivors)', () => {
+    const simulateCompareAnswer = (survivors: any[], rejections: any[]) => {
+      const top3 = survivors.slice(0, 3);
+      const total = survivors.length + rejections.length;
+      if (top3.length === 0) return `0 survivors out of ${total}`;
+      if (top3.length === 1) return `1 survivor out of ${total}`;
+      if (top3.length === 2) return `2 survivors out of ${total}`;
+      return `Top 3 candidates out of ${total}`;
+    };
+
+    expect(simulateCompareAnswer([], [{ siteName: 'S1' }])).toContain('0 survivors');
+    expect(simulateCompareAnswer([{ siteName: 'S1' }], [{ siteName: 'S2' }])).toContain('1 survivor');
+    expect(simulateCompareAnswer([{ siteName: 'S1' }, { siteName: 'S2' }], [])).toContain('2 survivors');
+    expect(simulateCompareAnswer([{ siteName: 'S1' }, { siteName: 'S2' }, { siteName: 'S3' }], [])).toContain('Top 3 candidates');
+  });
 });

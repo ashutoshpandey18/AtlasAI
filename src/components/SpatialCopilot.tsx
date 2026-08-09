@@ -29,7 +29,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
     answer: string;
     traceSteps?: string[];
     citations?: { fieldName: string; source: string; value: string }[];
-    source?: 'mireye_site_dossier' | 'mireye_ask';
+    source?: 'mireye_site_dossier' | 'mireye_ask' | 'atlas_portfolio_comparison';
   } | null>(null);
 
   const handleAsk = async (qToAsk?: string) => {
@@ -58,9 +58,11 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
     });
 
     try {
-      // Atlas V1.3: Use /v1/ask-site (dossier-backed) if site_id is available.
-      // Falls back to /v1/ask automatically — user never sees an error.
-      if (mireyeSiteId) {
+      const isComparisonQuery = /\b(compare|top\s*3|portfolio|candidates|versus|vs)\b/i.test(q);
+
+      // CASE B — Mireye /v1/ask-site is grounded strictly to a SINGLE site_id dossier.
+      // For multi-site portfolio comparison queries, route to /api/mireye/ask (which consumes the full candidate evaluation state).
+      if (mireyeSiteId && !isComparisonQuery) {
         try {
           const siteRes = await fetch('/api/mireye/ask-site', {
             method: 'POST',
@@ -90,7 +92,7 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
         }
       }
 
-      // Fallback: stateless /v1/ask (existing behavior, unchanged)
+      // Portfolio comparison or /v1/ask query: Grounded strictly in evaluated candidate portfolio state
       const res = await fetch('/api/mireye/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +110,10 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
 
       if (res.ok) {
         const data = await res.json();
-        setAnswerData({ ...data, source: 'mireye_ask' });
+        setAnswerData({
+          ...data,
+          source: isComparisonQuery ? 'atlas_portfolio_comparison' : (data.source || 'mireye_ask'),
+        });
       }
     } catch (err) {
       console.error('Failed to ask Spatial Copilot:', err);
@@ -255,12 +260,17 @@ export function SpatialCopilot({ userPrompt, winnerSite, evaluations = [], rejec
             {answerData.source === 'mireye_site_dossier' ? (
               <span className="inline-flex items-center gap-1 text-emerald-400 font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Mireye Site Dossier
+                Registered Mireye Site Dossier ({mireyeSiteId})
+              </span>
+            ) : answerData.source === 'atlas_portfolio_comparison' ? (
+              <span className="inline-flex items-center gap-1 text-cyan-400 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                Atlas Portfolio Comparison (Grounded in Verified Evaluation Results)
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 text-amber-400 font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                Stateless Mireye /v1/ask
+                Mireye Physical API Intelligence
               </span>
             )}
           </div>

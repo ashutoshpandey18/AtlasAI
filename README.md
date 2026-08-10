@@ -42,7 +42,7 @@ Atlas automates the end-to-end site screening and underwriting workflow:
 *Mireye provides physical-world evidence; Atlas turns that evidence into acquisition decisions and underwriting.*
 
 ### Core Pipeline Sequence
-$$\text{Portfolio Ingestion} \longrightarrow \text{Mireye Physical Intelligence} \longrightarrow \text{Atlas Decision Engine} \longrightarrow \text{Site Registration} \longrightarrow \text{Due Diligence \& Underwriting}$$
+$$\text{Portfolio Ingestion} \longrightarrow \text{Mireye Physical Intelligence} \longrightarrow \text{Atlas Decision Engine} \longrightarrow \text{Site Registration} \longrightarrow \text{Due Diligence and Underwriting}$$
 
 ```mermaid
 flowchart TD

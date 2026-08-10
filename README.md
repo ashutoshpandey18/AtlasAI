@@ -124,35 +124,43 @@ graph TD
 
 ## Product Walkthrough
 
-### Upload Portfolio & Siting Pipeline Status
+### 1. Portfolio Mandate & Registered Mireye Site Selection
 
-Upload portfolio CSV files containing street addresses or geographic coordinates for batch ingestion, and monitor real-time evaluation pipeline progress.
+Upload portfolio GeoJSON/CSV files, view real-time candidate screening status, and verify registered Mireye Site Dossiers (`site_id`).
 
-![Siting Pipeline Status](public/images/01_siting_pipeline_status.png)
-
----
-
-### Autonomous 3D Decision Model
-
-Atlas displays real-time execution progress through the autonomous decision engine and 3D robot interface during site registration and screening.
-
-![Autonomous 3D Decision Model](public/images/03_spline_robot_3d.png)
+![Registered Mireye Site Dossier](public/images/00_hero_landing_page.png)
 
 ---
 
-### Rejections & Multi-Criteria Scoring Results
+### 2. Disqualification Proofs & Live Map Inspector
 
-Inspect evaluated candidate properties, review disqualification proofs for cut parcels, and compare feasibility rankings.
+Inspect cut parcels with explicit written fatal flaw rejection reasons (steep slope, FEMA Zone AE floodways) alongside interactive vector/satellite map layers.
 
-![Rejections & Scoring Results](public/images/02_rejections_and_scoring.png)
+![Disqualifications & Live Map Inspector](public/images/02_rejections_and_scoring.png)
 
 ---
 
-### Interactive Map Inspector & Physical Attribute Cards
+### 3. Candidate Comparison Matrix & Dual-Mode Spatial Copilot
 
-Inspect candidate site pins plotted across vector, satellite, and topo maps alongside physical GIS attribute cards (slope, flood plain, POA solar radiometry).
+Compare surviving candidates across Technical Feasibility and Acquisition Priority scores, and execute grounded due diligence Q&A via `POST /v1/ask-site`.
 
-![Interactive Map & Site Cards](public/images/04_interactive_map_cards.png)
+![Candidate Comparison Matrix & Spatial Copilot](public/images/04_decision_ledger_copilot.png)
+
+---
+
+### 4. Rank #1 Acquisition Priority Selection
+
+Review the canonical Rank #1 winner decision summary and launch the 3-Page Executive Investment Committee Memo.
+
+![Rank #1 Acquisition Priority Selection](public/images/03_spline_robot_3d.png)
+
+---
+
+### 5. Atlas Underwriting Terminal & Executive Investment Memo
+
+Inspect full source-backed physical GIS evidence, Atlas calculations, statutory IRA §48 tax credits (30% ITC), and project IRR metrics.
+
+![Atlas Underwriting Terminal Executive Investment Memo](public/images/05_investment_memo.png)
 
 ---
 

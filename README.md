@@ -273,40 +273,40 @@ Autonomy is defined by this execution pipeline, where each tool call produces st
 
 ---
 
-## Demo Flow
+## Product Walkthrough & End-to-End Evidence
 
-### 1. Portfolio Mandate & Execution Pipeline
-Select target state portfolio (e.g. Texas ERCOT grid), view physical location intelligence stack, and launch instant evaluation.
+### 1. Portfolio Siting Pipeline Status & Site Registration (`POST /v1/sites`)
+Ingest custom GeoJSON boundary files (`fresh_demo_parcels_10_q2dz.geojson`) containing candidate siting requirements. Atlas executes live requests against Mireye APIs (`POST /v1/lookup`, `POST /v1/fetch`, `POST /v1/proximity`), evaluates all 10 candidate sites, disqualifies 2 unviable sites, and automatically registers the winning Rank #1 parcel polygon geometry to Mireye `POST https://api.mireye.com/v1/sites` to establish a persistent site identity (`site_id: c13b5fdf00c69079`).
 
-![Portfolio Mandate & Execution Pipeline](public/images/01_hero_landing_page.png)
-
----
-
-### 2. Live Map Inspector & Candidate Screening
-Inspect candidate parcels plotted on vector maps alongside physical GIS cards (ground slope, FEMA flood clearance, NREL solar yield).
-
-![Live Map Inspector & Candidate Screening](public/images/02_live_map_inspector.png)
+![Portfolio Siting Pipeline Status & Site Registration](public/images/01_siting_pipeline_status.png)
 
 ---
 
-### 3. Registered Mireye Site Dossier
-Promote winning candidate to a persistent Mireye Site Dossier (`POST /v1/sites`) with registered whole-parcel boundary geometry (`site_id`).
+### 2. Fatal-Flaw Rejection Ledger, Multi-Factor Scoring & Map Inspector
+Inspect written, un-ambiguous disqualification proofs for unviable candidate parcels (e.g. Dallas Stemmons cut via USGS 3DEP 1m LiDAR for `7.8°` slope exceeding tracker racking tolerances; San Antonio De Zavala cut via FEMA NFHL Zone AE floodway). View weighted multi-factor Technical Feasibility scores ($0–100$) across surviving candidates alongside interactive vector map tile inspection and reverse geocoding.
 
-![Registered Mireye Site Dossier](public/images/03_registered_site_dossier.png)
-
----
-
-### 4. Candidate Comparison Matrix & Rejection Proofs
-Compare surviving candidates across Technical Feasibility ($0–100$) and Acquisition Priority ($0\%–99\%$) scores alongside written disqualification proofs.
-
-![Candidate Comparison Matrix & Rejection Proofs](public/images/04_candidate_comparison_matrix.png)
+![Fatal-Flaw Rejection Ledger & Multi-Factor Scoring](public/images/02_rejections_and_scoring.png)
 
 ---
 
-### 5. Dossier-Backed Spatial Copilot Q&A (`POST /v1/ask-site`)
-Execute grounded physical due diligence Q&A directly against the persistent registered site dossier with cited physical evidence and execution metadata.
+### 3. Priority Acquisition Target & Ranked Candidate Winner Panel
+Review the portfolio-wide selection verdict recommending `Odessa Ector Co Winner Target Site #9` in Ector County, TX for option agreement outreach. Highlights the top Technical Feasibility Score (`71/100`), unencumbered fee-simple title, zero tax delinquency, and registered Mireye site dossier linkage (`site_id: c13b5fdf00c69079`).
 
-![Dossier-Backed Spatial Copilot Q&A](public/images/05_spatial_copilot_dossier_qa.png)
+![Priority Acquisition Target & Ranked Candidate Verdict](public/images/03_priority_acquisition_target.png)
+
+---
+
+### 4. Candidate Comparison Matrix & Dossier-Backed Spatial Copilot (`POST /v1/ask-site`)
+Compare surviving candidate parcels side-by-side across Technical Feasibility scores and Acquisition Priority percentages alongside side-by-side fatal flaw screening proofs. Interact with the dual-mode Spatial Copilot operating directly over the persistent registered site dossier via Mireye `POST /v1/ask-site` for grounded due diligence Q&A and CFO portfolio trade-off analysis.
+
+![Candidate Comparison Matrix & Dossier-Backed Spatial Copilot](public/images/04_comparison_matrix_copilot.png)
+
+---
+
+### 5. Executive Investment Underwriting Terminal & Provenance-Backed Pro-Forma Record
+Inspect the institutional underwriting terminal for the Rank #1 Target (`Odessa Ector Co Winner Target Site #9`). Displays a full 11-field provenance audit table explicitly classifying every metric as **Source-Backed** (Mireye physical data), **Atlas Calculation** (deterministic GIS deductions), or **Illustrative Assumption** (financial pro-forma parameters like `$2,200/kW` CapEx and `30%` §48 ITC tax credit). Features one-click PDF export for investment committee packages.
+
+![Executive Investment Underwriting Terminal](public/images/05_investment_memo.png)
 
 ---
 

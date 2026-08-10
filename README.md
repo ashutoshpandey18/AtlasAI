@@ -345,6 +345,50 @@ npx vitest run
       Tests  90 passed (90)
 ```
 
+### API Endpoint Verification (Insomnia Suite)
+
+Atlas includes Insomnia API test suites verifying live HTTP POST route execution:
+
+<details>
+<summary>1. Physical GIS Layer Fetch (POST /api/mireye/fetch)</summary>
+
+Queries NREL PVWatts v8 solar irradiance, USGS 3DEP 2.29° slope LiDAR, and FEMA NFHL Zone X flood clearance.
+
+![Insomnia Fetch Test](public/images/insomnia_01_fetch.png)
+</details>
+
+<details>
+<summary>2. Freight Proximity Drive-Time Routing (POST /v1/proximity)</summary>
+
+Calculates heavy equipment transport drive times (10.2 miles, 27.11 minutes) to freight corridors.
+
+![Insomnia Proximity Test](public/images/insomnia_06_proximity.png)
+</details>
+
+<details>
+<summary>3. Target Site Registration (POST /api/mireye/sites)</summary>
+
+Registers candidate parcel polygon geometry to create a persistent Mireye Site Dossier (`site_id: "316a948ff64cf097"`).
+
+![Insomnia Site Registration Test](public/images/insomnia_07_sites.png)
+</details>
+
+<details>
+<summary>4. Grounded Site Dossier Q&A (POST /api/mireye/ask-site)</summary>
+
+Queries persistent registered site dossier index for grounded due diligence Q&A.
+
+![Insomnia Ask Site Test](public/images/insomnia_08_ask_site.png)
+</details>
+
+<details>
+<summary>5. Save Acquisition Campaign (POST /api/campaigns)</summary>
+
+Persists evaluated acquisition campaign run states to Turso Edge SQLite storage.
+
+![Insomnia Save Campaign Test](public/images/insomnia_04_campaigns_post.png)
+</details>
+
 ---
 
 ## Design Philosophy

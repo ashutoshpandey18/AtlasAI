@@ -35,50 +35,11 @@ Atlas automates the end-to-end site screening and underwriting workflow:
 
 ---
 
-## ATLAS — Evidence → Decision → Underwriting
+## How It Works
 
-*Mireye supplies physical-world evidence; Atlas turns it into acquisition decisions.*
+![Atlas AI End-to-End System Architecture Diagram](./public/images/00_atlas_architecture_diagram.png)
 
-![Atlas System Architecture Diagram](public/images/00_atlas_architecture_diagram.png)
-
-```mermaid
-flowchart TD
-    classDef box1 fill:#111827,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
-    classDef box2 fill:#111827,stroke:#10b981,stroke-width:2px,color:#f8fafc;
-    classDef box3 fill:#111827,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
-    classDef box4 fill:#111827,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
-    classDef box5 fill:#111827,stroke:#14b8a6,stroke-width:2px,color:#f8fafc;
-    classDef side fill:#0f172a,stroke:#475569,stroke-width:1px,stroke-dasharray: 3 3,color:#e2e8f0;
-
-    P["1. PORTFOLIO<br/>CSV / GeoJSON<br/>Candidate parcels"]
-    M["2. MIREYE<br/>Physical-world evidence<br/>/v1/lookup • /v1/fetch • /v1/proximity"]
-    A["3. ATLAS DECISION ENGINE<br/>Screen ➔ Score ➔ Rank<br/>Fatal flaws ➔ #1 Acquisition Target"]
-    R["4. REGISTERED SITE<br/>/v1/sites • site_id<br/>/v1/ask-site (Site Dossier Q&A)"]
-    U["5. UNDERWRITING<br/>Evidence + Atlas calculations<br/>➔ Executive Investment Memo"]
-
-    SIDE["Atlas Evaluation State<br/>/api/mireye/ask<br/>Portfolio Decision Assistant"]
-
-    P --> M
-    M --> A
-    A --> R
-    R --> U
-
-    A -.- SIDE
-    SIDE -.- U
-
-    class P box1;
-    class M box2;
-    class A box3;
-    class R box4;
-    class U box5;
-    class SIDE side;
-```
-
-### Core Architecture Distinctions
-* **Portfolio ➔ Mireye Evidence ➔ Atlas Decision ➔ Registered Site ➔ Investment Decision**
-* **Registered-Site Path**: Mireye `POST /v1/sites` registers parcel polygon geometry (`site_id`); Mireye `POST /v1/ask-site` powers grounded Site Dossier Q&A.
-* **Portfolio Trade-Off Path**: Atlas Evaluation State routes through `/api/mireye/ask` for portfolio-wide decision assistance and trade-off queries.
-* **Underwriting**: Synthesizes physical Mireye evidence with Atlas financial calculations into an institutional investment committee memo.
+*Mireye provides physical-world evidence; Atlas turns that evidence into acquisition decisions and underwriting.*
 
 ---
 

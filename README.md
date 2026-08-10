@@ -35,76 +35,50 @@ Atlas automates the end-to-end site screening and underwriting workflow:
 
 ---
 
-## System Architecture & How It Works
+## ATLAS — Evidence → Decision → Underwriting
 
-![Atlas AI End-to-End System Architecture Diagram](public/images/00_atlas_architecture_diagram.png)
+*Mireye supplies physical-world evidence; Atlas turns it into acquisition decisions.*
 
-*Mireye provides physical-world evidence; Atlas turns that evidence into acquisition decisions and underwriting.*
-
-### Core Pipeline Sequence
-$$\text{Portfolio Ingestion} \longrightarrow \text{Mireye Physical Intelligence} \longrightarrow \text{Atlas Decision Engine} \longrightarrow \text{Site Registration} \longrightarrow \text{Due Diligence and Underwriting}$$
+![Atlas System Architecture Diagram](public/images/00_atlas_architecture_diagram.png)
 
 ```mermaid
 flowchart TD
-    classDef stage1 fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#fff;
-    classDef stage2 fill:#14532d,stroke:#22c55e,stroke-width:2px,color:#fff;
-    classDef stage3 fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#fff;
-    classDef stage4 fill:#581c87,stroke:#a855f7,stroke-width:2px,color:#fff;
-    classDef stage5 fill:#134e4a,stroke:#14b8a6,stroke-width:2px,color:#fff;
+    classDef box1 fill:#111827,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
+    classDef box2 fill:#111827,stroke:#10b981,stroke-width:2px,color:#f8fafc;
+    classDef box3 fill:#111827,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
+    classDef box4 fill:#111827,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef box5 fill:#111827,stroke:#14b8a6,stroke-width:2px,color:#f8fafc;
+    classDef side fill:#0f172a,stroke:#475569,stroke-width:1px,stroke-dasharray: 3 3,color:#e2e8f0;
 
-    subgraph STAGE1["STAGE 1 · Portfolio Ingestion"]
-        UP["User Portfolio<br/>(CSV / GeoJSON candidate parcels)"] --> API["Atlas Portfolio Ingestion<br/>(Normalizes site records:<br/>address, coordinates, parcel context)"]
-    end
+    P["1. PORTFOLIO<br/>CSV / GeoJSON<br/>Candidate parcels"]
+    M["2. MIREYE<br/>Physical-world evidence<br/>/v1/lookup • /v1/fetch • /v1/proximity"]
+    A["3. ATLAS DECISION ENGINE<br/>Screen ➔ Score ➔ Rank<br/>Fatal flaws ➔ #1 Acquisition Target"]
+    R["4. REGISTERED SITE<br/>/v1/sites • site_id<br/>/v1/ask-site (Site Dossier Q&A)"]
+    U["5. UNDERWRITING<br/>Evidence + Atlas calculations<br/>➔ Executive Investment Memo"]
 
-    subgraph STAGE2["STAGE 2 · Mireye Physical Intelligence"]
-        LOOKUP["POST /v1/lookup<br/>(Address / coordinate ➔ parcel context)"] --> FETCH["POST /v1/fetch<br/>(Point-level physical evidence:<br/>USGS 3DEP slope, FEMA NFHL flood indicator,<br/>NREL PVWatts solar, Wetland / canopy)"]
-        FETCH --> PROX["POST /v1/proximity<br/>(Transport & logistics proximity)"]
-    end
+    SIDE["Atlas Evaluation State<br/>/api/mireye/ask<br/>Portfolio Decision Assistant"]
 
-    subgraph STAGE3["STAGE 3 · Atlas Decision Engine"]
-        EVID["Mireye Evidence<br/>(Source-backed point-level)"] --> FFS["Fatal-Flaw Screening<br/>(Atlas Screening Rules)"]
-        FFS --> MFE["Multi-Factor Evaluation"]
-        MFE --> TFS["Technical Feasibility Score"]
-        TFS --> PAR["Priority / Acquisition Ranking"]
-        PAR --> DEC{"Candidate Decision"}
-        DEC -- "rejected" --> REJ["Rejection Evidence<br/>(Decision Ledger)"]
-        DEC -- "survivor" --> SURV["Ranked Candidate<br/>(Survivor)"]
-        SURV --> TARGET["#1 Acquisition Target"]
-    end
+    P --> M
+    M --> A
+    A --> R
+    R --> U
 
-    subgraph STAGE4["STAGE 4 · Site Registration & Persistence"]
-        SITES["POST /v1/sites<br/>(Registers valid parcel geometry)"] --> RMS["Registered Mireye Site<br/>(Persistent site identity)"]
-        RMS --> SID["site_id<br/>(Handle for downstream calls)"]
-    end
+    A -.- SIDE
+    SIDE -.- U
 
-    subgraph STAGE5["STAGE 5 · Due Diligence & Underwriting"]
-        ASKSITE["POST /v1/ask-site<br/>(Registered-site dossier Q&A)"] --> DOSSIER["Mireye Site Dossier Q&A<br/>(Source-backed answers)"]
-        ASK["POST /v1/ask<br/>(Secondary fallback)"] -. "fallback" .-> PDA["Portfolio Decision Assistant<br/>(CFO / acquisition trade-off questions)"]
-        EVAL["Atlas Evaluation State"] -.-> PDA
-        DOSSIER --> UW["Atlas Underwriting<br/>(Financial modeling over Mireye evidence + Atlas calculations)"]
-        PDA --> UW
-        UW --> MEMO["Executive Investment Memo<br/>(Source-backed Mireye evidence + Atlas calculations<br/>• clearly labeled financial assumptions)"]
-        MEMO --> ITC["Illustrative Atlas Financial Assumption<br/>(30% §48 ITC — modeled assumption,<br/>not Mireye data & not a guaranteed tax benefit)"]
-    end
-
-    API -- "site records" --> LOOKUP
-    PROX --> EVID
-    TARGET -- "#1 target" --> SITES
-    SID -- "site_id" --> ASKSITE
-
-    class STAGE1,UP,API stage1;
-    class STAGE2,LOOKUP,FETCH,PROX stage2;
-    class STAGE3,EVID,FFS,MFE,TFS,PAR,DEC,REJ,SURV,TARGET stage3;
-    class STAGE4,SITES,RMS,SID stage4;
-    class STAGE5,ASKSITE,DOSSIER,ASK,EVAL,PDA,UW,MEMO,ITC stage5;
+    class P box1;
+    class M box2;
+    class A box3;
+    class R box4;
+    class U box5;
+    class SIDE side;
 ```
 
-### Key Architectural Responsibilities
-* **Mireye**: Location & physical intelligence (`/v1/lookup`, `/v1/fetch`, `/v1/proximity`, `/v1/sites`, `/v1/ask-site`, `/v1/ask`).
-* **Atlas**: Screening, scoring, ranking, decision logic, and financial underwriting modeling.
-* **`/v1/sites`**: Persistent site identity registration.
-* **`/v1/ask-site`**: Registered-site dossier Q&A interface.
-* **Atlas Underwriting**: Financial modeling and investment committee memo generation.
+### Core Architecture Distinctions
+* **Portfolio ➔ Mireye Evidence ➔ Atlas Decision ➔ Registered Site ➔ Investment Decision**
+* **Registered-Site Path**: Mireye `POST /v1/sites` registers parcel polygon geometry (`site_id`); Mireye `POST /v1/ask-site` powers grounded Site Dossier Q&A.
+* **Portfolio Trade-Off Path**: Atlas Evaluation State routes through `/api/mireye/ask` for portfolio-wide decision assistance and trade-off queries.
+* **Underwriting**: Synthesizes physical Mireye evidence with Atlas financial calculations into an institutional investment committee memo.
 
 ---
 
